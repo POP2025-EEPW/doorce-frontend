@@ -9,9 +9,16 @@ import reactX from "eslint-plugin-react-x";
 import reactDom from "eslint-plugin-react-dom";
 import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
+import eslintConfigPrettier from "eslint-config-prettier";
 
 export default defineConfig([
-  globalIgnores(["dist"]),
+  globalIgnores([
+    "dist",
+    "coverage",
+    "storybook-static",
+    ".storybook",
+    "vitest.shims.d.ts",
+  ]),
   {
     files: ["**/*.{ts,tsx}"],
     extends: [
@@ -31,6 +38,14 @@ export default defineConfig([
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    eslintConfigPrettier,
   },
+  {
+    files: ["src/components/ui/**/*.{ts,tsx}"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
+  // Enable Storybook's recommended rules for stories/config files
+  ...storybook.configs["flat/recommended"],
+  eslintConfigPrettier,
 ]);
