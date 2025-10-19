@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { uc } from "@/app/di";
-import { CatalogListView } from "@/views/catalogs/CatalogList.view";
+import { CatalogsPageView } from "@/views/catalogs/CatalogsPage.view";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AddCatalogFormView } from "@/views/catalogs/AddCatalogForm.view";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// UI for loading/error kept here to decouple presenter logic from view
 
 export function CatalogsPresenter() {
   const nav = useNavigate();
@@ -34,23 +33,10 @@ export function CatalogsPresenter() {
     );
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">Catalogs</h1>
-      <Card className="max-w-md">
-        <CardHeader>
-          <CardTitle className="text-lg">Add root catalog</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <AddCatalogFormView
-            parentCatalogId={null}
-            onSubmit={(input) => addCatalog.mutate(input)}
-          />
-        </CardContent>
-      </Card>
-      <CatalogListView
-        catalogs={data}
-        onOpen={(id) => nav(`/catalogs/${id}`)}
-      />
-    </div>
+    <CatalogsPageView
+      catalogs={data}
+      onOpenCatalog={(id) => nav(`/catalogs/${id}`)}
+      onSubmitAddRoot={(input) => addCatalog.mutate(input)}
+    />
   );
 }
