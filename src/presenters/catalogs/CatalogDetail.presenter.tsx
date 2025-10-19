@@ -6,8 +6,9 @@ import { AddDatasetFormView } from "@/views/datasets/AddDatasetForm.view";
 import { useAuth } from "@/auth/auth-store";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AddCatalogFormView } from "@/views/catalogs/AddCatalogForm.view";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SubcatalogListView } from "@/views/catalogs/SubcatalogList.view";
+import { AddSubcatalogCardView } from "@/views/catalogs/AddSubcatalogCard.view";
+import { AddDatasetSectionView } from "@/views/datasets/AddDatasetSection.view";
 
 export function CatalogDetailPresenter() {
   const { id } = useParams();
@@ -48,56 +49,36 @@ export function CatalogDetailPresenter() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-semibold">{catalog?.title ?? "Catalog"}</h1>
-      {catalog?.children && catalog.children.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Subcatalogs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="list-disc pl-5">
-              {catalog.children.map((c) => (
-                <li key={c.id}>
-                  <button
-                    className="underline"
-                    onClick={() => nav(`/catalogs/${c.id}`)}
-                  >
-                    {c.title}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      )}
-      <Card className="max-w-md">
-        <CardHeader>
-          <CardTitle className="text-lg">Add subcatalog</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <AddCatalogFormView
-            parentCatalogId={catalogId}
-            onSubmit={(input) => {
-              return uc.dataset.addCatalog(input).then(() => {
-                qc.invalidateQueries({ queryKey: ["catalog", catalogId] });
-                qc.invalidateQueries({ queryKey: ["catalogs"] });
-              });
-            }}
-          />
-        </CardContent>
-      </Card>
+      <SubcatalogListView
+        children={catalog?.children ?? []}
+        onOpen={(childId) => nav(`/catalogs/${childId}`)}
+      />
+      <AddSubcatalogCardView
+        parentCatalogId={catalogId}
+        onSubmit={(input) => {
+          return uc.dataset.addCatalog(input).then(() => {
+            qc.invalidateQueries({ queryKey: ["catalog", catalogId] });
+            qc.invalidateQueries({ queryKey: ["catalogs"] });
+          });
+        }}
+      />
       <DatasetTableView
         datasets={datasets ?? []}
         onOpen={(dsId) => nav(`/datasets/${dsId}`)}
       />
       {userId && (
-        <div className="mt-6">
-          <h2 className="text-lg font-medium mb-2">Add dataset</h2>
-          <AddDatasetFormView
-            catalogId={catalogId}
-            ownerId={userId}
-            onSubmit={(input) => addMutation.mutate(input)}
-          />
-        </div>
+        <AddDatasetSectionView
+          catalogId={catalogId}
+          ownerId={userId}
+          onSubmit={(input) => addMutation.mutate(input)}
+          FormComponent={(p) => (
+            <AddDatasetFormView
+              catalogId={p.catalogId}
+              ownerId={p.ownerId}
+              onSubmit={p.onSubmit}
+            />
+          )}
+        />
       )}
     </div>
   );
