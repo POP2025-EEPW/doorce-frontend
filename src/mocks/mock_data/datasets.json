@@ -1,0 +1,29 @@
+[
+  {
+    "id": "ds1",
+    "title": "Bus Stops",
+    "description": "All city bus stops",
+    "status": "draft",
+    "catalogId": "sub1",
+    "ownerId": "owner-123",
+    "schemaId": null
+  },
+  {
+    "id": "ds2",
+    "title": "Bike Stations",
+    "description": "Public bike stations with capacities",
+    "status": "published",
+    "catalogId": "sub1",
+    "ownerId": "owner-456",
+    "schemaId": "schema-1"
+  },
+  {
+    "id": "ds3",
+    "title": "Air Quality Sensors",
+    "description": "PM2.5 and PM10 time series",
+    "status": "published",
+    "catalogId": "sub2",
+    "ownerId": "owner-789",
+    "schemaId": "schema-2"
+  }
+]
