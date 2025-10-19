@@ -5,10 +5,10 @@ import { Separator } from "@/components/ui/separator";
 export function DatasetInfoView({ dataset }: { dataset: Dataset }) {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{dataset.title}</CardTitle>
+      <CardHeader className="pb-2">
+        <CardTitle className="leading-none">{dataset.title}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-0">
         {dataset.description && (
           <p className="text-muted-foreground">{dataset.description}</p>
         )}

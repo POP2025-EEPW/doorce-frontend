@@ -29,10 +29,10 @@ export function DatasetTableView({
         {datasets.map((d) => (
           <TableRow
             key={d.id}
-            className="cursor-pointer"
+            className="cursor-pointer hover:bg-accent/50"
             onClick={() => onOpen(d.id)}
           >
-            <TableCell>{d.title}</TableCell>
+            <TableCell className="font-medium">{d.title}</TableCell>
             <TableCell>
               <Badge variant="secondary">{d.status}</Badge>
             </TableCell>

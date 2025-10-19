@@ -27,11 +27,11 @@ export function LoginView({
   return (
     <div className="mx-auto max-w-sm p-6">
       <Card>
-        <CardHeader>
-          <CardTitle>Login</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="leading-none">Login</CardTitle>
         </CardHeader>
-        <CardContent>
-          <form className="space-y-3" onSubmit={handleSubmit(() => onSubmit())}>
+        <CardContent className="pt-0">
+          <form className="space-y-4" onSubmit={handleSubmit(() => onSubmit())}>
             <div className="space-y-1">
               <Label htmlFor="username">Username</Label>
               <Input

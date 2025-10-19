@@ -15,11 +15,13 @@ export interface CatalogsPageViewProps {
 export function CatalogsPageView(props: CatalogsPageViewProps) {
   const { catalogs, onOpenCatalog, onSubmitAddRoot } = props;
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">Catalogs</h1>
-      <Card className="max-w-md">
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold tracking-tight">Catalogs</h1>
+      <Card className="max-w-xl">
         <CardHeader>
-          <CardTitle className="text-lg">Add root catalog</CardTitle>
+          <CardTitle className="text-lg leading-none">
+            Add root catalog
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <AddCatalogFormView
