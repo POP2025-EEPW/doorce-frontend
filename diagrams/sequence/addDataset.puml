@@ -1,0 +1,27 @@
+@startuml
+title addDataset use case
+autonumber
+
+actor User
+
+participant "AddDatasetFormView" as DatasetForm
+participant "CatalogDetailPresenter" as CatalogPresenter
+participant "React Query\nAddDatasetMutation" as AddDatasetMutation
+participant "DatasetUseCases" as DatasetUC
+participant "Dataset API\nPOST /datasets" as DatasetApi
+participant "React Query\nQueryClient" as QueryClient
+participant "AppRouter" as Router
+
+User -> DatasetForm : Fill dataset form
+DatasetForm -> CatalogPresenter : onSubmit(input)
+CatalogPresenter -> AddDatasetMutation : mutateAsync(input)
+AddDatasetMutation -> DatasetUC : addDataset(input)
+DatasetUC -> DatasetApi : POST dataset payload
+DatasetApi --> DatasetUC : 201 Created + {id}
+DatasetUC --> AddDatasetMutation : {id}
+AddDatasetMutation --> CatalogPresenter : onSuccess({id})
+CatalogPresenter -> QueryClient : invalidate("catalogDatasets", catalogId)
+CatalogPresenter -> Router : navigate("/datasets/{id}")
+Router -> User : Show dataset detail page
+
+@enduml

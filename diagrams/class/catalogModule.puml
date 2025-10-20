@@ -1,0 +1,81 @@
+@startuml
+title Catalog Feature - View Layer Structure
+
+skinparam packageStyle rectangle
+
+package "External Interfaces" {
+    interface DatasetUseCases {
+        +listCatalogs(parentId)
+        +getCatalog(id)
+        +addCatalog(input)
+        +listCatalogDatasets(catalogId, page, pageSize)
+        +addDataset(input)
+    }
+}
+
+package "Application Shell" {
+    class AppRouter {
+        +render()
+    }
+}
+
+package "Catalogs Feature" {
+    class CatalogsPresenter {
+        +render()
+        +handleAddCatalog(input)
+    }
+    class CatalogDetailPresenter {
+        +render()
+        +handleAddDataset(input)
+        +handleAddSubcatalog(input)
+    }
+    class CatalogListView {
+        +render(catalogs)
+        +onOpen(id)
+    }
+    class AddCatalogFormView {
+        +render()
+        +submit(input)
+    }
+}
+
+package "Dataset Views" {
+    class DatasetTableView {
+        +render(datasets)
+        +onOpen(id)
+    }
+    class AddDatasetFormView {
+        +render()
+        +submit(input)
+    }
+}
+
+package "Infrastructure" {
+    class UCContainer {
+        +dataset: DatasetUseCases
+    }
+}
+
+AppRouter --> CatalogsPresenter : routes to
+AppRouter --> CatalogDetailPresenter : routes to
+
+CatalogsPresenter --> CatalogListView : renders list
+CatalogsPresenter --> AddCatalogFormView : renders form
+CatalogsPresenter ..> DatasetUseCases : listCatalogs(), addCatalog()
+
+CatalogDetailPresenter --> AddCatalogFormView : renders subcatalog form
+CatalogDetailPresenter --> DatasetTableView : renders datasets
+CatalogDetailPresenter --> AddDatasetFormView : renders dataset form
+CatalogDetailPresenter ..> DatasetUseCases : getCatalog(), listCatalogDatasets(), addCatalog(), addDataset()
+
+UCContainer --> DatasetUseCases : provides
+CatalogsPresenter --> UCContainer : pulls uc.dataset
+CatalogDetailPresenter --> UCContainer : pulls uc.dataset
+
+CatalogListView --> CatalogsPresenter : onOpen(id)
+AddCatalogFormView --> CatalogsPresenter : onSubmit(input)
+AddCatalogFormView --> CatalogDetailPresenter : onSubmit(input)
+DatasetTableView --> CatalogDetailPresenter : onOpen(id)
+AddDatasetFormView --> CatalogDetailPresenter : onSubmit(input)
+
+@enduml

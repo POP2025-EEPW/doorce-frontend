@@ -1,0 +1,70 @@
+@startuml
+title Dataset Feature - View Layer Structure
+
+skinparam packageStyle rectangle
+
+package "External Interfaces" {
+    interface DatasetUseCases {
+        +getDataset(id)
+        +addDataset(input)
+        +listCatalogDatasets(catalogId, page, pageSize)
+    }
+}
+
+package "Application Shell" {
+    class AppRouter {
+        +render()
+    }
+}
+
+package "Dataset Feature" {
+    class DatasetDetailPresenter {
+        +render()
+        +loadDataset(id)
+    }
+    class DatasetInfoView {
+        +render(dataset)
+    }
+}
+
+package "Shared Dataset Views" {
+    class AddDatasetFormView {
+        +render()
+        +submit(input)
+    }
+    class DatasetTableView {
+        +render(datasets)
+        +onOpen(id)
+    }
+}
+
+package "Infrastructure" {
+    class UCContainer {
+        +dataset: DatasetUseCases
+    }
+}
+
+package "Catalogs Feature (consumer)" {
+    class CatalogDetailPresenter {
+        +render()
+        +handleAddDataset(input)
+        +openDataset(id)
+    }
+}
+
+AppRouter --> DatasetDetailPresenter : routes to
+
+DatasetDetailPresenter ..> DatasetUseCases : getDataset()
+DatasetDetailPresenter --> DatasetInfoView : renders detail
+DatasetDetailPresenter --> UCContainer : pulls uc.dataset
+UCContainer --> DatasetUseCases : provides
+
+CatalogDetailPresenter --> AddDatasetFormView : renders form
+CatalogDetailPresenter --> DatasetTableView : renders table
+CatalogDetailPresenter ..> DatasetUseCases : addDataset(), listCatalogDatasets()
+CatalogDetailPresenter --> UCContainer : pulls uc.dataset
+
+AddDatasetFormView --> CatalogDetailPresenter : onSubmit(input)
+DatasetTableView --> CatalogDetailPresenter : onOpen(id)
+
+@enduml

@@ -1,0 +1,23 @@
+@startuml
+title getCatalog use case
+autonumber
+
+actor User
+
+participant "AppRouter" as Router
+participant "CatalogDetailPresenter" as CatalogPresenter
+participant "React Query\nCatalogDetailQuery" as CatalogQuery
+participant "DatasetUseCases" as DatasetUC
+participant "Catalog API\nGET /catalogs/{id}" as CatalogApi
+
+User -> Router : Navigate to /catalogs/{id}
+Router -> CatalogPresenter : render(catalogId)
+CatalogPresenter -> CatalogQuery : fetch(catalogId)
+CatalogQuery -> DatasetUC : getCatalog(catalogId)
+DatasetUC -> CatalogApi : GET catalog
+CatalogApi --> DatasetUC : catalog JSON
+DatasetUC --> CatalogQuery : catalogDto
+CatalogQuery --> CatalogPresenter : resolve(catalogDto)
+CatalogPresenter -> User : Display catalog detail
+
+@enduml
