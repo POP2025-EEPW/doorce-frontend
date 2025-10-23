@@ -10,17 +10,17 @@ export function CatalogListView({
   onOpen: (id: string) => void;
 }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {catalogs.map((c, idx) => (
         <div key={c.id}>
           <Card
-            className="hover:bg-accent cursor-pointer"
+            className="cursor-pointer transition-colors hover:bg-accent/50"
             onClick={() => onOpen(c.id)}
           >
-            <CardHeader>
-              <CardTitle className="text-lg">{c.title}</CardTitle>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg leading-none">{c.title}</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               {c.description && (
                 <div className="text-sm text-muted-foreground">
                   {c.description}
@@ -28,7 +28,7 @@ export function CatalogListView({
               )}
             </CardContent>
           </Card>
-          {idx < catalogs.length - 1 && <Separator />}
+          {idx < catalogs.length - 1 && <Separator className="my-3" />}
         </div>
       ))}
       {catalogs.length === 0 && (
