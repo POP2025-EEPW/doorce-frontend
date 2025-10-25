@@ -1,0 +1,25 @@
+@startuml
+title getDataset use case
+autonumber
+
+actor User
+
+participant "AppRouter" as Router
+participant "DatasetDetailPresenter" as DatasetPresenter
+participant "React Query\nDatasetDetailQuery" as DatasetQuery
+participant "DatasetUseCases" as DatasetUC
+participant "Dataset API\nGET /datasets/{id}" as DatasetApi
+participant "DatasetInfoView" as DatasetInfoView
+
+User -> Router : Navigate to /datasets/{id}
+Router -> DatasetPresenter : render(datasetId)
+DatasetPresenter -> DatasetQuery : fetch(datasetId)
+DatasetQuery -> DatasetUC : getDataset(datasetId)
+DatasetUC -> DatasetApi : GET /datasets/{id}
+DatasetApi --> DatasetUC : dataset JSON
+DatasetUC --> DatasetQuery : datasetDto
+DatasetQuery --> DatasetPresenter : resolve(datasetDto)
+DatasetPresenter -> DatasetInfoView : render(datasetDto)
+DatasetInfoView -> User : Show dataset details
+
+@enduml

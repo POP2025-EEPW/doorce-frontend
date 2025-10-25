@@ -1,0 +1,20 @@
+[
+  {
+    "username": "admin",
+    "password": "admin",
+    "userId": "admin",
+    "roles": ["Admin", "MetadataManager", "DataQualityManager"]
+  },
+  {
+    "username": "metadata",
+    "password": "metadata",
+    "userId": "student-1",
+    "roles": ["MetadataManager"]
+  },
+  {
+    "username": "quality",
+    "password": "quality",
+    "userId": "quality-1",
+    "roles": ["DataQualityManager"]
+  }
+]

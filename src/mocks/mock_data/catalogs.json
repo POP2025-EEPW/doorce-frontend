@@ -1,0 +1,20 @@
+[
+  {
+    "id": "root1",
+    "title": "Main Catalog",
+    "description": "Top-level catalog",
+    "parentCatalogId": null
+  },
+  {
+    "id": "sub1",
+    "title": "Transport",
+    "description": "Transport-related datasets",
+    "parentCatalogId": "root1"
+  },
+  {
+    "id": "sub2",
+    "title": "Environment",
+    "description": "Air, water, and waste",
+    "parentCatalogId": "root1"
+  }
+]

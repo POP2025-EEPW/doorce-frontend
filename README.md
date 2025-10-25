@@ -9,6 +9,9 @@
 - [Project structure](#project-structure)
 - [Adding components (shadcn/ui)](#adding-components-shadcnui)
 - [Component structure (global vs local)](#component-structure-global-vs-local)
+- [Contributing](#contributing)
+- [Architecture (PVCUC)](#architecture-pvcuc)
+- [Adding a new use case (PVCUC)](#adding-a-new-use-case-pvcuc)
 - [Storybook](#storybook)
 - [Storybook tests (play function, CLI)](#storybook-tests-play-function-cli)
 - [Routing](#routing)
@@ -119,6 +122,137 @@ Guidelines
 - Re-export from `index.ts` for clean imports: `import { SuperComponent } from "@/components/SuperComponent"`.
 - Local-only modules stay inside the component folder; promote to `src/components/` or `src/hooks/` only when reused across features.
 
+## Contributing
+
+- **Issues & branches**: Open/assign a GitHub Issue first, then create a branch via the Issue panel. Follow the required branch format from [Branching & collaboration](#branching--collaboration).
+- **Commits**: Use conventional commits (see examples in Development workflow). Keep changes scoped and descriptive.
+- **PR checklist**:
+  - [ ] `npm run lint` and `npm run build` pass
+  - [ ] Stories updated/added for any new UI
+  - [ ] Storybook play tests added where meaningful (`npm run test:storybook`)
+  - [ ] Unit tests for controllers/use-cases where logic exists
+  - [ ] Updated docs (README or component README)
+
+If you are adding a new feature or endpoint integration, prefer the PVCUC flow documented below.
+
+## Architecture (PVCUC)
+
+Project layering follows PVCUC to keep responsibilities clear and testable:
+
+- **P — Presenter (`src/presenters/`)**: Orchestrates data fetching/state (e.g., React Query), reads router params, composes one or more Views. Never calls HTTP directly; uses `uc` (use-cases) or controllers.
+- **V — View (`src/views/`)**: Pure, props-driven UI. No side-effects or I/O. Easy to storybook/test.
+- **C — Controller (`src/controllers/`)**: Imperative actions triggered by UI (mutations, navigation, store updates). Calls `uc.*` functions. Example: `auth.controller.ts` calls `uc.auth.login(...)` and updates the auth store.
+- **UC — Use-cases (`src/use-cases/*.uc.ts`)**: Domain operations expressed as a thin layer built from a client. Each file exports a `buildXxxUC(client)` function and the `XxxClient` interface it needs.
+- **C — Client/Container**:
+  - **Client (`src/api/`)**: Implements the `*Client` interfaces using HTTP.
+  - **Container (`src/app/di.ts`)**: Wires one concrete client into all use-cases and exports `uc` (e.g., `uc.dataset.getDataset(id)`).
+
+Dependency direction:
+
+Views ← Presenters ← Controllers ← Use-cases ← Client (HTTP)
+↘ DI container provides `uc`
+
+Folder mapping:
+
+- `src/presenters/<feature>/*`
+- `src/views/<feature>/*`
+- `src/controllers/<feature>.controller.ts`
+- `src/use-cases/<feature>.uc.ts`
+- `src/app/di.ts` and `src/api/*`
+
+Naming conventions:
+
+- Presenters: `Xyz.presenter.tsx` and optional `Xyz.presenter.stories.tsx`
+- Views: `Xyz.view.tsx` with `Xyz.view.stories.tsx`
+- Controllers: `feature.controller.ts`
+- Use-cases: `feature.uc.ts` exporting `buildFeatureUC` and `FeatureClient`
+
+## Adding a new use case (PVCUC)
+
+Example: add `deleteDataset(id: string)`
+
+1. Use-case: define client contract and expose via builder
+
+```ts
+// src/use-cases/dataset.uc.ts
+export interface DatasetClient {
+  // ...existing methods
+  deleteDataset(id: string): Promise<void>;
+}
+
+export function buildDatasetUC(client: DatasetClient) {
+  return {
+    // ...existing methods
+    deleteDataset: (id: string) => client.deleteDataset(id),
+  };
+}
+```
+
+2. API client: implement the contract
+
+```ts
+// src/api/apiClient.ts
+export function buildRealClient(http: Http): CombinedClient {
+  return {
+    // ...existing
+    deleteDataset: (id: string) => http.delete(`/datasets/${id}`),
+  };
+}
+```
+
+3. DI container: `uc` wiring (usually no change unless adding a brand-new module)
+
+```ts
+// src/app/di.ts
+export const uc = {
+  dataset: buildDatasetUC(client),
+  // ...others
+};
+```
+
+4. Controller: add an imperative function the UI can call
+
+```ts
+// src/controllers/datasets.controller.ts
+export async function deleteDataset(id: string) {
+  return uc.dataset.deleteDataset(id);
+}
+```
+
+5. Presenter: orchestrate data/mutations and hand data/handlers to Views
+
+```tsx
+// src/presenters/datasets/DatasetDetail.presenter.tsx
+const { mutate: onDelete } = useMutation({
+  mutationFn: () => deleteDataset(datasetId),
+});
+```
+
+6. View: add a button that calls the handler via props
+
+```tsx
+// src/views/datasets/DatasetInfo.view.tsx
+export function DatasetInfoView({
+  dataset,
+  onDelete,
+}: {
+  dataset: Dataset;
+  onDelete?: () => void;
+}) {
+  return <Button onClick={onDelete}>Delete</Button>;
+}
+```
+
+7. Tests & stories:
+
+- Add/adjust stories for the View and Presenter.
+- Add a Storybook play test for critical flows when possible.
+- Add unit tests for the controller/use-case if logic beyond simple delegation exists.
+
+8. Routes (if needed): add to `src/consts/routes.ts` and wire in the router.
+
+9. Submit PR following the Contributing checklist.
+
 ### Storybook
 
 - Run with `npm run storybook`.
@@ -128,7 +262,7 @@ Guidelines
 
 ```ts
 // Button.stories.ts
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "@/components/ui/button";
 
 const meta: Meta<typeof Button> = { component: Button };

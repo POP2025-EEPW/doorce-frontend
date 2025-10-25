@@ -1,0 +1,27 @@
+@startuml
+title addCatalog use case
+autonumber
+
+actor User
+
+participant "AddCatalogFormView" as CatalogForm
+participant "CatalogsPresenter" as CatalogsPresenter
+participant "React Query\nAddCatalogMutation" as AddCatalogMutation
+participant "DatasetUseCases" as DatasetUC
+participant "Catalog API\nPOST /catalogs" as CatalogApi
+participant "React Query\nQueryClient" as QueryClient
+participant "AppRouter" as Router
+
+User -> CatalogForm : Fill catalog form
+CatalogForm -> CatalogsPresenter : onSubmit(input)
+CatalogsPresenter -> AddCatalogMutation : mutateAsync(input)
+AddCatalogMutation -> DatasetUC : addCatalog(input)
+DatasetUC -> CatalogApi : POST catalog payload
+CatalogApi --> DatasetUC : 201 Created + {id}
+DatasetUC --> AddCatalogMutation : {id}
+AddCatalogMutation --> CatalogsPresenter : onSuccess({id})
+CatalogsPresenter -> QueryClient : invalidate("catalogs")
+CatalogsPresenter -> Router : navigate("/catalogs/{id}")
+Router -> User : Show catalog detail page
+
+@enduml

@@ -1,0 +1,23 @@
+@startuml
+title listCatalogDatasets use case
+autonumber
+
+actor User
+
+participant "CatalogDetailPresenter" as CatalogPresenter
+participant "React Query\nCatalogDatasetsQuery" as DatasetsQuery
+participant "DatasetUseCases" as DatasetUC
+participant "Dataset API\nGET /catalogs/{id}/datasets" as DatasetApi
+participant "DatasetTableView" as DatasetTableView
+
+User -> CatalogPresenter : View datasets tab
+CatalogPresenter -> DatasetsQuery : fetch(catalogId, page, size)
+DatasetsQuery -> DatasetUC : listCatalogDatasets(catalogId, page, size)
+DatasetUC -> DatasetApi : GET /catalogs/{id}/datasets
+DatasetApi --> DatasetUC : dataset summaries
+DatasetUC --> DatasetsQuery : datasetList
+DatasetsQuery --> CatalogPresenter : resolve(list)
+CatalogPresenter -> DatasetTableView : render(list)
+DatasetTableView -> User : Display dataset table
+
+@enduml
