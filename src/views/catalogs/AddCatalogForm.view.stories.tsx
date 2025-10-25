@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AddCatalogFormView } from "./AddCatalogForm.view";
 
 const meta: Meta<typeof AddCatalogFormView> = {

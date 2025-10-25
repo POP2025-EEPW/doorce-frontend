@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AddDatasetFormView } from "./AddDatasetForm.view";
 
 const meta: Meta<typeof AddDatasetFormView> = {

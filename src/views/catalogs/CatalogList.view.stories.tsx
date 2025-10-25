@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { CatalogListView } from "./CatalogList.view";
 import catalogs from "@/mocks/mock_data/catalogs.json";
 
