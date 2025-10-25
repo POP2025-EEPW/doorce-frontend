@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DatasetInfoView } from "./DatasetInfo.view";
 import datasets from "@/mocks/mock_data/datasets.json";
 
