@@ -22,7 +22,9 @@ export const Default: Story = {
           password={p}
           onChangeUsername={setU}
           onChangePassword={setP}
-          onSubmit={() => {}}
+          onSubmit={() => {
+            console.log("submit");
+          }}
         />
       );
     };

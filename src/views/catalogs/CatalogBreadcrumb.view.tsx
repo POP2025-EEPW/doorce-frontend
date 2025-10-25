@@ -29,7 +29,7 @@ export function CatalogBreadcrumbView({
         {chain.map((it, idx) => {
           const isLast = idx === chain.length - 1;
           return (
-            <BreadcrumbItem key={`${it.id}:${idx}`}>
+            <BreadcrumbItem key={`${it.id}`}>
               {isLast ? (
                 <BreadcrumbPage>{it.title}</BreadcrumbPage>
               ) : (

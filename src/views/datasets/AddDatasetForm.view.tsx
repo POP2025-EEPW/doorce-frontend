@@ -23,9 +23,9 @@ export function AddDatasetFormView({
     <form
       className="space-y-2"
       onSubmit={handleSubmit((v) => {
-        onSubmit({
+        void onSubmit({
           title: v.title.trim(),
-          description: v.description || undefined,
+          description: v.description ?? undefined,
           catalogId,
           ownerId,
         });

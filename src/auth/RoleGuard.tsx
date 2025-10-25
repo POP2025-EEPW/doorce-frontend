@@ -2,7 +2,10 @@ import type { ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { uc } from "@/app/di";
 
-type Props = { children: ReactNode; anyOf: string[] };
+interface Props {
+  children: ReactNode;
+  anyOf: string[];
+}
 
 export function RoleGuard({ children, anyOf }: Props) {
   const { data, isLoading, error } = useQuery({

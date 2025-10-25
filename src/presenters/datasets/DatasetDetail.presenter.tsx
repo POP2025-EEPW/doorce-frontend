@@ -7,7 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export function DatasetDetailPresenter() {
   const { id } = useParams();
-  const datasetId = id as string;
+  const datasetId = id ?? "";
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["dataset", datasetId],

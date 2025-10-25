@@ -8,14 +8,17 @@ export function LoginPresenter() {
   const [password, setPassword] = useState("");
   const nav = useNavigate();
   const loc = useLocation();
-  const from = (loc.state as any)?.from?.pathname ?? "/catalogs";
+  const from =
+    (loc.state as { from?: { pathname: string } })?.from?.pathname ??
+    "/catalogs";
 
-  async function handleSubmit() {
+  function handleSubmit() {
     const u = username.trim();
     const p = password;
     if (!u || !p) return;
-    await AuthController.login(u, p);
-    nav(from, { replace: true });
+    void AuthController.login(u, p).then(() => {
+      nav(from, { replace: true });
+    });
   }
 
   return (

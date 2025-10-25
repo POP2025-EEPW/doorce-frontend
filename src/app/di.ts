@@ -7,9 +7,11 @@ import { buildAuthUC } from "@/use-cases/auth.uc";
 import { buildRealClient } from "@/api/apiClient";
 import { buildMockClient } from "@/mocks/mockClient";
 
-const getUserId = () => useAuth.getState().userId;
-const baseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:8080";
-const useMock = import.meta.env.VITE_USE_MOCK === "true";
+const getUserId = (): string | null => useAuth.getState().userId;
+const baseUrl: string =
+  (import.meta.env.VITE_API_URL as string | undefined) ??
+  "http://localhost:8080";
+const useMock: boolean = import.meta.env.VITE_USE_MOCK === "true";
 
 const http = new Http(baseUrl, getUserId);
 const client = useMock ? buildMockClient() : buildRealClient(http);

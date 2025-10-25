@@ -45,7 +45,7 @@ export interface DataRelatedRequestFilter {
 
 export interface QualityTag {
   id: ID;
-  label: "Bronze" | "Silver" | "Gold" | string;
+  label: "Bronze" | "Silver" | "Gold";
   score?: number; // 0..100
   updatedAt: ISODateString;
   updatedBy?: ID;

@@ -17,18 +17,16 @@ export function AddCatalogFormView({
     description?: string;
   }>({ defaultValues: { title: "", description: "" } });
 
+  function onSubmitForm(v: { title: string; description?: string }) {
+    void onSubmit({
+      title: v.title.trim(),
+      description: v.description ?? undefined,
+      parentCatalogId,
+    });
+    reset();
+  }
   return (
-    <form
-      className="space-y-2"
-      onSubmit={handleSubmit((v) => {
-        onSubmit({
-          title: v.title.trim(),
-          description: v.description || undefined,
-          parentCatalogId,
-        });
-        reset();
-      })}
-    >
+    <form className="space-y-2" onSubmit={handleSubmit(onSubmitForm)}>
       <div className="space-y-1">
         <Label htmlFor="title">Title</Label>
         <Input

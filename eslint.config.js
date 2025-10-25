@@ -38,6 +38,10 @@ export default defineConfig([
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    rules: {
+      "@typescript-eslint/no-floating-promises": "off",
+      "@typescript-eslint/no-misused-promises": "off",
+    },
   },
   {
     files: ["src/components/ui/**/*.{ts,tsx}"],

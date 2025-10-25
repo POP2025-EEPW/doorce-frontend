@@ -13,6 +13,8 @@ type Story = StoryObj<typeof AddCatalogFormView>;
 export const Default: Story = {
   args: {
     parentCatalogId: null,
-    onSubmit: () => {},
+    onSubmit: () => {
+      console.log("submit");
+    },
   },
 };

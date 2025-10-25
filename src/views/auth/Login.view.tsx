@@ -31,7 +31,7 @@ export function LoginView({
           <CardTitle className="leading-none">Login</CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
-          <form className="space-y-4" onSubmit={handleSubmit(() => onSubmit())}>
+          <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-1">
               <Label htmlFor="username">Username</Label>
               <Input
@@ -39,8 +39,8 @@ export function LoginView({
                 placeholder="Enter username"
                 {...register("username", {
                   required: true,
-                  onChange: (e) =>
-                    onChangeUsername((e.target as HTMLInputElement).value),
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    onChangeUsername(e.target.value),
                 })}
               />
               {formState.errors.username && (
@@ -57,8 +57,8 @@ export function LoginView({
                 placeholder="Enter password"
                 {...register("password", {
                   required: true,
-                  onChange: (e) =>
-                    onChangePassword((e.target as HTMLInputElement).value),
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    onChangePassword(e.target.value),
                 })}
               />
               {formState.errors.password && (

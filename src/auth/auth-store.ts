@@ -1,10 +1,10 @@
 import { create } from "zustand";
 
-type AuthState = {
+interface AuthState {
   userId: string | null;
   login: (userId: string) => void;
   logout: () => void;
-};
+}
 
 export const useAuth = create<AuthState>((set) => ({
   userId: localStorage.getItem("userId"),

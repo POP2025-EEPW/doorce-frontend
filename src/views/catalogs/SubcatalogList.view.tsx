@@ -15,7 +15,7 @@ export interface SubcatalogListViewProps {
 
 export function SubcatalogListView(props: SubcatalogListViewProps) {
   const { children, onOpen } = props;
-  if (!children || children.length === 0) return null;
+  if (!children?.length) return null;
   return (
     <div className="mt-8">
       <h2 className="text-lg font-medium tracking-tight mb-3">Subcatalogs</h2>

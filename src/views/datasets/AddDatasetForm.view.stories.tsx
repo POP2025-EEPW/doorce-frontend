@@ -14,6 +14,8 @@ export const Default: Story = {
   args: {
     catalogId: "sub1",
     ownerId: "owner-123",
-    onSubmit: () => {},
+    onSubmit: () => {
+      console.log("submit");
+    },
   },
 };

@@ -15,7 +15,7 @@ export function CatalogDetailPresenter() {
   const nav = useNavigate();
   const qc = useQueryClient();
   const { userId } = useAuth();
-  const catalogId = id as string;
+  const catalogId = id ?? "";
 
   const { data: catalog, isLoading: catLoading } = useQuery({
     queryKey: ["catalog", catalogId],
@@ -32,7 +32,7 @@ export function CatalogDetailPresenter() {
   const addMutation = useMutation({
     mutationFn: uc.dataset.addDataset,
     onSuccess: (res) => {
-      qc.invalidateQueries({ queryKey: ["catalogDatasets", catalogId] });
+      void qc.invalidateQueries({ queryKey: ["catalogDatasets", catalogId] });
       nav(`/datasets/${res.id}`);
     },
   });
@@ -55,10 +55,10 @@ export function CatalogDetailPresenter() {
       />
       <AddSubcatalogCardView
         parentCatalogId={catalogId}
-        onSubmit={(input) => {
-          return uc.dataset.addCatalog(input).then(() => {
-            qc.invalidateQueries({ queryKey: ["catalog", catalogId] });
-            qc.invalidateQueries({ queryKey: ["catalogs"] });
+        onSubmit={async (input) => {
+          return uc.dataset.addCatalog(input).then(async () => {
+            await qc.invalidateQueries({ queryKey: ["catalog", catalogId] });
+            await qc.invalidateQueries({ queryKey: ["catalogs"] });
           });
         }}
       />
@@ -70,7 +70,7 @@ export function CatalogDetailPresenter() {
         <AddDatasetSectionView
           catalogId={catalogId}
           ownerId={userId}
-          onSubmit={(input) => addMutation.mutate(input)}
+          onSubmit={addMutation.mutate}
           FormComponent={(p) => (
             <AddDatasetFormView
               catalogId={p.catalogId}

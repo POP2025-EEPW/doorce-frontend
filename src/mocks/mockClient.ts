@@ -40,6 +40,7 @@ export function buildMockClient(): CombinedClient {
       return catalog;
     },
     async addCatalog(_input: CreateCatalogInput) {
+      console.log("addCatalog", _input);
       await delay();
       return { id: "mock-" + crypto.randomUUID() };
     },
@@ -56,6 +57,7 @@ export function buildMockClient(): CombinedClient {
         }));
     },
     async addDataset(_input: CreateDatasetInput) {
+      console.log("addDataset", _input);
       await delay();
       return { id: "mock-" + crypto.randomUUID() };
     },
@@ -72,15 +74,18 @@ export function buildMockClient(): CombinedClient {
       _input: CreateDatasetCommentInput
     ) {
       await delay();
+      console.log("addDatasetComment", _datasetId, _input);
       return { id: crypto.randomUUID() };
     },
     async listDatasetComments(_datasetId: string) {
       await delay();
+      console.log("listDatasetComments", _datasetId);
       const empty: DatasetComment[] = [];
       return empty;
     },
     async submitDataRelatedRequest(_req: CreateDataRelatedRequestInput) {
       await delay();
+      console.log("submitDataRelatedRequest", _req);
       return { id: crypto.randomUUID() };
     },
     async listDataRelatedRequests() {
@@ -92,18 +97,19 @@ export function buildMockClient(): CombinedClient {
     // Auth
     async login(credentials: { username: string; password: string }) {
       await delay();
-      const users = usersJson as Array<{
+      const users = usersJson as {
         username: string;
         password: string;
         userId: string;
         roles: string[];
-      }>;
+      }[];
       const found = users.find(
         (u) =>
           u.username === credentials.username &&
           u.password === credentials.password
       );
       if (!found) throw new Error("Invalid credentials");
+      console.log("login", credentials);
       return { userId: found.userId };
     },
     async getMe() {

@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { uc } from "@/app/di";
 import { useAuth } from "@/auth/auth-store";
-import { buildBaseMenu } from "@/domain/types/sidebar";
+import { buildBaseMenu, type Role } from "@/domain/types/sidebar";
 import { filterMenuByRoles } from "@/controllers/sidebar.controller";
 import { AppSidebarView } from "@/views/sidebar/AppSidebar.view";
 import { Folder, Shield } from "lucide-react";
@@ -25,7 +25,7 @@ export function AppSidebarPresenter() {
     return i;
   });
 
-  const items = filterMenuByRoles(withIcons, me?.roles ?? []);
+  const items = filterMenuByRoles(withIcons, (me?.roles as Role[]) ?? []);
 
   return (
     <AppSidebarView

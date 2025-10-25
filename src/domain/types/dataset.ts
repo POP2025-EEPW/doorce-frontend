@@ -1,4 +1,4 @@
-import type { ID, ISODateString, Page } from "./common";
+import type { ID, ISODateString } from "./common";
 
 // Catalogs
 
@@ -55,8 +55,6 @@ export interface DatasetFilter {
   status?: DatasetStatus;
   schemaId?: ID | null;
 }
-
-export interface DatasetListResponse extends Page<DatasetSummary> {}
 
 // Descriptions and previews (Groups 2–3)
 
@@ -138,8 +136,6 @@ export interface RawBatch {
   sizeBytes: number;
   checksum?: string;
 }
-
-export interface RawBatchSummary extends RawBatch {}
 
 export interface DownloadToken {
   url: string;

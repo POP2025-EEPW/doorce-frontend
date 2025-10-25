@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DatasetTableView } from "./DatasetTable.view";
 import datasets from "@/mocks/mock_data/datasets.json";
+import type { DatasetSummary } from "@/domain/types/dataset";
 
 const meta: Meta<typeof DatasetTableView> = {
   title: "Views/Datasets/DatasetTableView",
@@ -13,7 +14,9 @@ type Story = StoryObj<typeof DatasetTableView>;
 
 export const Default: Story = {
   args: {
-    datasets: datasets as any,
-    onOpen: () => {},
+    datasets: datasets as DatasetSummary[],
+    onOpen: () => {
+      console.log("open");
+    },
   },
 };

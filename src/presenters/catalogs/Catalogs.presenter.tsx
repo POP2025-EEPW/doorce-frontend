@@ -36,7 +36,7 @@ export function CatalogsPresenter() {
     <CatalogsPageView
       catalogs={data}
       onOpenCatalog={(id) => nav(`/catalogs/${id}`)}
-      onSubmitAddRoot={(input) => addCatalog.mutate(input)}
+      onSubmitAddRoot={addCatalog.mutate}
     />
   );
 }

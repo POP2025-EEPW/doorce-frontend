@@ -21,9 +21,13 @@ export interface QualityClient {
 
 export function buildQualityUC(client: QualityClient) {
   return {
-    addDatasetComment: client.addDatasetComment,
-    listDatasetComments: client.listDatasetComments,
-    submitDataRelatedRequest: client.submitDataRelatedRequest,
-    listDataRelatedRequests: client.listDataRelatedRequests,
+    addDatasetComment: (...args: Parameters<QualityClient["addDatasetComment"]>) =>
+      client.addDatasetComment(...args),
+    listDatasetComments: (...args: Parameters<QualityClient["listDatasetComments"]>) =>
+      client.listDatasetComments(...args),
+    submitDataRelatedRequest: (...args: Parameters<QualityClient["submitDataRelatedRequest"]>) =>
+      client.submitDataRelatedRequest(...args),
+    listDataRelatedRequests: (...args: Parameters<QualityClient["listDataRelatedRequests"]>) =>
+      client.listDataRelatedRequests(...args),
   };
 }
