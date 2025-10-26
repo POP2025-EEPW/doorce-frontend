@@ -65,6 +65,7 @@ export function CatalogDetailPresenter() {
       <DatasetTableView
         datasets={datasets ?? []}
         onOpen={(dsId) => nav(`/datasets/${dsId}`)}
+        onEdit={(dataset) => nav(`/datasets/${dataset.id}/edit`)}
       />
       {userId && (
         <AddDatasetSectionView

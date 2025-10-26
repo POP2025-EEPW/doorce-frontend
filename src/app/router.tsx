@@ -9,6 +9,7 @@ import { CatalogsPresenter } from "@/presenters/catalogs/Catalogs.presenter";
 import { CatalogDetailPresenter } from "@/presenters/catalogs/CatalogDetail.presenter";
 import { DatasetDetailPresenter } from "@/presenters/datasets/DatasetDetail.presenter";
 import { AppLayout } from "@/app/Layout";
+import { DatasetEditPresenter } from "@/presenters/datasets/DatasetEdit.presenter.tsx";
 
 const router = createBrowserRouter([
   { path: "/login", element: <LoginPresenter /> },
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
       { path: "catalogs", element: <CatalogsPresenter /> },
       { path: "catalogs/:id", element: <CatalogDetailPresenter /> },
       { path: "datasets/:id", element: <DatasetDetailPresenter /> },
+      { path: "datasets/:id/edit", element: <DatasetEditPresenter /> },
     ],
   },
   { path: "*", element: <LoginPresenter /> },

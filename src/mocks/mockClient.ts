@@ -9,6 +9,7 @@ import type {
   CreateDatasetInput,
   Dataset,
   DatasetSummary,
+  UpdateDatasetInput,
 } from "@/domain/types/dataset";
 import type {
   CreateDataRelatedRequestInput,
@@ -67,11 +68,18 @@ export function buildMockClient(): CombinedClient {
       if (!found) throw new Error("Not found");
       return found;
     },
+    async updateDataset(id: string, input: UpdateDatasetInput) {
+      await delay();
+      console.log("updateDataset", id, input);
+      const found = datasets.find((d) => d.id === id);
+      if (!found) throw new Error("Not found");
+      return { ...found, ...input };
+    },
 
     // Quality
     async addDatasetComment(
       _datasetId: string,
-      _input: CreateDatasetCommentInput
+      _input: CreateDatasetCommentInput,
     ) {
       await delay();
       console.log("addDatasetComment", _datasetId, _input);
@@ -106,7 +114,7 @@ export function buildMockClient(): CombinedClient {
       const found = users.find(
         (u) =>
           u.username === credentials.username &&
-          u.password === credentials.password
+          u.password === credentials.password,
       );
       if (!found) throw new Error("Invalid credentials");
       console.log("login", credentials);
