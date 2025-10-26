@@ -14,10 +14,11 @@ export interface DatasetClient {
   listCatalogDatasets(
     catalogId: string,
     page?: number,
-    pageSize?: number
+    pageSize?: number,
   ): Promise<DatasetSummary[]>;
   addDataset(input: CreateDatasetInput): Promise<{ id: string }>;
   getDataset(id: string): Promise<Dataset>;
+  updateDataset(id: string, data: Partial<Dataset>): Promise<Dataset>;
 }
 
 export function buildDatasetUC(client: DatasetClient) {
@@ -29,5 +30,7 @@ export function buildDatasetUC(client: DatasetClient) {
       client.listCatalogDatasets(id, p, s),
     addDataset: (input: CreateDatasetInput) => client.addDataset(input),
     getDataset: (id: string) => client.getDataset(id),
+    updateDataset: (id: string, data: Partial<Dataset>) =>
+      client.updateDataset(id, data),
   };
 }
