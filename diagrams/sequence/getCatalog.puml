@@ -4,20 +4,24 @@ autonumber
 
 actor User
 
-participant "AppRouter" as Router
-participant "CatalogDetailPresenter" as CatalogPresenter
-participant "React Query\nCatalogDetailQuery" as CatalogQuery
-participant "DatasetUseCases" as DatasetUC
-participant "Catalog API\nGET /catalogs/{id}" as CatalogApi
+participant "Catalog detail route\n(view shell)" as View
+participant "CatalogDetailPresenter" as Presenter
+participant "catalogs.controller.ts" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "Catalog API\nGET /catalogs/{id}" as Http
 
-User -> Router : Navigate to /catalogs/{id}
-Router -> CatalogPresenter : render(catalogId)
-CatalogPresenter -> CatalogQuery : fetch(catalogId)
-CatalogQuery -> DatasetUC : getCatalog(catalogId)
-DatasetUC -> CatalogApi : GET catalog
-CatalogApi --> DatasetUC : catalog JSON
-DatasetUC --> CatalogQuery : catalogDto
-CatalogQuery --> CatalogPresenter : resolve(catalogDto)
-CatalogPresenter -> User : Display catalog detail
+User -> View : Navigate to /catalogs/{id}
+View -> Presenter : mount(catalogId)
+Presenter -> Controller : loadCatalog(catalogId)
+Controller -> UseCase : getCatalog(catalogId)
+UseCase -> Client : getCatalog(catalogId)
+Client -> Http : GET /catalogs/{id}
+Http --> Client : Catalog payload
+Client --> UseCase : Catalog DTO
+UseCase --> Controller : Catalog DTO
+Controller --> Presenter : Catalog DTO
+Presenter -> View : render catalog detail
+View --> User : Show catalog info
 
 @enduml

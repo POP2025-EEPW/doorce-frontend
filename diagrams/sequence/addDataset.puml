@@ -4,24 +4,24 @@ autonumber
 
 actor User
 
-participant "AddDatasetFormView" as DatasetForm
-participant "CatalogDetailPresenter" as CatalogPresenter
-participant "React Query\nAddDatasetMutation" as AddDatasetMutation
-participant "DatasetUseCases" as DatasetUC
-participant "Dataset API\nPOST /datasets" as DatasetApi
-participant "React Query\nQueryClient" as QueryClient
-participant "AppRouter" as Router
+participant "AddDatasetFormView" as View
+participant "CatalogDetailPresenter" as Presenter
+participant "datasets.controller.ts" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API\nPOST /datasets" as Http
 
-User -> DatasetForm : Fill dataset form
-DatasetForm -> CatalogPresenter : onSubmit(input)
-CatalogPresenter -> AddDatasetMutation : mutateAsync(input)
-AddDatasetMutation -> DatasetUC : addDataset(input)
-DatasetUC -> DatasetApi : POST dataset payload
-DatasetApi --> DatasetUC : 201 Created + {id}
-DatasetUC --> AddDatasetMutation : {id}
-AddDatasetMutation --> CatalogPresenter : onSuccess({id})
-CatalogPresenter -> QueryClient : invalidate("catalogDatasets", catalogId)
-CatalogPresenter -> Router : navigate("/datasets/{id}")
-Router -> User : Show dataset detail page
+User -> View : Fill + submit dataset form
+View -> Presenter : onSubmit(input)
+Presenter -> Controller : addDataset(input)
+Controller -> UseCase : addDataset(input)
+UseCase -> Client : addDataset(input)
+Client -> Http : POST /datasets
+Http --> Client : 201 Created + {id}
+Client --> UseCase : {id}
+UseCase --> Controller : {id}
+Controller --> Presenter : {id}
+Presenter -> View : handle success (invalidate + navigate)
+View --> User : Show dataset detail
 
 @enduml
