@@ -4,22 +4,24 @@ autonumber
 
 actor User
 
-participant "AppRouter" as Router
-participant "DatasetDetailPresenter" as DatasetPresenter
-participant "React Query\nDatasetDetailQuery" as DatasetQuery
-participant "DatasetUseCases" as DatasetUC
-participant "Dataset API\nGET /datasets/{id}" as DatasetApi
-participant "DatasetInfoView" as DatasetInfoView
+participant "Dataset detail view" as View
+participant "DatasetDetailPresenter" as Presenter
+participant "datasets.controller.ts" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API\nGET /datasets/{id}" as Http
 
-User -> Router : Navigate to /datasets/{id}
-Router -> DatasetPresenter : render(datasetId)
-DatasetPresenter -> DatasetQuery : fetch(datasetId)
-DatasetQuery -> DatasetUC : getDataset(datasetId)
-DatasetUC -> DatasetApi : GET /datasets/{id}
-DatasetApi --> DatasetUC : dataset JSON
-DatasetUC --> DatasetQuery : datasetDto
-DatasetQuery --> DatasetPresenter : resolve(datasetDto)
-DatasetPresenter -> DatasetInfoView : render(datasetDto)
-DatasetInfoView -> User : Show dataset details
+User -> View : Navigate to /datasets/{id}
+View -> Presenter : mount(datasetId)
+Presenter -> Controller : loadDataset(datasetId)
+Controller -> UseCase : getDataset(datasetId)
+UseCase -> Client : getDataset(datasetId)
+Client -> Http : GET /datasets/{id}
+Http --> Client : Dataset payload
+Client --> UseCase : Dataset DTO
+UseCase --> Controller : Dataset DTO
+Controller --> Presenter : Dataset DTO
+Presenter -> View : render dataset info
+View --> User : Show dataset detail
 
 @enduml

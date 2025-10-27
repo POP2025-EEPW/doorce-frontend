@@ -1,70 +1,82 @@
 @startuml
-title Dataset Feature - View Layer Structure
+title Dataset Feature - PVCUC component view
 
 skinparam packageStyle rectangle
 
-package "External Interfaces" {
-    interface DatasetUseCases {
-        +getDataset(id)
-        +addDataset(input)
-        +listCatalogDatasets(catalogId, page, pageSize)
-    }
+package "Views" {
+  class DatasetInfoView {
+    +render(dataset)
+  }
+  class AddDatasetFormView {
+    +render()
+    +submit(input)
+  }
+  class AddDatasetSectionView {
+    +render(catalogId, ownerId)
+  }
+  class DatasetTableView {
+    +render(datasets)
+    +onOpen(id)
+  }
 }
 
-package "Application Shell" {
-    class AppRouter {
-        +render()
-    }
+package "Presenters" {
+  class DatasetDetailPresenter {
+    +render()
+    +loadDataset(id)
+  }
+  class CatalogDetailPresenter {
+    +render()
+    +handleAddDataset(input)
+    +loadCatalogDatasets(catalogId)
+  }
 }
 
-package "Dataset Feature" {
-    class DatasetDetailPresenter {
-        +render()
-        +loadDataset(id)
-    }
-    class DatasetInfoView {
-        +render(dataset)
-    }
+package "Controllers" {
+  class DatasetsController {
+    +getDataset(id)
+    +addDataset(input)
+    +listCatalogDatasets(catalogId, page, pageSize)
+  }
+  class CatalogsController {
+    +getCatalog(id)
+    +listCatalogs(parentId)
+  }
 }
 
-package "Shared Dataset Views" {
-    class AddDatasetFormView {
-        +render()
-        +submit(input)
-    }
-    class DatasetTableView {
-        +render(datasets)
-        +onOpen(id)
-    }
+package "Use-case Layer" {
+  interface DatasetUseCases {
+    +getDataset(id)
+    +addDataset(input)
+    +listCatalogDatasets(catalogId, page, pageSize)
+    +getCatalog(id)
+    +listCatalogs(parentId)
+  }
 }
 
-package "Infrastructure" {
-    class UCContainer {
-        +dataset: DatasetUseCases
-    }
+package "DI Container" {
+  class UCContainer {
+    +dataset: DatasetUseCases
+  }
 }
 
-package "Catalogs Feature (consumer)" {
-    class CatalogDetailPresenter {
-        +render()
-        +handleAddDataset(input)
-        +openDataset(id)
-    }
-}
+DatasetDetailPresenter --> DatasetInfoView : render()
+DatasetInfoView --> DatasetDetailPresenter : props/events
+DatasetDetailPresenter --> DatasetsController : loadDataset(id)
 
-AppRouter --> DatasetDetailPresenter : routes to
-
-DatasetDetailPresenter ..> DatasetUseCases : getDataset()
-DatasetDetailPresenter --> DatasetInfoView : renders detail
-DatasetDetailPresenter --> UCContainer : pulls uc.dataset
-UCContainer --> DatasetUseCases : provides
-
-CatalogDetailPresenter --> AddDatasetFormView : renders form
-CatalogDetailPresenter --> DatasetTableView : renders table
-CatalogDetailPresenter ..> DatasetUseCases : addDataset(), listCatalogDatasets()
-CatalogDetailPresenter --> UCContainer : pulls uc.dataset
-
-AddDatasetFormView --> CatalogDetailPresenter : onSubmit(input)
+CatalogDetailPresenter --> DatasetTableView : render()
 DatasetTableView --> CatalogDetailPresenter : onOpen(id)
+CatalogDetailPresenter --> AddDatasetSectionView : render()
+AddDatasetSectionView --> AddDatasetFormView : compose
+AddDatasetFormView --> CatalogDetailPresenter : onSubmit(input)
+CatalogDetailPresenter --> DatasetsController : add/list datasets
+CatalogDetailPresenter --> CatalogsController : get catalog context
+
+DatasetsController --> DatasetUseCases : delegates
+CatalogsController --> DatasetUseCases : delegates shared calls
+
+DatasetsController --> UCContainer : reads dataset uc
+CatalogsController --> UCContainer : reads dataset uc
+UCContainer --> DatasetUseCases : provides implementation
 
 @enduml

@@ -4,24 +4,24 @@ autonumber
 
 actor User
 
-participant "AddCatalogFormView" as CatalogForm
-participant "CatalogsPresenter" as CatalogsPresenter
-participant "React Query\nAddCatalogMutation" as AddCatalogMutation
-participant "DatasetUseCases" as DatasetUC
-participant "Catalog API\nPOST /catalogs" as CatalogApi
-participant "React Query\nQueryClient" as QueryClient
-participant "AppRouter" as Router
+participant "CatalogsPageView\n(AddCatalogFormView slot)" as View
+participant "CatalogsPresenter" as Presenter
+participant "catalogs.controller.ts" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "Catalog API\nPOST /catalogs" as Http
 
-User -> CatalogForm : Fill catalog form
-CatalogForm -> CatalogsPresenter : onSubmit(input)
-CatalogsPresenter -> AddCatalogMutation : mutateAsync(input)
-AddCatalogMutation -> DatasetUC : addCatalog(input)
-DatasetUC -> CatalogApi : POST catalog payload
-CatalogApi --> DatasetUC : 201 Created + {id}
-DatasetUC --> AddCatalogMutation : {id}
-AddCatalogMutation --> CatalogsPresenter : onSuccess({id})
-CatalogsPresenter -> QueryClient : invalidate("catalogs")
-CatalogsPresenter -> Router : navigate("/catalogs/{id}")
-Router -> User : Show catalog detail page
+User -> View : Fill + submit form
+View -> Presenter : onSubmitAddRoot(input)
+Presenter -> Controller : addCatalog(input)
+Controller -> UseCase : addCatalog(input)
+UseCase -> Client : addCatalog(input)
+Client -> Http : POST /catalogs
+Http --> Client : 201 Created + {id}
+Client --> UseCase : {id}
+UseCase --> Controller : {id}
+Controller --> Presenter : {id}
+Presenter -> View : handle success (invalidate + navigate)
+View --> User : Show new catalog detail
 
 @enduml

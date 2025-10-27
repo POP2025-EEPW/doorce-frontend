@@ -4,22 +4,24 @@ autonumber
 
 actor User
 
-participant "AppRouter" as Router
-participant "CatalogsPresenter" as CatalogPresenter
-participant "React Query\nCatalogsQuery" as CatalogsQuery
-participant "DatasetUseCases" as DatasetUC
-participant "Catalog API\nGET /catalogs" as CatalogApi
-participant "CatalogListView" as CatalogListView
+participant "CatalogsPageView" as View
+participant "CatalogsPresenter" as Presenter
+participant "catalogs.controller.ts" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "Catalog API\nGET /catalogs" as Http
 
-User -> Router : Navigate to /catalogs
-Router -> CatalogPresenter : render()
-CatalogPresenter -> CatalogsQuery : fetch(parentId=null)
-CatalogsQuery -> DatasetUC : listCatalogs(null)
-DatasetUC -> CatalogApi : GET /catalogs
-CatalogApi --> DatasetUC : catalog summaries
-DatasetUC --> CatalogsQuery : catalogList
-CatalogsQuery --> CatalogPresenter : resolve(list)
-CatalogPresenter -> CatalogListView : render(list)
-CatalogListView -> User : Show catalog cards
+User -> View : Navigate to /catalogs
+View -> Presenter : mount()
+Presenter -> Controller : loadCatalogs(parentId=null)
+Controller -> UseCase : listCatalogs(parentId=null)
+UseCase -> Client : listCatalogs(parentId=null)
+Client -> Http : GET /catalogs
+Http --> Client : CatalogSummary[]
+Client --> UseCase : CatalogSummary[]
+UseCase --> Controller : CatalogSummary[]
+Controller --> Presenter : CatalogSummary[]
+Presenter -> View : render catalog list
+View --> User : Show catalog cards
 
 @enduml
