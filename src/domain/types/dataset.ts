@@ -151,3 +151,10 @@ export interface DownloadToken {
 }
 
 export type AvailabilityStatus = "up" | "down" | "degraded";
+
+export interface DataSchema {
+  id: string;
+  name: string;
+  description?: string;
+  version?: string;
+}

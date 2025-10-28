@@ -3,6 +3,7 @@ import type {
   CatalogSummary,
   CreateCatalogInput,
   CreateDatasetInput,
+  DataSchema,
   Dataset,
   DatasetSummary,
 } from "@/domain/types/dataset";
@@ -19,6 +20,11 @@ export interface DatasetClient {
   addDataset(input: CreateDatasetInput): Promise<{ id: string }>;
   getDataset(id: string): Promise<Dataset>;
   updateDataset(id: string, data: Partial<Dataset>): Promise<Dataset>;
+  setDataSchemaForDataset(
+    datasetId: string,
+    schemaId: string,
+  ): Promise<{ id: string }>;
+  listDataSchemas(): Promise<DataSchema[]>;
 }
 
 export function buildDatasetUC(client: DatasetClient) {
@@ -32,5 +38,8 @@ export function buildDatasetUC(client: DatasetClient) {
     getDataset: (id: string) => client.getDataset(id),
     updateDataset: (id: string, data: Partial<Dataset>) =>
       client.updateDataset(id, data),
+    setDataSchemaFotDataset: (datasetId: string, schemaId: string) =>
+      client.setDataSchemaForDataset(datasetId, schemaId),
+    listDataSchemas: () => client.listDataSchemas(),
   };
 }

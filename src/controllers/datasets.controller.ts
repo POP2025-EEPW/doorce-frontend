@@ -21,3 +21,14 @@ export async function updateDataset({
 }) {
   return uc.dataset.updateDataset(id, input);
 }
+
+export async function setDataSchemaForDataset(
+  datasetId: string,
+  schemaId: string,
+) {
+  return uc.dataset.setDataSchemaFotDataset(datasetId, schemaId);
+}
+
+export async function loadDataSchemas() {
+  return uc.dataset.listDataSchemas();
+}

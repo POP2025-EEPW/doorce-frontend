@@ -31,6 +31,11 @@ export function buildRealClient(http: Http): CombinedClient {
     getDataset: (id: string) => http.get(`/datasets/${id}`),
     updateDataset: (id: string, input: UpdateDatasetInput) =>
       http.put<Dataset>(`/datasets/${id}`, input),
+    setDataSchemaForDataset: (datasetId, schemaId) =>
+      http.put<{ id: string }>(`/datasets/${datasetId}/dataSchema`, {
+        schemaId,
+      }),
+    listDataSchemas: () => http.get(`/data-schemas`),
 
     // quality
     addDatasetComment: (datasetId: string, input: CreateDatasetCommentInput) =>
