@@ -4,7 +4,7 @@ import { useState } from "react";
 import { uc } from "@/app/di";
 import { DatasetTableView } from "@/views/datasets/DatasetTable.view";
 import { AddDatasetFormView } from "@/views/datasets/AddDatasetForm.view";
-import { SelectDataSchemaModalView } from "@/views/datasets/SelectDataSchemaModal.view";
+import { SelectDataSchemaModalPresenter } from "@/presenters/datasets/SelectDataSchemaModal.presenter";
 import { useAuth } from "@/auth/auth-store";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -23,7 +23,6 @@ export function CatalogDetailPresenter() {
   const [selectedDataset, setSelectedDataset] = useState<DatasetSummary | null>(
     null,
   );
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
 
   const { data: catalog, isLoading: catLoading } = useQuery({
     queryKey: ["catalog", catalogId],
@@ -37,12 +36,6 @@ export function CatalogDetailPresenter() {
     enabled: !!catalogId,
   });
 
-  const { data: schemas = [], isLoading: isSchemasLoading } = useQuery({
-    queryKey: ["dataSchemas"],
-    queryFn: () => uc.dataset.listDataSchemas(),
-    enabled: !!selectedDataset,
-  });
-
   const addMutation = useMutation({
     mutationFn: uc.dataset.addDataset,
     onSuccess: (res) => {
@@ -51,34 +44,10 @@ export function CatalogDetailPresenter() {
     },
   });
 
-  const { mutate: setSchemaMutate, isPending: isSettingSchema } = useMutation({
-    mutationFn: ({
-      datasetId,
-      schemaId,
-    }: {
-      datasetId: string;
-      schemaId: string;
-    }) => uc.dataset.setDataSchemaForDataset(datasetId, schemaId),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: ["catalogDatasets", catalogId] });
-      void qc.invalidateQueries({ queryKey: ["dataset", selectedDataset?.id] });
-      setSelectedDataset(null);
-      setSelectedSchemaId(null);
-    },
-  });
-
-  const handleSetSchema = (dataset: DatasetSummary) => {
-    setSelectedDataset(dataset);
-    setSelectedSchemaId(null);
-  };
-
-  const handleConfirmSchema = () => {
-    if (selectedDataset && selectedSchemaId) {
-      setSchemaMutate({
-        datasetId: selectedDataset.id,
-        schemaId: selectedSchemaId,
-      });
-    }
+  const handleSchemaSuccess = () => {
+    void qc.invalidateQueries({ queryKey: ["catalogDatasets", catalogId] });
+    void qc.invalidateQueries({ queryKey: ["dataset", selectedDataset?.id] });
+    setSelectedDataset(null);
   };
 
   if (!catalogId)
@@ -110,7 +79,7 @@ export function CatalogDetailPresenter() {
         datasets={datasets ?? []}
         onOpen={(dsId) => nav(`/datasets/${dsId}`)}
         onEdit={(dataset) => nav(`/datasets/${dataset.id}/edit`)}
-        onSetSchema={handleSetSchema}
+        onSetSchema={setSelectedDataset}
       />
       {userId && (
         <AddDatasetSectionView
@@ -127,25 +96,17 @@ export function CatalogDetailPresenter() {
         />
       )}
 
-      <SelectDataSchemaModalView
-        open={!!selectedDataset}
-        schemas={schemas}
-        selectedSchemaId={selectedSchemaId}
-        isLoading={isSchemasLoading}
-        isSaving={isSettingSchema}
-        onSelectSchema={setSelectedSchemaId}
-        onConfirm={handleConfirmSchema}
-        onCancel={() => {
-          setSelectedDataset(null);
-          setSelectedSchemaId(null);
-        }}
-        onOpenChange={(open) => {
-          if (!open) {
-            setSelectedDataset(null);
-            setSelectedSchemaId(null);
-          }
-        }}
-      />
+      {selectedDataset && (
+        <SelectDataSchemaModalPresenter
+          open={true}
+          datasetId={selectedDataset.id}
+          onSuccess={handleSchemaSuccess}
+          onCancel={() => setSelectedDataset(null)}
+          onOpenChange={(open) => {
+            if (!open) setSelectedDataset(null);
+          }}
+        />
+      )}
     </div>
   );
 }
