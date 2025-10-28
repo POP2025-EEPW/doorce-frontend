@@ -25,7 +25,7 @@ export const Default: Story = {
           <Routes>
             <Route
               path="/datasets/:datasetId/comments"
-              element={<AddDatasetCommentPresenter />}
+              element={<AddDatasetCommentPresenter datasetId={"exampleId"} />}
             />
           </Routes>
         </MemoryRouter>
