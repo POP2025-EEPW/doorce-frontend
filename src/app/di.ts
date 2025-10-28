@@ -11,7 +11,7 @@ const getUserId = (): string | null => useAuth.getState().userId;
 const baseUrl: string =
   (import.meta.env.VITE_API_URL as string | undefined) ??
   "http://localhost:8080";
-const useMock = true; //: boolean = import.meta.env.VITE_USE_MOCK === "true";
+const useMock: boolean = import.meta.env.VITE_USE_MOCK === "true";
 
 const http = new Http(baseUrl, getUserId);
 const client = useMock ? buildMockClient() : buildRealClient(http);
