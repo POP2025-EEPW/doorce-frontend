@@ -1,27 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SelectDataSchemaModalView } from "./SelectDataSchemaModal.view";
 import type { DataSchema } from "@/domain/types/dataset";
+import schemasJson from "@/mocks/mock_data/schemas.json";
 
-const mockSchemas: DataSchema[] = [
-  {
-    id: "1",
-    name: "User Data Schema",
-    description: "Standard schema for user information",
-    version: "1.0",
-  },
-  {
-    id: "2",
-    name: "Product Schema",
-    description: "Schema for product catalog data",
-    version: "2.1",
-  },
-  {
-    id: "3",
-    name: "Analytics Events",
-    description: "Schema for tracking analytics events and user interactions",
-    version: "3.0",
-  },
-];
+const mockSchemas = schemasJson as DataSchema[];
 
 const meta: Meta<typeof SelectDataSchemaModalView> = {
   component: SelectDataSchemaModalView,
@@ -69,10 +51,10 @@ export const ManySchemas: Story = {
   args: {
     open: true,
     schemas: Array.from({ length: 20 }, (_, i) => ({
-      id: `${i + 1}`,
+      id: `schema-${String(i + 1).padStart(3, "0")}`,
       name: `Schema ${i + 1}`,
       description: `Description for schema ${i + 1}`,
-      version: `1.${i}`,
+      version: `1.${i}.0`,
     })),
   },
   parameters: {

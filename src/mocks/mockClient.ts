@@ -18,9 +18,12 @@ import type {
   DatasetComment,
 } from "@/domain/types/quality";
 import usersJson from "@/mocks/mock_data/users.json";
+import schemasJson from "@/mocks/mock_data/schemas.json";
+import type { DataSchema } from "@/domain/types/dataset";
 
 const catalogs = catalogsJson as CatalogSummary[];
 const datasets = datasetsJson as Dataset[];
+const schemas = schemasJson as DataSchema[];
 
 const delay = (ms = 120) => new Promise((r) => setTimeout(r, ms));
 
@@ -74,6 +77,15 @@ export function buildMockClient(): CombinedClient {
       const found = datasets.find((d) => d.id === id);
       if (!found) throw new Error("Not found");
       return { ...found, ...input };
+    },
+    async listDataSchemas() {
+      await delay();
+      return schemas;
+    },
+    async setDataSchemaForDataset(datasetId: string, schemaId: string) {
+      await delay();
+      console.log("setDataSchemaForDataset", datasetId, schemaId);
+      return { id: crypto.randomUUID() };
     },
 
     // Quality
