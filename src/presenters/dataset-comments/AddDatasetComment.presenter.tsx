@@ -1,11 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
 import { submitDatasetComment } from "@/controllers/dataset-comment.controller";
 import { AddDatasetCommentFormView } from "@/views/dataset-comments/AddDatasetCommentForm.view";
 
-export function AddDatasetCommentPresenter() {
-  const { datasetId } = useParams<{ datasetId: string }>();
+interface AddDatasetCommentPresenterProps {
+  datasetId: string;
+}
 
+export function AddDatasetCommentPresenter({
+  datasetId,
+}: AddDatasetCommentPresenterProps) {
   const { mutate: onSubmit, isPending } = useMutation({
     mutationFn: (text: string) => {
       if (!datasetId) throw new Error("Dataset ID is required");
