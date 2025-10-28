@@ -26,7 +26,7 @@ export async function setDataSchemaForDataset(
   datasetId: string,
   schemaId: string,
 ) {
-  return uc.dataset.setDataSchemaFotDataset(datasetId, schemaId);
+  return uc.dataset.setDataSchemaForDataset(datasetId, schemaId);
 }
 
 export async function loadDataSchemas() {

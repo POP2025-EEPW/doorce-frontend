@@ -38,7 +38,7 @@ export function buildDatasetUC(client: DatasetClient) {
     getDataset: (id: string) => client.getDataset(id),
     updateDataset: (id: string, data: Partial<Dataset>) =>
       client.updateDataset(id, data),
-    setDataSchemaFotDataset: (datasetId: string, schemaId: string) =>
+    setDataSchemaForDataset: (datasetId: string, schemaId: string) =>
       client.setDataSchemaForDataset(datasetId, schemaId),
     listDataSchemas: () => client.listDataSchemas(),
   };

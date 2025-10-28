@@ -20,10 +20,12 @@ export function DatasetTableView({
   datasets,
   onOpen,
   onEdit,
+  onSetSchema,
 }: {
   datasets: DatasetSummary[];
   onOpen: (id: string) => void;
   onEdit: (dataset: DatasetSummary) => void;
+  onSetSchema: (dataset: DatasetSummary) => void;
 }) {
   return (
     <Table>
@@ -68,6 +70,14 @@ export function DatasetTableView({
                     }}
                   >
                     Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSetSchema(d);
+                    }}
+                  >
+                    Set Schema
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
