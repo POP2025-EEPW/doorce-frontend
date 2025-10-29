@@ -4,20 +4,24 @@ autonumber
 
 actor User
 
-participant "CatalogDetailPresenter" as CatalogPresenter
-participant "React Query\nCatalogDatasetsQuery" as DatasetsQuery
-participant "DatasetUseCases" as DatasetUC
-participant "Dataset API\nGET /catalogs/{id}/datasets" as DatasetApi
-participant "DatasetTableView" as DatasetTableView
+participant "Catalog detail view" as View
+participant "CatalogDetailPresenter" as Presenter
+participant "catalogs.controller.ts" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API\nGET /catalogs/{id}/datasets" as Http
 
-User -> CatalogPresenter : View datasets tab
-CatalogPresenter -> DatasetsQuery : fetch(catalogId, page, size)
-DatasetsQuery -> DatasetUC : listCatalogDatasets(catalogId, page, size)
-DatasetUC -> DatasetApi : GET /catalogs/{id}/datasets
-DatasetApi --> DatasetUC : dataset summaries
-DatasetUC --> DatasetsQuery : datasetList
-DatasetsQuery --> CatalogPresenter : resolve(list)
-CatalogPresenter -> DatasetTableView : render(list)
-DatasetTableView -> User : Display dataset table
+User -> View : Request datasets section
+View -> Presenter : mount(catalogId)
+Presenter -> Controller : loadCatalogDatasets(catalogId, page, size)
+Controller -> UseCase : listCatalogDatasets(catalogId, page, size)
+UseCase -> Client : listCatalogDatasets(catalogId, page, size)
+Client -> Http : GET /catalogs/{id}/datasets?page=&pageSize=
+Http --> Client : DatasetSummary[]
+Client --> UseCase : DatasetSummary[]
+UseCase --> Controller : DatasetSummary[]
+Controller --> Presenter : DatasetSummary[]
+Presenter -> View : render dataset table
+View --> User : Show datasets list
 
 @enduml

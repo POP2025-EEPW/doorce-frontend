@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { uc } from "@/app/di";
+import * as AuthController from "@/controllers/auth.controller";
 import { useAuth } from "@/auth/auth-store";
 import { buildBaseMenu, type Role } from "@/domain/types/sidebar";
 import { filterMenuByRoles } from "@/controllers/sidebar.controller";
@@ -12,7 +12,7 @@ export function AppSidebarPresenter() {
   const { userId, logout } = useAuth();
   const { data: me } = useQuery({
     queryKey: ["me"],
-    queryFn: uc.auth.getMe,
+    queryFn: AuthController.getMe,
     staleTime: 5 * 60 * 1000,
     enabled: !!userId,
   });

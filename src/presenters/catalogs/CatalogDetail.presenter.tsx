@@ -1,7 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { uc } from "@/app/di";
 import { DatasetTableView } from "@/views/datasets/DatasetTable.view";
 import { AddDatasetFormView } from "@/views/datasets/AddDatasetForm.view";
 import { SelectDataSchemaModalPresenter } from "@/presenters/datasets/SelectDataSchemaModal.presenter";
@@ -11,7 +9,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { SubcatalogListView } from "@/views/catalogs/SubcatalogList.view";
 import { AddSubcatalogCardView } from "@/views/catalogs/AddSubcatalogCard.view";
 import { AddDatasetSectionView } from "@/views/datasets/AddDatasetSection.view";
-import type { DatasetSummary } from "@/domain/types/dataset";
+import * as DatasetController from "@/controllers/datasets.controller";
+import * as CatalogController from "@/controllers/catalogs.controller";
 
 export function CatalogDetailPresenter() {
   const { id } = useParams();
@@ -26,20 +25,22 @@ export function CatalogDetailPresenter() {
 
   const { data: catalog, isLoading: catLoading } = useQuery({
     queryKey: ["catalog", catalogId],
-    queryFn: () => uc.dataset.getCatalog(catalogId),
+    queryFn: () => CatalogController.loadCatalog(catalogId),
     enabled: !!catalogId,
   });
 
   const { data: datasets, isLoading: listLoading } = useQuery({
     queryKey: ["catalogDatasets", catalogId, 1, 20],
-    queryFn: () => uc.dataset.listCatalogDatasets(catalogId, 1, 20),
+    queryFn: () => CatalogController.loadCatalogDatasets(catalogId, 1, 20),
     enabled: !!catalogId,
   });
 
-  const addMutation = useMutation({
-    mutationFn: uc.dataset.addDataset,
+  const datasetAddMutation = useMutation({
+    mutationFn: DatasetController.addDataset,
     onSuccess: (res) => {
-      void qc.invalidateQueries({ queryKey: ["catalogDatasets", catalogId] });
+      void qc.invalidateQueries({
+        queryKey: ["catalogDatasets", catalogId],
+      });
       nav(`/datasets/${res.id}`);
     },
   });
@@ -69,8 +70,10 @@ export function CatalogDetailPresenter() {
       <AddSubcatalogCardView
         parentCatalogId={catalogId}
         onSubmit={async (input) => {
-          return uc.dataset.addCatalog(input).then(async () => {
-            await qc.invalidateQueries({ queryKey: ["catalog", catalogId] });
+          return CatalogController.addCatalog(input).then(async () => {
+            await qc.invalidateQueries({
+              queryKey: ["catalog", catalogId],
+            });
             await qc.invalidateQueries({ queryKey: ["catalogs"] });
           });
         }}
@@ -85,7 +88,7 @@ export function CatalogDetailPresenter() {
         <AddDatasetSectionView
           catalogId={catalogId}
           ownerId={userId}
-          onSubmit={addMutation.mutate}
+          onSubmit={datasetAddMutation.mutate}
           FormComponent={(p) => (
             <AddDatasetFormView
               catalogId={p.catalogId}
