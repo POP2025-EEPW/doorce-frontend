@@ -8,5 +8,5 @@ if (!rootEl) throw new Error("Root container #root not found");
 createRoot(rootEl).render(
   <StrictMode>
     <App />
-  </StrictMode>
+  </StrictMode>,
 );

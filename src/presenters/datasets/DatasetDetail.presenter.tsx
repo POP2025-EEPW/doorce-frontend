@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { uc } from "@/app/di";
+import * as DatasetController from "@/controllers/datasets.controller";
 import { DatasetInfoView } from "@/views/datasets/DatasetInfo.view";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -11,7 +11,7 @@ export function DatasetDetailPresenter() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["dataset", datasetId],
-    queryFn: () => uc.dataset.getDataset(datasetId),
+    queryFn: () => DatasetController.loadDataset(datasetId),
     enabled: !!datasetId,
   });
 
@@ -21,7 +21,7 @@ export function DatasetDetailPresenter() {
     error: descriptionError,
   } = useQuery({
     queryKey: ["datasetDescription", datasetId],
-    queryFn: () => uc.dataset.getDatasetDescription(datasetId),
+    queryFn: () => DatasetController.getDatasetDescription(datasetId),
     enabled: !!datasetId,
   });
 

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { uc } from "@/app/di";
+import * as DatasetController from "@/controllers/datasets.controller";
 import { DatasetsPageView } from "@/views/datasets/DatasetsPage.view";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -10,7 +10,7 @@ export function DatasetsPresenter() {
   const nav = useNavigate();
   const { data, isLoading, error } = useQuery({
     queryKey: ["datasets"],
-    queryFn: () => uc.dataset.listDatasets(undefined, 1, 20),
+    queryFn: () => DatasetController.loadDatasets(undefined, 1, 20),
     staleTime: 5 * 60 * 1000,
   });
 

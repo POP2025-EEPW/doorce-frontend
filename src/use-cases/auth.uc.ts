@@ -4,7 +4,7 @@ export interface AuthClient {
     credentials: {
       username: string;
       password: string;
-    }
+    },
   ): Promise<{ userId: string }>;
   getMe(this: void): Promise<{ userId: string; roles: string[] }>;
 }
