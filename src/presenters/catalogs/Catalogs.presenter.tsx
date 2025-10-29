@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { uc } from "@/app/di";
+import * as CatalogController from "@/controllers/catalogs.controller";
 import { CatalogsPageView } from "@/views/catalogs/CatalogsPage.view";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -11,12 +11,12 @@ export function CatalogsPresenter() {
   const qc = useQueryClient();
   const { data, isLoading, error } = useQuery({
     queryKey: ["catalogs"],
-    queryFn: () => uc.dataset.listCatalogs(null),
+    queryFn: () => CatalogController.loadCatalogs(null),
     staleTime: 5 * 60 * 1000,
   });
 
   const addCatalog = useMutation({
-    mutationFn: uc.dataset.addCatalog,
+    mutationFn: CatalogController.addCatalog,
     onSuccess: (res) => {
       qc.invalidateQueries({ queryKey: ["catalogs"] });
       nav(`/catalogs/${res.id}`);

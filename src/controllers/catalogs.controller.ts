@@ -12,7 +12,7 @@ export async function loadCatalog(catalogId: string) {
 export async function loadCatalogDatasets(
   catalogId: string,
   page?: number,
-  pageSize?: number
+  pageSize?: number,
 ) {
   return uc.dataset.listCatalogDatasets(catalogId, page, pageSize);
 }
