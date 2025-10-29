@@ -62,9 +62,6 @@ export interface DatasetDescription {
   id: ID;
   title: string;
   description?: string;
-  ownerName?: string;
-  schemaName?: string;
-  status: DatasetStatus;
   fields?: DatasetField[];
 }
 

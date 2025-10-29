@@ -2,6 +2,7 @@
 import type { CombinedClient } from "@/api/types";
 import catalogsJson from "@/mocks/mock_data/catalogs.json";
 import datasetsJson from "@/mocks/mock_data/datasets.json";
+import datasetDescriptionJson from "@/mocks/mock_data/dataset-descriptions.json";
 import type {
   Catalog,
   CatalogSummary,
@@ -10,6 +11,7 @@ import type {
   Dataset,
   DatasetSummary,
   DatasetFilter,
+  DatasetDescription,
 } from "@/domain/types/dataset";
 import type {
   CreateDataRelatedRequestInput,
@@ -21,6 +23,7 @@ import usersJson from "@/mocks/mock_data/users.json";
 
 const catalogs = catalogsJson as CatalogSummary[];
 const datasets = datasetsJson as Dataset[];
+const datasetDescriptions = datasetDescriptionJson as DatasetDescription[];
 
 const delay = (ms = 120) => new Promise((r) => setTimeout(r, ms));
 
@@ -114,6 +117,12 @@ export function buildMockClient(): CombinedClient {
         createdAt: d.createdAt,
         updatedAt: d.updatedAt,
       }));
+    },
+    async getDatasetDescription(datasetId: string) {
+      await delay();
+      const found = datasetDescriptions.find((d) => d.id === datasetId);
+      if (!found) throw new Error("Not found");
+      return found;
     },
 
     // Quality

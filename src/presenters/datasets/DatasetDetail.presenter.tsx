@@ -15,6 +15,16 @@ export function DatasetDetailPresenter() {
     enabled: !!datasetId,
   });
 
+  const {
+    data: description,
+    isLoading: descriptionLoading,
+    error: descriptionError,
+  } = useQuery({
+    queryKey: ["datasetDescription", datasetId],
+    queryFn: () => uc.dataset.getDatasetDescription(datasetId),
+    enabled: !!datasetId,
+  });
+
   if (!datasetId)
     return (
       <Alert variant="destructive">
@@ -22,8 +32,9 @@ export function DatasetDetailPresenter() {
         <AlertDescription>Missing dataset id.</AlertDescription>
       </Alert>
     );
-  if (isLoading) return <Skeleton className="h-10 w-full" />;
-  if (error || !data)
+  if (isLoading || descriptionLoading)
+    return <Skeleton className="h-10 w-full" />;
+  if (error || !data || descriptionError)
     return (
       <Alert variant="destructive">
         <AlertTitle>Error</AlertTitle>
@@ -31,5 +42,5 @@ export function DatasetDetailPresenter() {
       </Alert>
     );
 
-  return <DatasetInfoView dataset={data} />;
+  return <DatasetInfoView dataset={data} description={description} />;
 }

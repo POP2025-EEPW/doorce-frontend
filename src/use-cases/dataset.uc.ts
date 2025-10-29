@@ -6,6 +6,7 @@ import type {
   Dataset,
   DatasetSummary,
   DatasetFilter,
+  DatasetDescription,
 } from "@/domain/types/dataset";
 
 export interface DatasetClient {
@@ -24,6 +25,7 @@ export interface DatasetClient {
     page?: number,
     pageSize?: number,
   ): Promise<Dataset[]>;
+  getDatasetDescription(datasetId: string): Promise<DatasetDescription>;
 }
 
 export function buildDatasetUC(client: DatasetClient) {
@@ -37,5 +39,7 @@ export function buildDatasetUC(client: DatasetClient) {
     getDataset: (id: string) => client.getDataset(id),
     listDatasets: (filter?: DatasetFilter, p?: number, s?: number) =>
       client.listDatasets(filter, p, s),
+    getDatasetDescription: (datasetId: string) =>
+      client.getDatasetDescription(datasetId),
   };
 }

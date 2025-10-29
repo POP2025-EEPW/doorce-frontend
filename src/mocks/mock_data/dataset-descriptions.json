@@ -1,0 +1,35 @@
+[
+  {
+    "id": "ds1",
+    "title": "Bus Stops",
+    "description": "This dataset contains all city bus stops including their unique ID, name, and precise GPS coordinates. It can be used for mapping bus routes, calculating distances between stops, and analyzing public transport coverage.",
+    "fields": [
+      { "name": "stop_id", "type": "string" },
+      { "name": "name", "type": "string" },
+      { "name": "latitude", "type": "number" },
+      { "name": "longitude", "type": "number" }
+    ]
+  },
+  {
+    "id": "ds2",
+    "title": "Bike Stations",
+    "description": "This dataset lists all public bike stations in the city, including the station ID, name, total capacity, and current number of available bikes. Useful for urban mobility analysis, monitoring bike availability, and planning new bike stations.",
+    "fields": [
+      { "name": "station_id", "type": "string" },
+      { "name": "name", "type": "string" },
+      { "name": "capacity", "type": "number" },
+      { "name": "bikes_available", "type": "number" }
+    ]
+  },
+  {
+    "id": "ds3",
+    "title": "Air Quality Sensors",
+    "description": "This dataset provides PM2.5 and PM10 time series measurements from air quality sensors distributed across the city. It includes sensor IDs, particulate matter concentrations, and timestamps. Useful for environmental monitoring, pollution analysis, and public health studies.",
+    "fields": [
+      { "name": "sensor_id", "type": "string" },
+      { "name": "pm2_5", "type": "number" },
+      { "name": "pm10", "type": "number" },
+      { "name": "timestamp", "type": "string" }
+    ]
+  }
+]

@@ -16,3 +16,7 @@ export async function loadDatasets(
 ) {
   return uc.dataset.listDatasets(filter, page, pageSize);
 }
+
+export async function getDatasetDescription(datasetId: string) {
+  return uc.dataset.getDatasetDescription(datasetId);
+}

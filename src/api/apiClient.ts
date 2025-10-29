@@ -30,6 +30,8 @@ export function buildRealClient(http: Http): CombinedClient {
     getDataset: (id: string) => http.get(`/datasets/${id}`),
     listDatasets: (filter: DatasetFilter, p = 1, s = 20) =>
       http.post(`/datasets?page=${p}&pageSize=${s}`, filter),
+    getDatasetDescription: (datasetId: string) =>
+      http.get(`/datasets/${datasetId}/description`),
 
     // quality
     addDatasetComment: (datasetId: string, input: CreateDatasetCommentInput) =>
