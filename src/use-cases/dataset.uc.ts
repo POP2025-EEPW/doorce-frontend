@@ -14,7 +14,7 @@ export interface DatasetClient {
   listCatalogDatasets(
     catalogId: string,
     page?: number,
-    pageSize?: number
+    pageSize?: number,
   ): Promise<DatasetSummary[]>;
   addDataset(input: CreateDatasetInput): Promise<{ id: string }>;
   getDataset(id: string): Promise<Dataset>;
