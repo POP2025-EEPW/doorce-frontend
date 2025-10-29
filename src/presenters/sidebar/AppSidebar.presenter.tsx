@@ -5,7 +5,7 @@ import { useAuth } from "@/auth/auth-store";
 import { buildBaseMenu, type Role } from "@/domain/types/sidebar";
 import { filterMenuByRoles } from "@/controllers/sidebar.controller";
 import { AppSidebarView } from "@/views/sidebar/AppSidebar.view";
-import { Folder, Shield } from "lucide-react";
+import { Folder, Shield, Table } from "lucide-react";
 
 export function AppSidebarPresenter() {
   const nav = useNavigate();
@@ -22,6 +22,7 @@ export function AppSidebarPresenter() {
   const withIcons = base.map((i) => {
     if (i.title === "Catalogs") return { ...i, icon: Folder };
     if (i.title === "Admin") return { ...i, icon: Shield };
+    if (i.title === "Datasets") return { ...i, icon: Table };
     return i;
   });
 

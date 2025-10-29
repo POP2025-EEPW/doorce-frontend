@@ -25,5 +25,10 @@ export function buildBaseMenu(): MenuItem[] {
       icon: (() => null) as ComponentType,
       roles: ["Admin"],
     },
+    {
+      title: "Datasets",
+      url: "/datasets",
+      icon: (() => null) as ComponentType,
+    },
   ];
 }

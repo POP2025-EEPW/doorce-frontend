@@ -5,6 +5,7 @@ import type {
   CatalogSummary,
   CreateCatalogInput,
   CreateDatasetInput,
+  DatasetFilter,
 } from "@/domain/types/dataset";
 import type {
   CreateDataRelatedRequestInput,
@@ -27,6 +28,8 @@ export function buildRealClient(http: Http): CombinedClient {
     addDataset: (input: CreateDatasetInput) =>
       http.post<{ id: string }>("/datasets", input),
     getDataset: (id: string) => http.get(`/datasets/${id}`),
+    listDatasets: (filter: DatasetFilter, p = 1, s = 20) =>
+      http.post(`/datasets?page=${p}&pageSize=${s}`, filter),
 
     // quality
     addDatasetComment: (datasetId: string, input: CreateDatasetCommentInput) =>
