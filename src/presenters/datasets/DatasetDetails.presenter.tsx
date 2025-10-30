@@ -5,7 +5,7 @@ import { DatasetInfoView } from "@/views/datasets/DatasetInfo.view";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-export function DatasetDetailPresenter() {
+export function DatasetDetailsPresenter() {
   const { id } = useParams();
   const datasetId = id ?? "";
 

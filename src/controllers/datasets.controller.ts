@@ -20,3 +20,11 @@ export async function loadDatasets(
 export async function getDatasetDescription(datasetId: string) {
   return uc.dataset.getDatasetDescription(datasetId);
 }
+
+export async function loadOwnedDatasets(ownerId: string) {
+  return uc.dataset.listOwnedDatasets(ownerId);
+}
+
+export async function loadQualityControllableDatasets(controllerId: string) {
+  return uc.dataset.listQualityControllableDatasets(controllerId);
+}

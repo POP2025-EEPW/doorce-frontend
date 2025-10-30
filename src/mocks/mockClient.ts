@@ -3,6 +3,7 @@ import type { CombinedClient } from "@/api/types";
 import catalogsJson from "@/mocks/mock_data/catalogs.json";
 import datasetsJson from "@/mocks/mock_data/datasets.json";
 import datasetDescriptionJson from "@/mocks/mock_data/dataset-descriptions.json";
+// import qualityTagsJson from "@/mocks/mock_data/quality-tags.json";
 import type {
   Catalog,
   CatalogSummary,
@@ -18,12 +19,14 @@ import type {
   CreateDatasetCommentInput,
   DataRelatedRequest,
   DatasetComment,
+  // QualityTag,
 } from "@/domain/types/quality";
 import usersJson from "@/mocks/mock_data/users.json";
 
 const catalogs = catalogsJson as CatalogSummary[];
 const datasets = datasetsJson as Dataset[];
 const datasetDescriptions = datasetDescriptionJson as DatasetDescription[];
+// const qualityTags = qualityTagsJson as QualityTag[];
 
 const delay = (ms = 120) => new Promise((r) => setTimeout(r, ms));
 
@@ -71,6 +74,7 @@ export function buildMockClient(): CombinedClient {
       if (!found) throw new Error("Not found");
       return found;
     },
+
     async listDatasets(filter?: DatasetFilter, p = 1, s = 20) {
       await delay();
 
@@ -124,6 +128,18 @@ export function buildMockClient(): CombinedClient {
       if (!found) throw new Error("Not found");
       return found;
     },
+    async listOwnedDatasets(ownerId: string) {
+      await delay();
+      let results = datasets;
+      results = results.filter((d) => d.ownerId === ownerId);
+      return results;
+    },
+    async listQualityControllableDatasets(controllerId: string) {
+      await delay();
+      console.log(controllerId);
+
+      return datasets;
+    },
 
     // Quality
     async addDatasetComment(
@@ -166,13 +182,12 @@ export function buildMockClient(): CombinedClient {
           u.password === credentials.password,
       );
       if (!found) throw new Error("Invalid credentials");
-      console.log("login", credentials);
       return { userId: found.userId };
     },
     async getMe() {
       await delay();
       // In a real app we'd read from auth-store or token; for Storybook/dev we default
-      return { userId: "student-1", roles: ["MetadataManager"] };
+      return { userId: "quality-1", roles: ["DataQualityManager"] };
     },
   };
 }

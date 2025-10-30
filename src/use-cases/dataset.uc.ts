@@ -26,6 +26,10 @@ export interface DatasetClient {
     pageSize?: number,
   ): Promise<Dataset[]>;
   getDatasetDescription(datasetId: string): Promise<DatasetDescription>;
+  listOwnedDatasets(ownerId: string): Promise<DatasetSummary[]>;
+  listQualityControllableDatasets(
+    controllerId: string,
+  ): Promise<DatasetSummary[]>;
 }
 
 export function buildDatasetUC(client: DatasetClient) {
@@ -41,5 +45,8 @@ export function buildDatasetUC(client: DatasetClient) {
       client.listDatasets(filter, p, s),
     getDatasetDescription: (datasetId: string) =>
       client.getDatasetDescription(datasetId),
+    listOwnedDatasets: (ownerId: string) => client.listOwnedDatasets(ownerId),
+    listQualityControllableDatasets: (controllerId: string) =>
+      client.listQualityControllableDatasets(controllerId),
   };
 }

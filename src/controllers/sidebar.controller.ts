@@ -1,4 +1,5 @@
-import type { MenuItem, Role } from "@/domain/types/sidebar";
+import type { MenuItem } from "@/lib/types/sidebar";
+import type { Role } from "@/domain/types/auth";
 
 export function filterMenuByRoles(
   items: MenuItem[],

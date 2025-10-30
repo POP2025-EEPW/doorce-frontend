@@ -1,4 +1,4 @@
-import type { MenuItem } from "@/domain/types/sidebar";
+import { type MenuItem } from "@/lib/types/sidebar";
 import {
   Sidebar,
   SidebarContent,

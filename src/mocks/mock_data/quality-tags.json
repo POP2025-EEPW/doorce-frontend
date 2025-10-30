@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1a2b3c4d",
+    "label": "Bronze",
+    "score": 50,
+    "updatedAt": "2025-10-29T20:00:00Z",
+    "updatedBy": "quality-1",
+    "datasetId": "ds1"
+  },
+  {
+    "id": "2b3c4d5e",
+    "label": "Silver",
+    "score": 75,
+    "updatedAt": "2025-10-29T20:05:00Z",
+    "updatedBy": "quality-1",
+    "datasetId": "ds1"
+  },
+  {
+    "id": "3c4d5e6f",
+    "label": "Gold",
+    "score": 95,
+    "updatedAt": "2025-10-29T20:10:00Z",
+    "updatedBy": "quality-1",
+    "datasetId": "ds3"
+  }
+]
