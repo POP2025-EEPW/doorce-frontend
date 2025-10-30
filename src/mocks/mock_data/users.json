@@ -3,7 +3,7 @@
     "username": "admin",
     "password": "admin",
     "userId": "admin",
-    "roles": ["Admin", "MetadataManager", "DataQualityManager"]
+    "roles": ["Admin"]
   },
   {
     "username": "metadata",
@@ -16,5 +16,11 @@
     "password": "quality",
     "userId": "quality-1",
     "roles": ["DataQualityManager"]
+  },
+  {
+    "username": "supplier",
+    "password": "supplier",
+    "userId": "supplier-1",
+    "roles": ["DataSupplier"]
   }
 ]

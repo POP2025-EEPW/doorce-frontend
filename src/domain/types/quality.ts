@@ -49,6 +49,7 @@ export interface QualityTag {
   score?: number; // 0..100
   updatedAt: ISODateString;
   updatedBy?: ID;
+  datasetId: ID;
 }
 
 export type QualityAlertSeverity = "info" | "warning" | "error";

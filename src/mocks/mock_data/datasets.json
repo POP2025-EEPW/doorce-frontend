@@ -5,7 +5,7 @@
     "description": "All city bus stops",
     "status": "draft",
     "catalogId": "sub1",
-    "ownerId": "owner-123",
+    "ownerId": "supplier-1",
     "schemaId": null
   },
   {
@@ -14,7 +14,7 @@
     "description": "Public bike stations with capacities",
     "status": "published",
     "catalogId": "sub1",
-    "ownerId": "owner-456",
+    "ownerId": "supplier-1",
     "schemaId": "schema-1"
   },
   {
@@ -23,7 +23,7 @@
     "description": "PM2.5 and PM10 time series",
     "status": "published",
     "catalogId": "sub2",
-    "ownerId": "owner-789",
+    "ownerId": "supplier-1",
     "schemaId": "schema-2"
   }
 ]

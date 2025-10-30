@@ -2,14 +2,15 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import * as AuthController from "@/controllers/auth.controller";
 import { useAuth } from "@/auth/auth-store";
-import { buildBaseMenu, type Role } from "@/domain/types/sidebar";
+import { type Role } from "@/domain/types/auth";
 import { filterMenuByRoles } from "@/controllers/sidebar.controller";
 import { AppSidebarView } from "@/views/sidebar/AppSidebar.view";
-import { Folder, Shield } from "lucide-react";
+import { MENU_ITEMS } from "@/lib/const/sidebar";
 
 export function AppSidebarPresenter() {
   const nav = useNavigate();
   const { userId, logout } = useAuth();
+
   const { data: me } = useQuery({
     queryKey: ["me"],
     queryFn: AuthController.getMe,
@@ -17,15 +18,7 @@ export function AppSidebarPresenter() {
     enabled: !!userId,
   });
 
-  const base = buildBaseMenu();
-  // Hydrate icons here, keeping domain/UI decoupled
-  const withIcons = base.map((i) => {
-    if (i.title === "Catalogs") return { ...i, icon: Folder };
-    if (i.title === "Admin") return { ...i, icon: Shield };
-    return i;
-  });
-
-  const items = filterMenuByRoles(withIcons, (me?.roles as Role[]) ?? []);
+  const items = filterMenuByRoles(MENU_ITEMS, (me?.roles as Role[]) ?? []);
 
   return (
     <AppSidebarView

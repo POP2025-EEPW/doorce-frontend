@@ -1,0 +1,29 @@
+@startuml
+title listOwnedDatasets use case
+autonumber
+
+actor User
+
+participant "My datasets view" as View
+participant "OwnedDatasetsPresenter" as Presenter
+participant "datasets.controller.ts" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API\nGET /datasets" as Http
+
+User -> View : Open "My datasets"
+View -> Presenter : mount(userId)
+Presenter -> Controller : loadOwnedDatasets(userId)
+Controller -> UseCase : listOwnedDatasets(userId)
+UseCase -> Client : listOwnedDatasets(userId)
+Client -> Http : GET /datasets?userId={userId}
+Http --> Client : DatasetSummary[]
+Client --> UseCase : DatasetSummary[]
+UseCase --> Controller : DatasetSummary[]
+Controller --> Presenter : DatasetSummary[]
+Presenter -> View : render owned datasets
+View --> User : Show owned datasets list
+
+@enduml
+
+

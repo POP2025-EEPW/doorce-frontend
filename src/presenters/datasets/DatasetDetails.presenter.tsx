@@ -4,14 +4,25 @@ import * as DatasetController from "@/controllers/datasets.controller";
 import { DatasetInfoView } from "@/views/datasets/DatasetInfo.view";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AddDatasetCommentPresenter } from "@/presenters/dataset-comments/AddDatasetComment.presenter.tsx";
 
-export function DatasetDetailPresenter() {
+export function DatasetDetailsPresenter() {
   const { id } = useParams();
   const datasetId = id ?? "";
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["dataset", datasetId],
     queryFn: () => DatasetController.loadDataset(datasetId),
+    enabled: !!datasetId,
+  });
+
+  const {
+    data: description,
+    isLoading: descriptionLoading,
+    error: descriptionError,
+  } = useQuery({
+    queryKey: ["datasetDescription", datasetId],
+    queryFn: () => DatasetController.getDatasetDescription(datasetId),
     enabled: !!datasetId,
   });
 
@@ -22,8 +33,9 @@ export function DatasetDetailPresenter() {
         <AlertDescription>Missing dataset id.</AlertDescription>
       </Alert>
     );
-  if (isLoading) return <Skeleton className="h-10 w-full" />;
-  if (error || !data)
+  if (isLoading || descriptionLoading)
+    return <Skeleton className="h-10 w-full" />;
+  if (error || !data || descriptionError)
     return (
       <Alert variant="destructive">
         <AlertTitle>Error</AlertTitle>
@@ -31,5 +43,10 @@ export function DatasetDetailPresenter() {
       </Alert>
     );
 
-  return <DatasetInfoView dataset={data} />;
+  return (
+    <div>
+      <DatasetInfoView dataset={data} description={description} />
+      <AddDatasetCommentPresenter datasetId={datasetId} />
+    </div>
+  );
 }

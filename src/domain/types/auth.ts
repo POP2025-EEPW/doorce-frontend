@@ -8,3 +8,9 @@ export interface Me {
 export interface LoginResponse {
   userId: ID;
 }
+
+export type Role =
+  | "Admin"
+  | "MetadataManager"
+  | "DataQualityManager"
+  | "DataSupplier";

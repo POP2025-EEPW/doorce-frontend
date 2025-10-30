@@ -37,6 +37,10 @@ package "Controllers" {
     +getDataset(id)
     +addDataset(input)
     +listCatalogDatasets(catalogId, page, pageSize)
+    +listDatasets(filter, page, pageSize)
+    +getDatasetDescription(datasetId)
+    +listOwnedDatasets(ownerId)
+    +listQualityControllableDatasets(controllerId)
   }
   class CatalogsController {
     +getCatalog(id)
@@ -51,6 +55,10 @@ package "Use-case Layer" {
     +listCatalogDatasets(catalogId, page, pageSize)
     +getCatalog(id)
     +listCatalogs(parentId)
+    +listDatasets(filter, page, pageSize)
+    +getDatasetDescription(datasetId)
+    +listOwnedDatasets(ownerId)
+    +listQualityControllableDatasets(controllerId)
   }
 }
 
