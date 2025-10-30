@@ -11,6 +11,7 @@ import { DatasetDetailsPresenter } from "@/presenters/datasets/DatasetDetails.pr
 import { DatasetsPresenter } from "@/presenters/datasets/Datasets.presenter";
 import { QualityControllableDatasetsPresenter } from "@/presenters/datasets/QualityControllableDatasets.presenter";
 import { AppLayout } from "@/app/Layout";
+import { DatasetEditPresenter } from "@/presenters/datasets/DatasetEdit.presenter.tsx";
 
 const router = createBrowserRouter([
   { path: "/login", element: <LoginPresenter /> },
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
         path: "quality-controll/datasets",
         element: <QualityControllableDatasetsPresenter />,
       },
+      { path: "datasets/:id/edit", element: <DatasetEditPresenter /> },
     ],
   },
   { path: "*", element: <LoginPresenter /> },

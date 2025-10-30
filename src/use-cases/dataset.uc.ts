@@ -3,6 +3,7 @@ import type {
   CatalogSummary,
   CreateCatalogInput,
   CreateDatasetInput,
+  DataSchema,
   Dataset,
   DatasetSummary,
   DatasetFilter,
@@ -30,6 +31,12 @@ export interface DatasetClient {
   listQualityControllableDatasets(
     controllerId: string,
   ): Promise<DatasetSummary[]>;
+  updateDataset(id: string, data: Partial<Dataset>): Promise<Dataset>;
+  setDataSchemaForDataset(
+    datasetId: string,
+    schemaId: string,
+  ): Promise<{ id: string }>;
+  listDataSchemas(): Promise<DataSchema[]>;
 }
 
 export function buildDatasetUC(client: DatasetClient) {
@@ -48,5 +55,10 @@ export function buildDatasetUC(client: DatasetClient) {
     listOwnedDatasets: (ownerId: string) => client.listOwnedDatasets(ownerId),
     listQualityControllableDatasets: (controllerId: string) =>
       client.listQualityControllableDatasets(controllerId),
+    updateDataset: (id: string, data: Partial<Dataset>) =>
+      client.updateDataset(id, data),
+    setDataSchemaForDataset: (datasetId: string, schemaId: string) =>
+      client.setDataSchemaForDataset(datasetId, schemaId),
+    listDataSchemas: () => client.listDataSchemas(),
   };
 }

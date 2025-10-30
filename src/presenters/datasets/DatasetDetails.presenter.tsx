@@ -4,6 +4,7 @@ import * as DatasetController from "@/controllers/datasets.controller";
 import { DatasetInfoView } from "@/views/datasets/DatasetInfo.view";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AddDatasetCommentPresenter } from "@/presenters/dataset-comments/AddDatasetComment.presenter.tsx";
 
 export function DatasetDetailsPresenter() {
   const { id } = useParams();
@@ -42,5 +43,10 @@ export function DatasetDetailsPresenter() {
       </Alert>
     );
 
-  return <DatasetInfoView dataset={data} description={description} />;
+  return (
+    <div>
+      <DatasetInfoView dataset={data} description={description} />
+      <AddDatasetCommentPresenter datasetId={datasetId} />
+    </div>
+  );
 }

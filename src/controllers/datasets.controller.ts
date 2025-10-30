@@ -1,5 +1,9 @@
 import { uc } from "@/app/di";
-import type { CreateDatasetInput, DatasetFilter } from "@/domain/types/dataset";
+import type {
+  CreateDatasetInput,
+  UpdateDatasetInput,
+  DatasetFilter,
+} from "@/domain/types/dataset";
 
 export async function addDataset(input: CreateDatasetInput) {
   return uc.dataset.addDataset(input);
@@ -12,7 +16,7 @@ export async function loadDataset(datasetId: string) {
 export async function loadDatasets(
   filter?: DatasetFilter,
   page?: number,
-  pageSize?: number,
+  pageSize?: number
 ) {
   return uc.dataset.listDatasets(filter, page, pageSize);
 }
@@ -27,4 +31,25 @@ export async function loadOwnedDatasets(ownerId: string) {
 
 export async function loadQualityControllableDatasets(controllerId: string) {
   return uc.dataset.listQualityControllableDatasets(controllerId);
+}
+
+export async function updateDataset({
+  id,
+  input,
+}: {
+  id: string;
+  input: UpdateDatasetInput;
+}) {
+  return uc.dataset.updateDataset(id, input);
+}
+
+export async function setDataSchemaForDataset(
+  datasetId: string,
+  schemaId: string
+) {
+  return uc.dataset.setDataSchemaForDataset(datasetId, schemaId);
+}
+
+export async function loadDataSchemas() {
+  return uc.dataset.listDataSchemas();
 }

@@ -13,6 +13,7 @@ import type {
   DatasetSummary,
   DatasetFilter,
   DatasetDescription,
+  UpdateDatasetInput,
 } from "@/domain/types/dataset";
 import type {
   CreateDataRelatedRequestInput,
@@ -22,11 +23,14 @@ import type {
   // QualityTag,
 } from "@/domain/types/quality";
 import usersJson from "@/mocks/mock_data/users.json";
+import schemasJson from "@/mocks/mock_data/schemas.json";
+import type { DataSchema } from "@/domain/types/dataset";
 
 const catalogs = catalogsJson as CatalogSummary[];
 const datasets = datasetsJson as Dataset[];
 const datasetDescriptions = datasetDescriptionJson as DatasetDescription[];
 // const qualityTags = qualityTagsJson as QualityTag[];
+const schemas = schemasJson as DataSchema[];
 
 const delay = (ms = 120) => new Promise((r) => setTimeout(r, ms));
 
@@ -73,6 +77,22 @@ export function buildMockClient(): CombinedClient {
       const found = datasets.find((d) => d.id === id);
       if (!found) throw new Error("Not found");
       return found;
+    },
+    async updateDataset(id: string, input: UpdateDatasetInput) {
+      await delay();
+      console.log("updateDataset", id, input);
+      const found = datasets.find((d) => d.id === id);
+      if (!found) throw new Error("Not found");
+      return { ...found, ...input };
+    },
+    async listDataSchemas() {
+      await delay();
+      return schemas;
+    },
+    async setDataSchemaForDataset(datasetId: string, schemaId: string) {
+      await delay();
+      console.log("setDataSchemaForDataset", datasetId, schemaId);
+      return { id: crypto.randomUUID() };
     },
 
     async listDatasets(filter?: DatasetFilter, p = 1, s = 20) {

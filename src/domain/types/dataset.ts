@@ -46,6 +46,14 @@ export interface CreateDatasetInput {
   ownerId: ID;
 }
 
+export interface UpdateDatasetInput {
+  title?: string;
+  description?: string;
+  status?: DatasetStatus;
+  catalogId?: ID;
+  schemaId?: ID | null;
+}
+
 // Listing and filters (Group 2)
 
 export interface DatasetFilter {
@@ -140,3 +148,10 @@ export interface DownloadToken {
 }
 
 export type AvailabilityStatus = "up" | "down" | "degraded";
+
+export interface DataSchema {
+  id: string;
+  name: string;
+  description?: string;
+  version?: string;
+}

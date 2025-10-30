@@ -1,0 +1,20 @@
+[
+  {
+    "id": "schema-001",
+    "name": "User Profile Schema",
+    "description": "Standard schema for user profile information including personal details and preferences",
+    "version": "1.0.0"
+  },
+  {
+    "id": "schema-002",
+    "name": "Product Catalog Schema",
+    "description": "Schema for e-commerce product data with pricing, inventory, and metadata",
+    "version": "2.1.3"
+  },
+  {
+    "id": "schema-003",
+    "name": "Analytics Events Schema",
+    "description": "Schema for tracking user interactions, page views, and custom events",
+    "version": "3.0.0"
+  }
+]
