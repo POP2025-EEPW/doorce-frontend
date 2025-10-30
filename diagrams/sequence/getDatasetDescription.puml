@@ -1,0 +1,29 @@
+@startuml
+title getDatasetDescription use case
+autonumber
+
+actor User
+
+participant "Dataset detail view" as View
+participant "DatasetDetailPresenter" as Presenter
+participant "datasets.controller.ts" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API\nGET /datasets/{id}/description" as Http
+
+User -> View : Open description tab
+View -> Presenter : fetchDescription(datasetId)
+Presenter -> Controller : getDatasetDescription(datasetId)
+Controller -> UseCase : getDatasetDescription(datasetId)
+UseCase -> Client : getDatasetDescription(datasetId)
+Client -> Http : GET /datasets/{id}/description
+Http --> Client : DatasetDescription
+Client --> UseCase : DatasetDescription
+UseCase --> Controller : DatasetDescription
+Controller --> Presenter : DatasetDescription
+Presenter -> View : render description
+View --> User : Show dataset description
+
+@enduml
+
+
