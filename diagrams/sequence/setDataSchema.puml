@@ -1,0 +1,51 @@
+@startuml
+title SetDataSchemaForDataset Use Case
+autonumber
+
+actor "Metadata Manager" as User
+
+participant "DatasetTableView" as TableView
+participant "DatasetTablePresenter" as TablePresenter
+participant "SelectDataSchemaModalPresenter" as ModalPresenter
+participant "SelectDataSchemaModalView" as ModalView
+participant "datasets.controller.ts" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API" as API
+
+== Open Schema Selection Modal ==
+User -> TableView : Click "Set Schema" in dropdown menu
+TableView -> TablePresenter : onSetSchema(dataset)
+TablePresenter -> ModalPresenter : open modal with datasetId
+ModalPresenter -> Controller : loadDataSchemas()
+Controller -> UseCase : uc.dataset.listDataSchemas()
+UseCase -> Client : listDataSchemas()
+Client -> API : GET /data-schemas
+API --> Client : 200 OK + DataSchema[]
+Client --> UseCase : DataSchema[]
+UseCase --> Controller : DataSchema[]
+Controller --> ModalPresenter : DataSchema[]
+ModalPresenter -> ModalView : render(schemas)
+ModalView --> User : Display available schemas
+
+== Select and Assign Schema ==
+User -> ModalView : Select schema from list
+ModalView -> ModalPresenter : onSelectSchema(schemaId)
+ModalPresenter -> ModalPresenter : setSelectedSchemaId(schemaId)
+User -> ModalView : Click "Assign Schema" button
+ModalView -> ModalPresenter : onConfirm()
+ModalPresenter -> Controller : setDataSchemaForDataset(datasetId, schemaId)
+Controller -> UseCase : uc.dataset.setDataSchemaForDataset(datasetId, schemaId)
+UseCase -> Client : setDataSchemaForDataset(datasetId, schemaId)
+Client -> API : PUT /datasets/{datasetId}/schema
+API --> Client : 200 OK + {id}
+Client --> UseCase : {id}
+UseCase --> Controller : {id}
+Controller --> ModalPresenter : {id}
+ModalPresenter -> ModalPresenter : onSuccess()
+ModalPresenter -> ModalView : close modal
+ModalPresenter -> TablePresenter : trigger refresh/invalidate
+TablePresenter -> TableView : refresh dataset list
+TableView --> User : Show updated dataset with schema
+
+@enduml

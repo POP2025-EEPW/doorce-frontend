@@ -1,0 +1,27 @@
+@startuml
+title addDatasetComment Use Case
+autonumber
+
+actor MetadataManager
+
+participant "EditDatasetFormView" as View
+participant "DatasetEditPresenter" as Presenter
+participant "datasets.controller.ts" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API\nPOST /datasets" as Http
+
+MetadataManager -> View : Fill + submit edit dataset form
+View -> Presenter : onSubmit(input)
+Presenter -> Controller : updateDataset(input)
+Controller -> UseCase : uc.dataset.updateDataset(id, input)
+UseCase -> Client : updateDataset(input)
+Client -> Http : PUT /datasets
+Http --> Client : 200 OK + {id}
+Client --> UseCase : {id}
+UseCase --> Controller : {id}
+Controller --> Presenter : {id}
+Presenter -> View : handle success (invalidate + navigate)
+View --> MetadataManager : Show dataset detail
+
+@enduml

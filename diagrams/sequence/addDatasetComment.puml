@@ -1,0 +1,29 @@
+@startuml
+!theme plain
+title Sequence Diagram - AddDatasetComment
+
+actor User as "User"
+participant View as "AddDatasetCommentFormView"
+participant Presenter as "AddDatasetCommentPresenter"
+participant Controller as "dataset-comment.controller"
+participant UC as "QualityUseCase"
+participant Client as "QualityClient"
+participant API as "Backend API"
+
+
+User -> View: Click "Submit Comment"
+View -> Presenter: onSubmit(comment)
+Presenter -> Controller: submitDatasetComment(datasetId, text)
+Controller -> UC: quality.addDatasetComment(datasetId, input)
+UC -> Client: addDatasetComment(datasetId, input)
+Client -> API: POST /datasets/{datasetId}/comments
+API --> Client: Response { id: string }
+Client --> UC: Promise<{ id: string }>
+UC --> Controller: Promise<{ id: string }>
+Controller --> Presenter: Promise<{ id: string }>
+Presenter -> Presenter: onSuccess(result)
+Presenter -> View: isSubmitting = false
+View -> View: Clear form()
+View -> User: Display success
+
+@enduml
