@@ -35,10 +35,11 @@ export default class AuthUseCase {
     // Handle plain-text backend responses like:
     //  - "Username already exists"
     //  - "User created successfully"
-    const text = (response.data as unknown as string) ?? "";
+    const text = (response as unknown as string) ?? "";
+    const error = response.error as unknown as string;
 
     if (!response.response?.ok) {
-      if (text.toLowerCase().includes("exists")) {
+      if (error.toLowerCase().includes("exists")) {
         throw new Error("error/auth/register/exists");
       }
       throw new Error("error/auth/register");
