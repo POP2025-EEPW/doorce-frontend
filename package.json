@@ -16,7 +16,8 @@
     "test": "vitest",
     "test:storybook": "vitest --project=storybook",
     "test:storybook:coverage": "vitest --project=storybook --coverage",
-    "gen:types": "npx openapi-typescript http://localhost:8080/v3/api-docs -o src/api/openapi-schema.d.ts"
+    "gen:types": "npx openapi-typescript http://localhost:8080/v3/api-docs -o src/api/openapi-schema.d.ts",
+    "db:init": "docker exec -i -e PGPASSWORD=password dorce-backend-db-1 psql -U user -d dorceDb < scripts/insert-comprehensive-test-data.sql"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
