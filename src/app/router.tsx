@@ -3,18 +3,18 @@ import {
   RouterProvider,
   Navigate,
 } from "react-router-dom";
-import { RequireAuth } from "@/auth/RequireAuth";
-import { LoginPresenter } from "@/presenters/auth/Login.presenter";
-import { CatalogsPresenter } from "@/presenters/catalogs/Catalogs.presenter";
-import { CatalogDetailsPresenter } from "@/presenters/catalogs/CatalogDetails.presenter";
-import { DatasetDetailsPresenter } from "@/presenters/datasets/DatasetDetails.presenter";
-import { DatasetsPresenter } from "@/presenters/datasets/Datasets.presenter";
-import { QualityControllableDatasetsPresenter } from "@/presenters/datasets/QualityControllableDatasets.presenter";
+import { RequireAuth } from "@/ui/lib/routing/RequireAuth";
 import { AppLayout } from "@/app/Layout";
-import { DatasetEditPresenter } from "@/presenters/datasets/DatasetEdit.presenter.tsx";
+import LoginPage from "@/ui/auth/pages/Login.page";
+import CatalogPage from "@/ui/catalog/pages/Catalog.page";
+import RegisterPage from "@/ui/auth/pages/Register.page";
 
 const router = createBrowserRouter([
-  { path: "/login", element: <LoginPresenter /> },
+  { path: "/login", element: <LoginPage /> },
+  {
+    path: "/register",
+    element: <RegisterPage />,
+  },
   {
     path: "/",
     element: (
@@ -23,20 +23,26 @@ const router = createBrowserRouter([
       </RequireAuth>
     ),
     children: [
-      { index: true, element: <Navigate to="catalogs" replace /> },
-      { path: "catalogs", element: <CatalogsPresenter /> },
-      { path: "catalogs/:id", element: <CatalogDetailsPresenter /> },
-      { path: "datasets/:id", element: <DatasetDetailsPresenter /> },
-      { path: "datasets", element: <DatasetsPresenter /> },
-      { path: "dataset/add", element: <DatasetsPresenter /> },
+      { index: true, element: <Navigate to="catalog" replace /> },
       {
-        path: "quality-controll/datasets",
-        element: <QualityControllableDatasetsPresenter />,
+        path: "catalog/",
+        element: <CatalogPage />,
+        children: [{ path: ":id", element: <CatalogPage /> }],
       },
-      { path: "datasets/:id/edit", element: <DatasetEditPresenter /> },
+
+      // {
+      //   path: "dataset/:id",
+      //   element: <DatasetPage />,
+      // },
+      // { path: "dataset/add", element: <DatasetsPresenter /> },
+      // {
+      //   path: "quality-controll/datasets",
+      //   element: <QualityControllableDatasetsPresenter />,
+      // },
+      // { path: "datasets/:id/edit", element: <DatasetEditPresenter /> },
     ],
   },
-  { path: "*", element: <LoginPresenter /> },
+  { path: "*", element: <LoginPage /> },
 ]);
 
 export function AppRouter() {
