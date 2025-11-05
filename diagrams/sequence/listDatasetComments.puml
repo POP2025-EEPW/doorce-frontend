@@ -1,0 +1,26 @@
+@startuml
+title Show comments on dataset use case
+autonumber
+
+actor "DataSupplier/\nDataQualityManager" as User
+
+participant "DatasetList" as DatasetList
+participant "DatasetPreviewView" as View
+participant "DatasetDetailPresenter" as Presenter
+participant "datasets.controller.ts" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API\nGET /datasets/{id}" as Http
+
+User ->> DatasetList : Click on show comments
+DatasetList ->> Controller : loadDatasetComments(datasetId)
+Controller ->> UseCase : getDatasetComments(datasetId)
+UseCase -> Client : getDatasetComments(datasetId)
+Client ->> Http : GET /datasets/{id}/comments
+Http ->> Client : string[]
+Client --> UseCase : string[]
+UseCase ->> Presenter : present(string[])
+Presenter ->> View : render(string[])
+View ->> User : Show dataset comments
+
+@enduml
