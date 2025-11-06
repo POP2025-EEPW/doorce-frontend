@@ -1,29 +1,34 @@
 @startuml
-!theme plain
-title Sequence Diagram - AddDatasetComment
+title Add dataset comment use case
 
-actor User as "User"
-participant View as "AddDatasetCommentFormView"
-participant Presenter as "AddDatasetCommentPresenter"
-participant Controller as "dataset-comment.controller"
-participant UC as "QualityUseCase"
-participant Client as "QualityClient"
-participant API as "Backend API"
+autonumber
 
+actor DataUser as User
 
-User -> View: Click "Submit Comment"
-View -> Presenter: onSubmit(comment)
-Presenter -> Controller: submitDatasetComment(datasetId, text)
-Controller -> UC: quality.addDatasetComment(datasetId, input)
-UC -> Client: addDatasetComment(datasetId, input)
-Client -> API: POST /datasets/{datasetId}/comments
-API --> Client: Response { id: string }
-Client --> UC: Promise<{ id: string }>
-UC --> Controller: Promise<{ id: string }>
-Controller --> Presenter: Promise<{ id: string }>
-Presenter -> Presenter: onSuccess(result)
-Presenter -> View: isSubmitting = false
-View -> View: Clear form()
-View -> User: Display success
+participant "DatasetCommentFormView" as DatasetCommentFormView
+participant "DatasetPreviewView" as View
+participant "AddDatasetCommentPresenter" as Presenter
+participant "dataset-comment.controller" as Controller
+participant "uc.quality" as UseCase
+participant "CombinedClient" as Client
+participant "API" as Http
+
+User ->> DatasetCommentFormView : Click "Submit Comment"
+DatasetCommentFormView ->> Controller : addDatasetComment(datasetId, input)
+Controller ->> UseCase : addDatasetComment(datasetId,input)
+UseCase -> Client : addDatasetComment(datasetId,input)
+Client ->> Http : PUT /datasets/{id}/comment
+Http ->> Client : OK 200
+Client --> UseCase : OK 200
+UseCase --> Controller : OK 200
+Controller ->> UseCase: getDatasetPreview(datasetId)
+UseCase -> Client : getDatasetPreview(datasetId)
+Client ->> Http : GET /datasets/{id}/preview
+Http ->> Client : DatasetPreview
+Client --> UseCase : DatasetPreview
+UseCase ->> Presenter : present(DatasetPreview)
+Presenter ->> View : render(DatasetPreview)
+View ->> User : Show updated dataset preview with comment
+
 
 @enduml

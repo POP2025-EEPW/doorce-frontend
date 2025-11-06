@@ -18,23 +18,6 @@ package "Views" {
     +render(datasets)
     +onOpen(id)
   }
-  class EditDatasetFormView {
-    +render(dataset)
-    +onSubmit(input)
-    +onCancel()
-    +onSetSchema()
-  }
-  class SelectDataSchemaModalView {
-    +render(open, schemas, selectedSchemaId)
-    +onSelectSchema(schemaId)
-    +onConfirm()
-    +onCancel()
-    +onOpenChange(open)
-  }
-  class AddDatasetCommentFormView {
-    +render(dataset)
-    +onSubmit(text)
-  }
 }
 
 package "Presenters" {
@@ -47,23 +30,6 @@ package "Presenters" {
     +handleAddDataset(input)
     +loadCatalogDatasets(catalogId)
   }
-  class DatasetEditPresenter {
-    +render()
-    +handleSubmit(input)
-    +handleSetSchema()
-    +handleCancel()
-  }
-  class SelectDataSchemaModalPresenter {
-    +render()
-    +loadSchemas()
-    +handleConfirm()
-    +handleCancel()
-    +handleOpenChange(open)
-  }
-  class AddDatasetCommentPresenter {
-    +render()
-    +handleSubmit(text)
-  }
 }
 
 package "Controllers" {
@@ -75,16 +41,10 @@ package "Controllers" {
     +getDatasetDescription(datasetId)
     +listOwnedDatasets(ownerId)
     +listQualityControllableDatasets(controllerId)
-    +updateDataset(id, input)
-    +setDataSchemaForDataset(datasetId, schemaId)
-    +loadDataSchemas()
   }
   class CatalogsController {
     +getCatalog(id)
     +listCatalogs(parentId)
-  }
-  class DatasetCommentController {
-    +submitDatasetComment(datasetId, text)
   }
 }
 
@@ -92,8 +52,6 @@ package "Use-case Layer" {
   interface DatasetUseCases {
     +getDataset(id)
     +addDataset(input)
-    +updateDataset(id, input)
-    +setDataSchemaForDataset(datasetId, schemaId)
     +listCatalogDatasets(catalogId, page, pageSize)
     +getCatalog(id)
     +listCatalogs(parentId)
@@ -101,18 +59,12 @@ package "Use-case Layer" {
     +getDatasetDescription(datasetId)
     +listOwnedDatasets(ownerId)
     +listQualityControllableDatasets(controllerId)
-    +listDataSchemas()
-  }
-  interface QualityUseCases {
-    +addDatasetComment(datasetId, input)
-    +listDatasetComments(datasetId)
   }
 }
 
 package "DI Container" {
   class UCContainer {
     +dataset: DatasetUseCases
-    +quality: QualityUseCases
   }
 }
 
@@ -135,24 +87,4 @@ DatasetsController --> UCContainer : reads dataset uc
 CatalogsController --> UCContainer : reads dataset uc
 UCContainer --> DatasetUseCases : provides implementation
 
-DatasetEditPresenter --> EditDatasetFormView : render()
-EditDatasetFormView --> DatasetEditPresenter : onSubmit(), onCancel(), onSetSchema()
-DatasetEditPresenter --> SelectDataSchemaModalPresenter : open/close modal
-DatasetEditPresenter --> DatasetsController : loadDataset(), updateDataset()
-
-
-DatasetEditPresenter --> SelectDataSchemaModalPresenter : open modal
-SelectDataSchemaModalPresenter --> SelectDataSchemaModalView : render()
-SelectDataSchemaModalView --> SelectDataSchemaModalPresenter : onSelectSchema(), onConfirm(), onCancel(), onOpenChange()
-
-SelectDataSchemaModalPresenter --> DatasetsController : loadDataSchemas(), setDataSchemaForDataset()
-
-AddDatasetCommentPresenter --> AddDatasetCommentFormView : render()
-AddDatasetCommentFormView --> AddDatasetCommentPresenter : onSubmit(text)
-
-AddDatasetCommentPresenter --> DatasetCommentController : submitDatasetComment(datasetId, text)
-DatasetCommentController --> QualityUseCases : delegates addDatasetComment(datasetId, input)
-
-DatasetCommentController --> UCContainer : reads quality uc
-UCContainer --> QualityUseCases : provides implementation
 @enduml

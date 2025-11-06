@@ -2,26 +2,41 @@
 title addDatasetComment Use Case
 autonumber
 
-actor MetadataManager
+actor MetadataManager as User
 
 participant "EditDatasetFormView" as View
+participant "DatasetTableView" as TableView
+participant "DatasetTablePresenter" as TablePresenter
 participant "DatasetEditPresenter" as Presenter
 participant "datasets.controller.ts" as Controller
 participant "uc.dataset" as UseCase
 participant "CombinedClient" as Client
-participant "Dataset API\nPOST /datasets" as Http
 
-MetadataManager -> View : Fill + submit edit dataset form
-View -> Presenter : onSubmit(input)
-Presenter -> Controller : updateDataset(input)
+
+
+== Open Edit View ==
+User -> TableView : Click "Edit" in dropdown menu
+TableView -> Controller : onEdit(dataset)
+Controller -> UseCase : dataset.uc.loadDataset(datasetId)
+UseCase -> Client : getDataset(id: string)
+Client -> API : GET /dataset/{id}
+API --> Client : 200 OK + Dataset
+Client --> UseCase : Dataset
+UseCase --> Presenter : Dataset
+Presenter -> View : render(Dataset)
+View --> User : Show edit dataset form
+
+== Save Edit ==
+User -> View : Fill + submit edit dataset form
+View -> Controller : updateDataset(input)
+
 Controller -> UseCase : uc.dataset.updateDataset(id, input)
 UseCase -> Client : updateDataset(input)
-Client -> Http : PUT /datasets
-Http --> Client : 200 OK + {id}
+Client -> API : PUT /datasets
+API --> Client : 200 OK + {id}
 Client --> UseCase : {id}
-UseCase --> Controller : {id}
-Controller --> Presenter : {id}
-Presenter -> View : handle success (invalidate + navigate)
-View --> MetadataManager : Show dataset detail
+UseCase --> Presenter : {id}
+Presenter -> View : ShowMessage()
+View --> User : Show success message
 
 @enduml
