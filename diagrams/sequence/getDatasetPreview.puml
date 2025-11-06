@@ -8,8 +8,8 @@ participant "CatalogsPageView" as CatalogsPageView
 participant "DatasetPreviewView" as View
 participant "DatasetDetailPresenter" as Presenter
 participant "datasets.controller.ts" as Controller
-participant "uc.dataset" as UseCase
-participant "CombinedClient" as Client
+participant "dataset.uc" as UseCase
+participant "APIClient" as Client
 participant "Dataset API\nGET /datasets/{id}" as Http
 
 User ->> CatalogsPageView : Click on 'Show dataset preview'

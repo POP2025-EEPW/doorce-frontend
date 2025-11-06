@@ -7,9 +7,9 @@ actor "DataSupplier/\nDataQualityManager" as User
 participant "DatasetListView" as DatasetList
 participant "DatasetCommentsView" as View
 participant "DatasetDetailPresenter" as Presenter
-participant "datasets.controller.ts" as Controller
-participant "uc.dataset" as UseCase
-participant "CombinedClient" as Client
+participant "datasets.controller" as Controller
+participant "dataset.uc" as UseCase
+participant "APIClient" as Client
 participant "Dataset API\nGET /datasets/{id}" as Http
 
 User ->> DatasetList : Click on show comments
