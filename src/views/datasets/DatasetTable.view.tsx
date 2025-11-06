@@ -1,4 +1,4 @@
-import type { DatasetSummary } from "@/domain/types/dataset";
+import type { DatasetPreview, DatasetSummary } from "@/domain/types/dataset";
 import {
   Table,
   TableBody,
@@ -31,7 +31,7 @@ export function DatasetTableView({
   onSetSchema: (dataset: DatasetSummary) => void;
 }) {
   const [showPreview, setShowPreview] = useState(false);
-  const [previewData, setPreviewData] = useState<any>(null);
+  const [previewData, setPreviewData] = useState<DatasetPreview | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handlePreview = async (datasetId: string) => {
@@ -51,16 +51,15 @@ export function DatasetTableView({
     <>
       <h2 className="text-lg font-medium tracking-tight mb-3">Datasets</h2>
 
-      {showPreview && (
-        loading ? (
+      {showPreview &&
+        (loading ? (
           <p className="text-sm text-muted-foreground">Loading preview...</p>
         ) : (
           <DatasetPreviewView
             preview={previewData}
             onClose={() => setShowPreview(false)}
           />
-        )
-      )}
+        ))}
 
       <Table>
         <TableHeader>
