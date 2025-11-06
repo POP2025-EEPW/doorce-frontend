@@ -26,26 +26,40 @@ export function DatasetDetailsPresenter() {
     enabled: !!datasetId,
   });
 
-  if (!datasetId)
-    return (
-      <Alert variant="destructive">
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription>Missing dataset id.</AlertDescription>
-      </Alert>
-    );
-  if (isLoading || descriptionLoading)
+  const {
+    data: comments = [],
+    isLoading: commentsLoading,
+    error: commentsError,
+  } = useQuery({
+    queryKey: ["datasetComments", datasetId],
+    queryFn: () => DatasetController.loadDatasetComments(datasetId),
+    enabled: !!datasetId,
+  });
+
+  const handleShowPreview = async (id: string) => {
+    return await DatasetController.getDatasetPreview(id);
+  };
+
+  if (isLoading || descriptionLoading || commentsLoading)
     return <Skeleton className="h-10 w-full" />;
-  if (error || !data || descriptionError)
+
+  if (error || !data || descriptionError || commentsError)
     return (
       <Alert variant="destructive">
         <AlertTitle>Error</AlertTitle>
-        <AlertDescription>Failed to load dataset.</AlertDescription>
+        <AlertDescription>Failed to load dataset or comments.</AlertDescription>
       </Alert>
     );
 
+
   return (
     <div>
-      <DatasetInfoView dataset={data} description={description} />
+      <DatasetInfoView 
+        dataset={data} 
+        description={description}
+        comments={comments}
+        onShowPreview={handleShowPreview}
+      />
       <AddDatasetCommentPresenter datasetId={datasetId} />
     </div>
   );

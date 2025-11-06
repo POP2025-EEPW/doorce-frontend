@@ -12,7 +12,7 @@ participant "uc.dataset" as UseCase
 participant "CombinedClient" as Client
 participant "Dataset API\nGET /datasets/{id}" as Http
 
-User ->> CatalogsPageView : Click on dataset preview
+User ->> CatalogsPageView : Click on 'Show dataset preview'
 CatalogsPageView ->> Controller : loadDatasetPreview(datasetId)
 Controller ->> UseCase : getDatasetPreview(datasetId)
 UseCase -> Client : getDatasetPreview(datasetId)

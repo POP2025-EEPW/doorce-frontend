@@ -15,6 +15,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import * as DatasetController from "@/controllers/datasets.controller";
+import { DatasetPreviewView } from "./DatasetPreview.view";
 
 export function DatasetTableView({
   datasets,
@@ -27,9 +30,37 @@ export function DatasetTableView({
   onEdit: (dataset: DatasetSummary) => void;
   onSetSchema: (dataset: DatasetSummary) => void;
 }) {
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewData, setPreviewData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handlePreview = async (datasetId: string) => {
+    try {
+      setLoading(true);
+      const preview = await DatasetController.getDatasetPreview(datasetId);
+      setPreviewData(preview);
+      setShowPreview(true);
+    } catch (err) {
+      console.error("Failed to load preview", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <h2 className="text-lg font-medium tracking-tight mb-3">Datasets</h2>
+
+      {showPreview && (
+        loading ? (
+          <p className="text-sm text-muted-foreground">Loading preview...</p>
+        ) : (
+          <DatasetPreviewView
+            preview={previewData}
+            onClose={() => setShowPreview(false)}
+          />
+        )
+      )}
 
       <Table>
         <TableHeader>
@@ -83,6 +114,14 @@ export function DatasetTableView({
                       }}
                     >
                       Set Schema
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={async (e: React.MouseEvent<HTMLDivElement>) => {
+                        e.stopPropagation();
+                        await handlePreview(d.id);
+                      }}
+                    >
+                      Preview
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

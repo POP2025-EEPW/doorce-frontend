@@ -4,8 +4,8 @@ autonumber
 
 actor "DataSupplier/\nDataQualityManager" as User
 
-participant "DatasetList" as DatasetList
-participant "DatasetPreviewView" as View
+participant "DatasetListView" as DatasetList
+participant "DatasetCommentsView" as View
 participant "DatasetDetailPresenter" as Presenter
 participant "datasets.controller.ts" as Controller
 participant "uc.dataset" as UseCase
@@ -17,10 +17,10 @@ DatasetList ->> Controller : loadDatasetComments(datasetId)
 Controller ->> UseCase : getDatasetComments(datasetId)
 UseCase -> Client : getDatasetComments(datasetId)
 Client ->> Http : GET /datasets/{id}/comments
-Http ->> Client : string[]
-Client --> UseCase : string[]
-UseCase ->> Presenter : present(string[])
-Presenter ->> View : render(string[])
+Http ->> Client : DatasetComment[]
+Client --> UseCase : DatasetComment[]
+UseCase ->> Presenter : present(DatasetComment[])
+Presenter ->> View : render(DatasetComment[])
 View ->> User : Show dataset comments
 
 @enduml

@@ -18,6 +18,13 @@ package "Views" {
     +render(datasets)
     +onOpen(id)
   }
+  class DatasetCommentsView {
+    +render(comments)
+    +onShowComments(datasetId)
+  }
+  class DatasetListView {
+    +render()
+  }
 }
 
 package "Presenters" {
@@ -41,6 +48,8 @@ package "Controllers" {
     +getDatasetDescription(datasetId)
     +listOwnedDatasets(ownerId)
     +listQualityControllableDatasets(controllerId)
+    +loadDatasetComments(datasetId)
+    +getDatasetComents(datasetId)
   }
   class CatalogsController {
     +getCatalog(id)
@@ -59,6 +68,7 @@ package "Use-case Layer" {
     +getDatasetDescription(datasetId)
     +listOwnedDatasets(ownerId)
     +listQualityControllableDatasets(controllerId)
+    +getDatasetComments(datasetId)
   }
 }
 
@@ -79,12 +89,17 @@ AddDatasetSectionView --> AddDatasetFormView : compose
 AddDatasetFormView --> CatalogDetailPresenter : onSubmit(input)
 CatalogDetailPresenter --> DatasetsController : add/list datasets
 CatalogDetailPresenter --> CatalogsController : get catalog context
+CatalogDetailPresenter --> DatasetCommentsView : render(comments)
 
 DatasetsController --> DatasetUseCases : delegates
 CatalogsController --> DatasetUseCases : delegates shared calls
+DatasetsController --> DatasetUseCases : getDatasetComents(datasetId)
 
 DatasetsController --> UCContainer : reads dataset uc
 CatalogsController --> UCContainer : reads dataset uc
 UCContainer --> DatasetUseCases : provides implementation
+
+DatasetListView --> DatasetsController : loadDatasetComments(datasetId)
+DatasetUseCases --> DatasetDetailPresenter : present()
 
 @enduml

@@ -3,6 +3,8 @@ import type { CombinedClient } from "@/api/types";
 import catalogsJson from "@/mocks/mock_data/catalogs.json";
 import datasetsJson from "@/mocks/mock_data/datasets.json";
 import datasetDescriptionJson from "@/mocks/mock_data/dataset-descriptions.json";
+import datasetPreviewsJson from "@/mocks/mock_data/dataset-previews.json";
+import datasetCommentsJson from "@/mocks/mock_data/comments.json";
 // import qualityTagsJson from "@/mocks/mock_data/quality-tags.json";
 import type {
   Catalog,
@@ -14,6 +16,7 @@ import type {
   DatasetFilter,
   DatasetDescription,
   UpdateDatasetInput,
+  DatasetPreview,
 } from "@/domain/types/dataset";
 import type {
   CreateDataRelatedRequestInput,
@@ -29,6 +32,8 @@ import type { DataSchema } from "@/domain/types/dataset";
 const catalogs = catalogsJson as CatalogSummary[];
 const datasets = datasetsJson as Dataset[];
 const datasetDescriptions = datasetDescriptionJson as DatasetDescription[];
+const datasetPreviews = datasetPreviewsJson as DatasetPreview[];
+const datasetComments = datasetCommentsJson as DatasetComment[];
 // const qualityTags = qualityTagsJson as QualityTag[];
 const schemas = schemasJson as DataSchema[];
 
@@ -185,6 +190,20 @@ export function buildMockClient(): CombinedClient {
       await delay();
       const empty: DataRelatedRequest[] = [];
       return empty;
+    },
+    async getDatasetPreview(datasetId) {
+      await delay();
+      const preview = datasetPreviews.find((p) => p.datasetId === datasetId);
+      if (!preview) {
+        console.warn(`Preview not available for dataset ${datasetId}`);
+        return null;
+      }
+      return preview;
+    },
+    async getDatasetComments(datasetId) {
+      await delay();
+      const comments = datasetComments.filter((c) => c.datasetId === datasetId);
+      return comments;
     },
 
     // Auth

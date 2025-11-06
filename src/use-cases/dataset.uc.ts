@@ -8,7 +8,9 @@ import type {
   DatasetSummary,
   DatasetFilter,
   DatasetDescription,
+  DatasetPreview,
 } from "@/domain/types/dataset";
+import type { DatasetComment } from "@/domain/types/quality";
 
 export interface DatasetClient {
   listCatalogs(parentId?: string | null): Promise<CatalogSummary[]>;
@@ -37,6 +39,8 @@ export interface DatasetClient {
     schemaId: string,
   ): Promise<{ id: string }>;
   listDataSchemas(): Promise<DataSchema[]>;
+  getDatasetPreview(datasetId: string): Promise<DatasetPreview | null>;
+  getDatasetComments(datasetId: string): Promise<DatasetComment[]>;
 }
 
 export function buildDatasetUC(client: DatasetClient) {
@@ -60,5 +64,8 @@ export function buildDatasetUC(client: DatasetClient) {
     setDataSchemaForDataset: (datasetId: string, schemaId: string) =>
       client.setDataSchemaForDataset(datasetId, schemaId),
     listDataSchemas: () => client.listDataSchemas(),
+    getDatasetPreview: (datasetId: string) => client.getDatasetPreview(datasetId),
+    getDatasetComments: (datasetId: string) =>
+      client.getDatasetComments(datasetId),
   };
 }

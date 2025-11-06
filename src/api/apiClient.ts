@@ -8,6 +8,7 @@ import type {
   DatasetFilter,
   Dataset,
   UpdateDatasetInput,
+  DatasetPreview,
 } from "@/domain/types/dataset";
 import type {
   CreateDataRelatedRequestInput,
@@ -46,6 +47,10 @@ export function buildRealClient(http: Http): CombinedClient {
       http.get(`/datasets?userId=${ownerId}`),
     listQualityControllableDatasets: (controllerId: string) =>
       http.get(`/datasets/qualityControllable?controllerId=${controllerId}`),
+    getDatasetPreview: (datasetId: string) =>
+      http.get<DatasetPreview>(`/datasets/${datasetId}/preview`),
+    getDatasetComments: (datasetId: string) =>
+      http.get(`/datasets/${datasetId}/comments`),
 
     // quality
     addDatasetComment: (datasetId: string, input: CreateDatasetCommentInput) =>

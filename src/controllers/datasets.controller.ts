@@ -53,3 +53,11 @@ export async function setDataSchemaForDataset(
 export async function loadDataSchemas() {
   return uc.dataset.listDataSchemas();
 }
+
+export async function getDatasetPreview(datasetId: string) {
+  return uc.dataset.getDatasetPreview(datasetId);
+}
+
+export async function loadDatasetComments(datasetId: string) {
+  return uc.dataset.getDatasetComments(datasetId);
+}
