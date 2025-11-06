@@ -19,8 +19,7 @@ UseCase -> Client : getDatasetDescription(datasetId)
 Client ->> Http : GET /datasets/{id}/description
 Http ->> Client : DatasetDescription
 Client --> UseCase : DatasetDescription
-UseCase ->> Controller : DatasetDescription
-Controller ->> Presenter : present(DatasetDescription)
+UseCase ->> Presenter : present(DatasetDescription)
 Presenter ->> View : render(DatasetDescription)
 View ->> User : Show dataset description
 
