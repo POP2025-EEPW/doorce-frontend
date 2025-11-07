@@ -2,8 +2,9 @@
 title listQualityControllableDatasets use case
 autonumber
 
-actor User
+actor DataQualityManager as User
 
+participant "MainView" as MainView
 participant "Quality control view" as View
 participant "QualityControllableDatasetsPresenter" as Presenter
 participant "datasets.controller.ts" as Controller
@@ -11,19 +12,15 @@ participant "uc.dataset" as UseCase
 participant "CombinedClient" as Client
 participant "Dataset API\nGET /datasets/qualityControllable" as Http
 
-User -> View : Open quality controllable datasets
-View -> Presenter : mount(controllerId)
-Presenter -> Controller : loadQualityControllableDatasets(controllerId)
-Controller -> UseCase : listQualityControllableDatasets(controllerId)
+User ->> MainView : Open quality controllable datasets
+MainView ->> Controller : loadQualityControllableDatasets(controllerId)
+Controller ->> UseCase : listQualityControllableDatasets(controllerId)
 UseCase -> Client : listQualityControllableDatasets(controllerId)
-Client -> Http : GET /datasets/qualityControllable?controllerId={controllerId}
-Http --> Client : DatasetSummary[]
+Client ->> Http : GET /datasets/qualityControllable?controllerId={controllerId}
+Http ->> Client : DatasetSummary[]
 Client --> UseCase : DatasetSummary[]
-UseCase --> Controller : DatasetSummary[]
-Controller --> Presenter : DatasetSummary[]
-Presenter -> View : render quality controllable datasets
-View --> User : Show datasets list
+UseCase ->> Presenter : present(DatasetSummary[])
+Presenter ->> View : render(DatasetSummary[])
+View ->> User : Show datasets list
 
-@enduml
-
-
+@enduml                                                                      
