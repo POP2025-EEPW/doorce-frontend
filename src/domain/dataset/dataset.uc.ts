@@ -89,8 +89,6 @@ export default class DatasetUseCase {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
-          id: item.id,
-          title: item.title,
           description: item.description,
         });
       }, 1000);

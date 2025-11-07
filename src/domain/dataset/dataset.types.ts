@@ -39,7 +39,20 @@ export interface DatasetFilter {
 }
 
 export interface DatasetDescription {
-  id: ID;
-  title: string;
   description?: string;
+}
+
+export interface DataEntryPreview {
+  id: ID;
+  content: string;
+  createdAt: ISODateString;
+  updatedAt: ISODateString;
+}
+
+export interface DatasetPreview {
+  datasetId: ID;
+  title: string;
+  description: string;
+  entryCount: number;
+  sampleEntries: DataEntryPreview[];
 }

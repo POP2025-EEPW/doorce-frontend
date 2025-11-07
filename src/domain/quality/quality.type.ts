@@ -1,9 +1,13 @@
-import type { ID } from "../common.types";
+import type { ID, ISODateString } from "../common.types";
 
 export interface DatasetComment {
   id: ID;
+  datasetId: ID;
+  authorId: ID;
+  authorUsername: string;
   content: string;
-  priority: number;
+  createdAt: ISODateString;
+  updatedAt: ISODateString;
 }
 
 export interface CreateDatasetCommentDto {
