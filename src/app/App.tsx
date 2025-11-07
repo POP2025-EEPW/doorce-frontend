@@ -1,11 +1,12 @@
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryProvider } from "./providers/QueryProvider";
 import { AppRouter } from "@/app/router";
-import { queryClient } from "@/app/query";
+import { Toaster } from "@/ui/lib/components/ui/sonner";
 
 export function App() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <QueryProvider>
       <AppRouter />
-    </QueryClientProvider>
+      <Toaster richColors />
+    </QueryProvider>
   );
 }

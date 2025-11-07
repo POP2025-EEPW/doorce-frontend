@@ -5,12 +5,12 @@ autonumber
 actor "DataSupplier/\nDataQualityManager" as User
 
 participant "DatasetListView" as DatasetList
-participant "DatasetCommentsView" as View
-participant "DatasetDetailPresenter" as Presenter
 participant "datasets.controller" as Controller
 participant "dataset.uc" as UseCase
 participant "APIClient" as Client
 participant "Dataset API\nGET /datasets/{id}" as Http
+participant "DatasetDetailPresenter" as Presenter
+participant "DatasetCommentsView" as View
 
 User ->> DatasetList : Click on show comments
 DatasetList ->> Controller : loadDatasetComments(datasetId)

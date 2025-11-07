@@ -1,17 +1,16 @@
 import { Outlet } from "react-router-dom";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebarPresenter } from "@/presenters/sidebar/AppSidebar.presenter";
+import { SidebarProvider } from "@/ui/lib/components/ui/sidebar";
+import { SidebarView } from "@/ui/lib/components/sidebar/Sidebar.view";
+import { useAuth } from "@/application/auth/auth-store";
+import { useAuthController } from "@/application/auth/auth.controller";
 
 export function AppLayout() {
+  const { username } = useAuth();
+  const { logout } = useAuthController();
   return (
     <SidebarProvider>
-      <AppSidebarPresenter />
-      <main className="flex-1">
-        <div className="p-4">
-          <SidebarTrigger />
-          <Outlet />
-        </div>
-      </main>
+      <SidebarView username={username} onLogout={logout} />
+      <Outlet />
     </SidebarProvider>
   );
 }

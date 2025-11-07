@@ -25,6 +25,9 @@ package "Views" {
   class DatasetListView {
     +render()
   }
+  class CatalogsPageView {
+    +render()
+  }
 }
 
 package "Presenters" {
@@ -78,6 +81,21 @@ package "DI Container" {
   }
 }
 
+package "API" {
+  class DatasetAPI {
+    +GET /datasets/{id}
+    +POST /datasets
+    +GET /catalogs/{id}/datasets
+    +GET /catalogs/{id}
+    +GET /catalogs
+    +GET /datasets
+    +GET /datasets/{id}/description
+    +GET /users/{id}/datasets
+    +GET /users/{id}/quality-controllable-datasets
+    +GET /datasets/{id}/comments
+  }
+}
+
 DatasetDetailPresenter --> DatasetInfoView : render()
 DatasetInfoView --> DatasetDetailPresenter : props/events
 DatasetDetailPresenter --> DatasetsController : loadDataset(id)
@@ -89,17 +107,23 @@ AddDatasetSectionView --> AddDatasetFormView : compose
 AddDatasetFormView --> CatalogDetailPresenter : onSubmit(input)
 CatalogDetailPresenter --> DatasetsController : add/list datasets
 CatalogDetailPresenter --> CatalogsController : get catalog context
-CatalogDetailPresenter --> DatasetCommentsView : render(comments)
+DatasetDetailPresenter --> DatasetCommentsView : render(comments)
 
 DatasetsController --> DatasetUseCases : delegates
 CatalogsController --> DatasetUseCases : delegates shared calls
 DatasetsController --> DatasetUseCases : getDatasetComents(datasetId)
+DatasetsController --> DatasetUseCases : getDatasetPreview(id)
 
 DatasetsController --> UCContainer : reads dataset uc
 CatalogsController --> UCContainer : reads dataset uc
 UCContainer --> DatasetUseCases : provides implementation
 
 DatasetListView --> DatasetsController : loadDatasetComments(datasetId)
-DatasetUseCases --> DatasetDetailPresenter : present()
+CatalogsPageView --> DatasetsController :  loadDatasetPreview(datasetId)
+
+DatasetUseCases --> DatasetDetailPresenter : present(DatasetComment[])
+DatasetUseCases --> DatasetDetailPresenter : present(DatasetPreview)
+
+
 
 @enduml
