@@ -1,5 +1,5 @@
 import { type MenuItem } from "./sidebar.type";
-import { Folder, Table, Boxes, BadgeCheck } from "lucide-react";
+import { Folder, Table, Boxes, BadgeCheck, MessageSquare } from "lucide-react";
 
 export const MENU_ITEMS: MenuItem[] = [
   {
@@ -25,5 +25,11 @@ export const MENU_ITEMS: MenuItem[] = [
     url: "/quality-controll/datasets",
     icon: BadgeCheck,
     roles: ["DataQualityManager"],
+  },
+  {
+    title: "Data Related Requests",
+    url: "/datasets/requests",
+    icon: MessageSquare,
+    roles: ["DataSupplier", "MetadataManager", "DataQualityManager"],
   },
 ];

@@ -123,3 +123,53 @@ export default class DatasetUseCase {
     });
   }
 }
+export interface DataRelatedRequestPayload {
+  subject: string;
+  description: string;
+}
+
+export async function submitDataRelatedRequest(
+  datasetId: string,
+  payload: DataRelatedRequestPayload,
+) {
+  const url = `/api/datasets/${encodeURIComponent(datasetId)}/requests`;
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  const token = localStorage.getItem("authToken");
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(text ?? `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function listDataRelatedRequests(
+  datasetId: string,
+  page = 0,
+  pageSize = 20,
+) {
+  const params = new URLSearchParams({
+    page: String(page),
+    pageSize: String(pageSize),
+  });
+  const url = `/api/datasets/${encodeURIComponent(datasetId)}/requests?${params.toString()}`;
+  const headers: Record<string, string> = {};
+  const token = localStorage.getItem("authToken");
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const res = await fetch(url, { headers });
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(text ?? `HTTP ${res.status}`);
+  }
+  return res.json();
+}
