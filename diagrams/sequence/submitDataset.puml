@@ -1,0 +1,25 @@
+@startuml
+title submitDataset use case
+autonumber
+
+actor User
+participant "SubmitDatasetFormView" as View
+participant "DatasetController" as Controller
+participant "DatasetUseCase" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API\nPOST /datasets/{id}/submit" as Http
+participant "DatasetPresenter" as Presenter
+
+User ->> View : wypełnia i wysyła formularz
+View ->> Controller : submitDataset(datasetId, payload)
+Controller ->> UseCase : submitDataset(datasetId, payload)
+UseCase -> UseCase : validateSubmissionReady()
+UseCase ->> Client : submitDataset(datasetId, payload)
+Client ->> Http : POST /datasets/{id}/submit
+Http --> Client : 202 {submissionId,status}
+Client --> UseCase : {submissionId,status}
+UseCase --> Controller : SubmissionAccepted
+Controller -> Presenter : presentSubmitResult({submissionId,status})
+Presenter ->> View : renderSuccess()
+View --> User : komunikat o publikacji
+@enduml

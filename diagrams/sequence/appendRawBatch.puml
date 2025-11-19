@@ -1,0 +1,25 @@
+@startuml
+title appendRawBatch use case
+autonumber
+
+actor User
+participant "AddRawBatchModal" as View
+participant "DatasetController" as Controller
+participant "DatasetUseCase" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API\nPOST /datasets/{id}/raw-batches" as Http
+participant "DatasetPresenter" as Presenter
+
+User ->> View : wypełnia dane batcha
+View ->> Controller : appendRawBatch(datasetId, formData)
+Controller ->> UseCase : appendRawBatch(datasetId, formData)
+UseCase -> UseCase : validateBatchPayload()
+UseCase ->> Client : appendRawBatch(datasetId, formData)
+Client ->> Http : POST /datasets/{id}/raw-batches
+Http --> Client : 201 {batchId,version}
+Client --> UseCase : {batchId,version}
+UseCase --> Controller : BatchAppended
+Controller -> Presenter : presentBatchAppend(batchId,version)
+Presenter ->> View : closeModal()+refetch()
+View --> User : potwierdzenie dodania
+@enduml

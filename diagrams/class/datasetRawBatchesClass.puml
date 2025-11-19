@@ -1,0 +1,60 @@
+@startuml
+title Dataset Raw Batch & Submission - Class View (Clean Architecture)
+
+class SubmitDatasetFormView {
+  +submitDataset(datasetId, payload)
+}
+
+class DatasetDetailsView {
+  +listRawBatches(datasetId, cursor?)
+}
+
+class AddRawBatchModal {
+  +appendRawBatch(datasetId, formData)
+}
+
+class DatasetPresenter {
+  +presentSubmitResult(result)
+  +presentRawBatchPage(page)
+  +presentBatchAppend(batch)
+}
+
+class DatasetController {
+  +submitDataset(datasetId, payload)
+  +listRawBatches(datasetId, cursor?)
+  +appendRawBatch(datasetId, formData)
+}
+
+class DatasetUseCase {
+  +submitDataset(datasetId, payload)
+  +listRawBatches(datasetId, cursor?)
+  +appendRawBatch(datasetId, formData)
+  -validateSubmissionReady(dataset)
+  -validateBatchPayload(formData)
+}
+
+class CombinedClient {
+  +postSubmit(datasetId, payload)
+  +getRawBatches(datasetId, cursor?)
+  +postRawBatch(datasetId, formData)
+}
+
+class DatasetApi {
+  +POST /datasets/{id}/submit
+  +GET /datasets/{id}/raw-batches
+  +POST /datasets/{id}/raw-batches
+}
+
+SubmitDatasetFormView --> DatasetController
+DatasetDetailsView --> DatasetController
+AddRawBatchModal --> DatasetController
+
+DatasetController --> DatasetUseCase
+DatasetUseCase --> CombinedClient
+CombinedClient ..> DatasetApi : HTTP
+
+DatasetController --> DatasetPresenter : results
+DatasetPresenter --> SubmitDatasetFormView : renderSubmit()
+DatasetPresenter --> DatasetDetailsView : renderRawBatches()
+DatasetPresenter --> AddRawBatchModal : renderAppendResult()
+@enduml

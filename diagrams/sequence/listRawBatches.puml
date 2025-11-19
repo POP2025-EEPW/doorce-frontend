@@ -1,0 +1,24 @@
+@startuml
+title listRawBatches use case
+autonumber
+
+actor User
+participant "DatasetDetailsView" as View
+participant "DatasetController" as Controller
+participant "DatasetUseCase" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API\nGET /datasets/{id}/raw-batches" as Http
+participant "DatasetPresenter" as Presenter
+
+User ->> View : otwiera zakładkę Raw Batches
+View ->> Controller : listRawBatches(datasetId, cursor)
+Controller ->> UseCase : listRawBatches(datasetId, cursor)
+UseCase ->> Client : listRawBatches(datasetId, cursor)
+Client ->> Http : GET /datasets/{id}/raw-batches?cursor=X
+Http --> Client : 200 {items,nextCursor}
+Client --> UseCase : {items,nextCursor}
+UseCase --> Controller : RawBatchPage
+Controller -> Presenter : presentRawBatchPage(items,nextCursor)
+Presenter ->> View : renderBatches(items,nextCursor)
+View --> User : lista batchy
+@enduml
