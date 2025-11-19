@@ -6,10 +6,16 @@ skinparam packageStyle rectangle
 package "Views" {
   class EditDatasetForm {
     +render(dataset)
+    +handleSubmit()
   }
 
   class SelectDataSchemaModal {
     +render(Schemas[])
+    +onConfirm()
+  }
+  class AddDatasetCommentForm {
+    +render()
+    +handleSubmit()
   }
 }
 
@@ -20,6 +26,10 @@ package "Presenters" {
 
   class SelectDataSchemaModalPresenter {
     +renderModal(Schemas[])
+  }
+
+  class AddDatasetCommentPresenter {
+    +present(result)
   }
 }
 
@@ -36,6 +46,9 @@ package "Controllers" {
     +setDataSchemaForDataset(datasetId, schemaId)
     +loadDataSchemas()
   }
+  class DatasetCommentController {
+    +submitDatasetComment(datasetId, input)
+    }
 }
 
 package "Use-case Layer" {
@@ -52,6 +65,12 @@ interface DatasetUseCases {
     +listQualityControllableDatasets(controllerId)
     +listDataSchemas()
   }
+ interface QualityUseCases {
+    +addDatasetComment(datasetId, input)
+    +listDatasetComments(datasetId)
+    +submitDataRelatedRequest()
+    +listDataRelatedRequests()
+  }
 }
 
 package "DI Container" {
@@ -67,8 +86,11 @@ UCContainer --> DatasetEditPresenter
 UCContainer --> SelectDataSchemaModalPresenter
 DatasetEditPresenter --> EditDatasetForm
 SelectDataSchemaModalPresenter --> SelectDataSchemaModal
-
+DatasetCommentController --> UCContainer
+AddDatasetCommentPresenter --> AddDatasetCommentForm
+UCContainer --> AddDatasetCommentPresenter
+AddDatasetCommentForm --> DatasetCommentController
 
 UCContainer --> DatasetUseCases : provides implementation
-
+UCContainer --> QualityUseCases : provides implementation
 @enduml
