@@ -1,28 +1,29 @@
+import type { Dataset, DatasetPreview } from "@/domain/dataset/dataset.types";
 import type {
-  Dataset,
-  DatasetDescription,
-  DatasetPreview,
-} from "@/domain/dataset/dataset.types.ts";
-import type { DatasetComment } from "@/domain/quality/quality.type.ts";
+  CreateDatasetCommentDto,
+  DatasetComment,
+} from "@/domain/quality/quality.type";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/ui/lib/components/ui/card.tsx";
-import { Separator } from "@/ui/lib/components/ui/separator.tsx";
-import { Button } from "@/ui/lib/components/ui/button.tsx";
-import { Badge } from "@/ui/lib/components/ui/badge.tsx";
+} from "@/ui/lib/components/ui/card";
+import { Separator } from "@/ui/lib/components/ui/separator";
+import { Button } from "@/ui/lib/components/ui/button";
+import { Badge } from "@/ui/lib/components/ui/badge";
 import { useState } from "react";
-import { DatasetPreviewView } from "./DatasetPreview.view.tsx";
+import { DatasetPreviewView } from "./DatasetPreview.view";
+import { AddDatasetComment } from "@/ui/quality/components/AddDatasetComment.view.tsx";
 
-interface DatasetDescriptionView {
+interface DatasetDescriptionViewProps {
   dataset: Dataset;
-  description?: DatasetDescription;
   comments: DatasetComment[];
   onShowPreview: (
     previewId: string,
   ) => Promise<DatasetPreview | null | undefined>;
+  onAddComment: (comment: CreateDatasetCommentDto) => void;
+  isAddingComment?: boolean;
   onBack?: () => void;
 }
 
@@ -30,8 +31,10 @@ export function DatasetDescriptionView({
   dataset,
   comments,
   onShowPreview,
+  onAddComment,
+  isAddingComment = false,
   onBack,
-}: DatasetDescriptionView) {
+}: DatasetDescriptionViewProps) {
   const [preview, setPreview] = useState<DatasetPreview | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -83,9 +86,11 @@ export function DatasetDescriptionView({
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-2xl">{dataset.title}</CardTitle>
-            <Badge variant={getStatusVariant(dataset.status)}>
-              {dataset.status}
-            </Badge>
+            {dataset.status && (
+              <Badge variant={getStatusVariant(dataset.status)}>
+                {dataset.status}
+              </Badge>
+            )}
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -193,6 +198,12 @@ export function DatasetDescriptionView({
           )}
         </CardContent>
       </Card>
+
+      {/* Add Comment Card */}
+      <AddDatasetComment
+        onSubmit={onAddComment}
+        isSubmitting={isAddingComment}
+      />
     </div>
   );
 }

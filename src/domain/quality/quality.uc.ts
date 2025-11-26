@@ -25,7 +25,7 @@ export default class QualityUseCase {
     );
 
     if (response.error) {
-      throw new Error("error/add/dataset");
+      throw new Error("error/add/comment");
     }
   }
 
@@ -78,7 +78,6 @@ export default class QualityUseCase {
         },
       },
     );
-    console.log(datasetId + "dadadadada");
     if (response.error) {
       throw new Error("error/load/dataset-comments");
     }

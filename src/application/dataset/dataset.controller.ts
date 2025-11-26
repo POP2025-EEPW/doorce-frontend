@@ -6,6 +6,7 @@ import type {
   DatasetFilter,
   DatasetPreview,
 } from "@/domain/dataset/dataset.types";
+import type { CreateDatasetCommentDto } from "@/domain/quality/quality.type";
 import DatasetUseCase from "@/domain/dataset/dataset.uc";
 import QualityUseCase from "@/domain/quality/quality.uc";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -152,6 +153,22 @@ export function useDatasetController(
     },
   });
 
+  // Add comment mutation
+  const addCommentMutation = useMutation({
+    mutationFn: (comment: CreateDatasetCommentDto) =>
+      qualityUseCase.addDatasetComment(datasetId ?? "0", comment),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["getDatasetComments", datasetId],
+      });
+      toast.success("Comment added");
+    },
+    onError: (error) => {
+      toast.error(presenter.getErrorMessage(error));
+      console.error("addComment error", error);
+    },
+  });
+
   const onAddDatasetClick = useCallback(
     (dataset: CreateDatasetDto) => {
       addDatasetMutation.mutate(dataset);
@@ -166,6 +183,13 @@ export function useDatasetController(
     [editDatasetMutation],
   );
 
+  const onAddComment = useCallback(
+    (comment: CreateDatasetCommentDto) => {
+      addCommentMutation.mutate(comment);
+    },
+    [addCommentMutation],
+  );
+
   const setSelectedDatasetId = useCallback(
     (newDatasetId: string) => {
       navigate(`/dataset/${newDatasetId}`);
@@ -177,12 +201,6 @@ export function useDatasetController(
   const onShowPreview = useCallback(
     async (previewId: string): Promise<DatasetPreview | null | undefined> => {
       try {
-        // TODO: Implement actual API call when available
-        // const preview = await datasetUseCase.getDatasetPreview(previewId);
-        // return presenter.getDatasetPreview(preview);
-
-        // Temporary mock implementation
-
         await Promise.resolve();
         return {
           datasetId: previewId,
@@ -218,11 +236,13 @@ export function useDatasetController(
     isCommentsLoading,
     isAddingDataset: addDatasetMutation.isPending,
     isEditingDataset: editDatasetMutation.isPending,
+    isAddingComment: addCommentMutation.isPending,
 
     // Actions
     setSelectedDatasetId,
     onAddDatasetClick,
     onEditDatasetClick,
+    onAddComment,
     onShowPreview,
     onBack,
   };
