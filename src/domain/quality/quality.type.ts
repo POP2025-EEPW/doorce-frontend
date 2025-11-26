@@ -14,3 +14,7 @@ export interface CreateDatasetCommentDto {
   content: string;
   priority: number;
 }
+
+export interface SetQualityTagDto {
+  qualityTag: string;
+}

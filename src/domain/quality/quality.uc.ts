@@ -1,5 +1,9 @@
 import { createApiClient } from "@/api/client";
-import type { CreateDatasetCommentDto, DatasetComment } from "./quality.type";
+import type {
+  CreateDatasetCommentDto,
+  DatasetComment,
+  SetQualityTagDto,
+} from "./quality.type";
 
 export default class QualityUseCase {
   constructor(private readonly client: ReturnType<typeof createApiClient>) {}
@@ -7,14 +11,60 @@ export default class QualityUseCase {
   async addDatasetComment(
     datasetId: string,
     comment: CreateDatasetCommentDto,
-  ): Promise<string> {
-    console.log(datasetId, comment);
+  ): Promise<void> {
+    const response = await this.client.POST(
+      "/api/datasets/{datasetId}/comments",
+      {
+        params: {
+          path: {
+            datasetId: datasetId,
+          },
+        },
+        body: comment,
+      },
+    );
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve("UNNECESARY DATA");
-      }, 1000);
-    });
+    if (response.error) {
+      throw new Error("error/add/dataset");
+    }
+  }
+
+  async setQualityTag(
+    datasetId: string,
+    qualityTag: SetQualityTagDto,
+  ): Promise<void> {
+    const response = await this.client.PUT(
+      "/api/quality/datasets/{datasetId}/quality-tag",
+      {
+        params: {
+          path: {
+            datasetId: datasetId,
+          },
+        },
+        body: qualityTag,
+      },
+    );
+
+    if (response.error) {
+      throw new Error("error/set/quality-tag");
+    }
+  }
+
+  async markDataEntryErroneous(entryId: string): Promise<void> {
+    const response = await this.client.POST(
+      "/api/quality/entries/{entryId}/mark-erroneous",
+      {
+        params: {
+          path: {
+            entryId: entryId,
+          },
+        },
+      },
+    );
+
+    if (response.error) {
+      throw new Error("error/mark/entry-erroneous");
+    }
   }
 
   async loadDatasetComments(datasetId: string): Promise<DatasetComment[]> {
