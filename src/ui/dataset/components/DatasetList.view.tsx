@@ -1,4 +1,4 @@
-import { MoreHorizontal, Pencil } from "lucide-react";
+import { MoreHorizontal, Pencil, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import type { DatasetSummary } from "@/domain/dataset/dataset.types";
@@ -18,8 +18,11 @@ import {
 import { Separator } from "@/ui/lib/components/ui/separator";
 
 import { EditDatasetModalView } from "./EditDatasetForm.view";
+import { SelectDataSchemaModalView } from "./SelectDataSchemaModal.view";
 import { useEditDatasetController } from "@/application/dataset/editDataset.controller";
-import { useEditDatasetPresenter } from "@/application/dataset/editDatasetPresenter.ts";
+import { useEditDatasetPresenter } from "@/application/dataset/editDatasetPresenter";
+import { useSetDatasetSchemaController } from "@/application/schema/setDataSchema.controller.ts";
+import { useSetDatasetSchemaPresenter } from "@/application/schema/setDatasetSchemaPresenter";
 
 interface DatasetListViewProps {
   datasets: DatasetSummary[];
@@ -33,14 +36,13 @@ export function DatasetListView(props: DatasetListViewProps) {
 
   const safeDatasets = Array.isArray(datasets) ? datasets : [];
 
-  // Controller - manages state and business logic
+  // Edit controller
   const editController = useEditDatasetController({
     onDatasetUpdated: () => {
       onDatasetUpdated?.();
     },
   });
 
-  // Presenter - transforms controller data for View
   const { viewProps: editModalViewProps } = useEditDatasetPresenter({
     dataset: editController.selectedDataset,
     isOpen: editController.isModalOpen,
@@ -49,6 +51,26 @@ export function DatasetListView(props: DatasetListViewProps) {
     schemaName: editController.schemaName,
     onClose: editController.closeEditModal,
     onSubmit: editController.submitEdit,
+  });
+
+  // Set schema controller
+  const schemaController = useSetDatasetSchemaController({
+    onSchemaUpdated: () => {
+      onDatasetUpdated?.();
+    },
+  });
+
+  const { viewProps: schemaModalViewProps } = useSetDatasetSchemaPresenter({
+    isModalOpen: schemaController.isModalOpen,
+    selectedDataset: schemaController.selectedDataset,
+    schemas: schemaController.schemas,
+    selectedSchemaId: schemaController.selectedSchemaId,
+    isLoadingSchemas: schemaController.isLoadingSchemas,
+    isLoadingDataset: schemaController.isLoadingDataset,
+    isSaving: schemaController.isSaving,
+    onSelectSchema: schemaController.selectSchema,
+    onConfirm: schemaController.confirmSchema,
+    onClose: schemaController.closeSchemaModal,
   });
 
   return (
@@ -66,14 +88,13 @@ export function DatasetListView(props: DatasetListViewProps) {
                     {dataset.title}
                   </CardTitle>
 
-                  {/* Dropdown menu */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 shrink-0 -mt-1 -mr-2"
-                        onClick={(e) => e.stopPropagation()} // Prevent card click
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
@@ -81,12 +102,21 @@ export function DatasetListView(props: DatasetListViewProps) {
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevent card click
+                          e.stopPropagation();
                           editController.openEditModal(dataset);
                         }}
                       >
                         <Pencil className="mr-2 h-4 w-4" />
                         Edit dataset
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          schemaController.openSchemaModal(dataset);
+                        }}
+                      >
+                        <FileText className="mr-2 h-4 w-4" />
+                        Set schema
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -108,8 +138,8 @@ export function DatasetListView(props: DatasetListViewProps) {
         )}
       </div>
 
-      {/* Edit Modal */}
       <EditDatasetModalView {...editModalViewProps} />
+      <SelectDataSchemaModalView {...schemaModalViewProps} />
     </>
   );
 }

@@ -52,6 +52,21 @@ export default class DatasetUseCase {
     return result;
   }
 
+  async setSchema(datasetId: string, schemaId: string | null): Promise<void> {
+    const response = await this.client.PUT("/api/datasets/{id}/schema", {
+      params: {
+        path: { id: datasetId },
+      },
+      body: {
+        id: schemaId ?? undefined,
+      },
+    });
+
+    if (!response.response.ok) {
+      throw new Error("Failed to set dataset schema");
+    }
+  }
+
   async listDatasets(
     filter?: DatasetFilter,
     page = 1,
