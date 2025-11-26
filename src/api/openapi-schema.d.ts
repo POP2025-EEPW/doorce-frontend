@@ -4,6 +4,71 @@
  */
 
 export interface paths {
+  "/api/quality/datasets/{datasetId}/quality-tag": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Set quality tag for dataset */
+    put: operations["setQualityTag"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["getDataset"];
+    put: operations["editDataset"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{id}/schema": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["setDataSchema"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{datasetId}/entries/{entryId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["editDataEntry"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/users": {
     parameters: {
       query?: never;
@@ -20,7 +85,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/datasets": {
+  "/api/quality/entries/{entryId}/mark-suspicious": {
     parameters: {
       query?: never;
       header?: never;
@@ -29,7 +94,124 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    /** Mark data entry as suspicious */
+    post: operations["markDataEntrySuspicious"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quality/entries/{entryId}/mark-erroneous": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Mark data entry as erroneous */
+    post: operations["markDataEntryErroneous"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quality/datasets/{datasetId}/register-raw": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Register raw dataset */
+    post: operations["registerRawDataset"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quality/datasets/{datasetId}/raw-batches": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List raw data batches */
+    get: operations["listRawBatches"];
+    put?: never;
+    /** Append raw data batch */
+    post: operations["appendRawBatch"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["listDatasets"];
+    put?: never;
     post: operations["addDataset"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{datasetId}/requests": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["listDataRelatedRequests"];
+    put?: never;
+    post: operations["submitDataRelatedRequest"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{datasetId}/entries": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["addDataEntry"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{datasetId}/comments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["listDatasetComments"];
+    put?: never;
+    post: operations["addDatasetComment"];
     delete?: never;
     options?: never;
     head?: never;
@@ -68,14 +250,81 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/datasets/{id}": {
+  "/api/quality/datasets/{datasetId}/raw-download-link": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["getDataset"];
+    /** Get raw data download link */
+    get: operations["getRawDownloadLink"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quality/datasets/{datasetId}/raw-availability": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Check raw data availability */
+    get: operations["checkRawAvailability"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quality/alerts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List quality validity alerts */
+    get: operations["listQualityValidityAlerts"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/qualityControllable": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["getQualityControllableDatasets"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/ownedby": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["listOwnedDatasets"];
     put?: never;
     post?: never;
     delete?: never;
@@ -136,6 +385,21 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    SetQualityTagRequest: {
+      qualityTag: string;
+    };
+    DatasetEditionRequest: {
+      title: string;
+      description: string;
+    };
+    Schema: {
+      /** Format: uuid */
+      id?: string;
+    };
+    DataEntryRequest: {
+      content: components["schemas"]["JsonNode"];
+    };
+    JsonNode: Record<string, never>;
     UserRegistrationRequest: {
       username: string;
       password: string;
@@ -152,6 +416,16 @@ export interface components {
     DatasetCreationRequest: {
       title: string;
       description: string;
+      qualityControllable?: boolean;
+      /** Format: uuid */
+      schemaId: string;
+    };
+    SubmitDataRelatedRequest: {
+      subject: string;
+      description: string;
+    };
+    AddDatasetCommentRequest: {
+      content: string;
     };
     AddCatalogRequest: {
       /** Format: uuid */
@@ -176,6 +450,133 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  setQualityTag: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SetQualityTagRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  getDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  editDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DatasetEditionRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  setDataSchema: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["Schema"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  editDataEntry: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+        entryId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DataEntryRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
   registerUser: {
     parameters: {
       query?: never;
@@ -200,16 +601,286 @@ export interface operations {
       };
     };
   };
-  addDataset: {
+  markDataEntrySuspicious: {
     parameters: {
       query?: never;
       header?: never;
+      path: {
+        entryId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  markDataEntryErroneous: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        entryId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  registerRawDataset: {
+    parameters: {
+      query: {
+        rawDataUrl: string;
+      };
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listRawBatches: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  appendRawBatch: {
+    parameters: {
+      query: {
+        batchName: string;
+        dataUrl: string;
+        sizeInBytes?: number;
+      };
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listDatasets: {
+    parameters: {
+      query?: {
+        title?: string;
+        page?: number;
+        pageSize?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  addDataset: {
+    parameters: {
+      query?: never;
+      header?: {
+        Authorization?: string;
+      };
       path?: never;
       cookie?: never;
     };
     requestBody: {
       content: {
         "application/json": components["schemas"]["DatasetCreationRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listDataRelatedRequests: {
+    parameters: {
+      query?: {
+        page?: number;
+        pageSize?: number;
+      };
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  submitDataRelatedRequest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SubmitDataRelatedRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  addDataEntry: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DataEntryRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listDatasetComments: {
+    parameters: {
+      query?: {
+        page?: number;
+        pageSize?: number;
+      };
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  addDatasetComment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AddDatasetCommentRequest"];
       };
     };
     responses: {
@@ -294,13 +965,100 @@ export interface operations {
       };
     };
   };
-  getDataset: {
+  getRawDownloadLink: {
     parameters: {
       query?: never;
       header?: never;
       path: {
-        id: string;
+        datasetId: string;
       };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  checkRawAvailability: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listQualityValidityAlerts: {
+    parameters: {
+      query?: {
+        datasetId?: string;
+        unresolvedOnly?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  getQualityControllableDatasets: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listOwnedDatasets: {
+    parameters: {
+      query: {
+        userId: string;
+      };
+      header?: never;
+      path?: never;
       cookie?: never;
     };
     requestBody?: never;
