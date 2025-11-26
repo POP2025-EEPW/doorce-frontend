@@ -20,6 +20,8 @@ export interface Dataset extends DatasetSummary {
 export interface CreateDatasetDto {
   title: string;
   description: string;
+  qualityControllable: boolean;
+  schemaId: string;
 }
 
 export interface UpdateDatasetDto {
