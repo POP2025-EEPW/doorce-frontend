@@ -23,12 +23,14 @@ export default class DatasetUseCase {
   }
 
   async editDataset(id: string, dataset: UpdateDatasetDto): Promise<void> {
-    console.log(id, dataset);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
+    const response = await this.client.PUT("/api/datasets/{id}", {
+      params: { path: { id } },
+      body: dataset,
     });
+
+    if (response.error) {
+      throw new Error("error/edit/dataset");
+    }
   }
 
   async getDataset(id: string): Promise<Dataset> {

@@ -9,7 +9,6 @@ export default function DatasetDescriptionPage() {
 
   const {
     currentDataset,
-    datasetDescription,
     datasetComments,
     isCurrentDatasetLoading,
     isDescriptionLoading,
@@ -50,7 +49,6 @@ export default function DatasetDescriptionPage() {
     <main className="flex-1">
       <DatasetDescriptionView
         dataset={currentDataset}
-        description={datasetDescription}
         comments={datasetComments}
         onShowPreview={onShowPreview}
         onAddComment={onAddComment}
