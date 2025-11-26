@@ -78,21 +78,22 @@ export default class DatasetUseCase {
   }
 
   async getDatasetDescription(datasetId: string): Promise<DatasetDescription> {
-    const result = datasets as Dataset[];
+    const response = await this.client.GET("/api/datasets/{id}", {
+      params: { path: { id: datasetId } },
+    });
 
-    const item = result.find((item) => item.id === datasetId);
-
-    if (!item) {
-      throw new Error("no-data/get/description");
+    if (response.error) {
+      throw new Error("error/get/dataset");
     }
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          description: item.description,
-        });
-      }, 1000);
-    });
+    if (!response.data) {
+      throw new Error("no-data/get/dataset");
+    }
+
+    //TODO: Consult with backend about bad reutrns
+    const result = response.data as unknown as Dataset;
+
+    return { description: result.description } as DatasetDescription;
   }
 
   async listOwnedDatasets(ownerId: string): Promise<DatasetSummary[]> {

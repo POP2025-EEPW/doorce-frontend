@@ -68,13 +68,21 @@ export default class QualityUseCase {
   }
 
   async loadDatasetComments(datasetId: string): Promise<DatasetComment[]> {
-    const module = await import("@/mocks/comments.json");
-    const mockComments = module.default as unknown as DatasetComment[];
+    const response = await this.client.GET(
+      "/api/datasets/{datasetId}/comments",
+      {
+        params: {
+          path: {
+            datasetId: datasetId,
+          },
+        },
+      },
+    );
+    console.log(datasetId + "dadadadada");
+    if (response.error) {
+      throw new Error("error/load/dataset-comments");
+    }
 
-    const filtered = mockComments.filter((c) => c.datasetId === datasetId);
-
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(filtered), 800);
-    });
+    return response.data as unknown as DatasetComment[];
   }
 }
