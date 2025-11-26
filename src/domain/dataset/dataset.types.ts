@@ -15,6 +15,7 @@ export interface Dataset extends DatasetSummary {
   schemaId?: ID | null;
   createdAt?: ISODateString;
   updatedAt?: ISODateString;
+  qualityTag?: string;
 }
 
 export interface CreateDatasetDto {

@@ -15,7 +15,8 @@ participant "Dataset API" as Http
 
 == Open Mark As Erroneous Form ==
 User -> View : Clicked "Mark as Erroneous" button
-View -> Presenter : Present Mark as Erroneous form
+View -> Controller : Show Mark as Erroneous form
+Controller -> Presenter : Show Mark as Erroneous form
 Presenter -> FormView : render()
 FormView ->> User : Show Mark as Erroneous form
 == Submit Data Entry As Erroneous ==

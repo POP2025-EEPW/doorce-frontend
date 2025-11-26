@@ -45,7 +45,8 @@ export default class QualityUseCase {
       },
     );
 
-    if (response.error) {
+    if (!response.response.ok) {
+      console.error("Error updating quality tag");
       throw new Error("error/set/quality-tag");
     }
   }

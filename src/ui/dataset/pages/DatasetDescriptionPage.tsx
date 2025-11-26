@@ -1,5 +1,6 @@
 import { DatasetDescriptionView } from "../components/DatasetDescription.view";
 import { useDatasetController } from "@/application/dataset/dataset.controller";
+import { useDataQualityController } from "@/application/dataquality/dataQuality.controller.ts";
 import { useParams } from "react-router-dom";
 import { Skeleton } from "@/ui/lib/components/ui/skeleton";
 
@@ -9,15 +10,20 @@ export default function DatasetDescriptionPage() {
 
   const {
     currentDataset,
-    datasetComments,
     isCurrentDatasetLoading,
     isDescriptionLoading,
-    isCommentsLoading,
-    isAddingComment,
     onShowPreview,
-    onAddComment,
     onBack,
   } = useDatasetController(datasetId);
+
+  const {
+    comments,
+    isCommentsLoading,
+    isAddingComment,
+    isSettingQualityTag,
+    onAddComment,
+    onSetQualityTag,
+  } = useDataQualityController(datasetId);
 
   const isLoading =
     isCurrentDatasetLoading || isDescriptionLoading || isCommentsLoading;
@@ -49,10 +55,12 @@ export default function DatasetDescriptionPage() {
     <main className="flex-1">
       <DatasetDescriptionView
         dataset={currentDataset}
-        comments={datasetComments}
+        comments={comments}
         onShowPreview={onShowPreview}
         onAddComment={onAddComment}
+        onSetQualityTag={onSetQualityTag}
         isAddingComment={isAddingComment}
+        isSettingQualityTag={isSettingQualityTag}
         onBack={onBack}
       />
     </main>

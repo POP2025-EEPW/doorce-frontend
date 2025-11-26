@@ -15,6 +15,7 @@ import { Badge } from "@/ui/lib/components/ui/badge";
 import { useState } from "react";
 import { DatasetPreviewView } from "./DatasetPreview.view";
 import { AddDatasetComment } from "@/ui/quality/components/AddDatasetComment.view.tsx";
+import { AddQualityTagModal } from "@/ui/quality/components/AddQualityTagModal.tsx";
 
 interface DatasetDescriptionViewProps {
   dataset: Dataset;
@@ -23,7 +24,9 @@ interface DatasetDescriptionViewProps {
     previewId: string,
   ) => Promise<DatasetPreview | null | undefined>;
   onAddComment: (comment: CreateDatasetCommentDto) => void;
+  onSetQualityTag: (tag: string) => void;
   isAddingComment?: boolean;
+  isSettingQualityTag?: boolean;
   onBack?: () => void;
 }
 
@@ -32,12 +35,15 @@ export function DatasetDescriptionView({
   comments,
   onShowPreview,
   onAddComment,
+  onSetQualityTag,
   isAddingComment = false,
+  isSettingQualityTag = false,
   onBack,
 }: DatasetDescriptionViewProps) {
   const [preview, setPreview] = useState<DatasetPreview | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isQualityTagModalOpen, setIsQualityTagModalOpen] = useState(false);
 
   const handlePreviewClick = async () => {
     setError(null);
@@ -144,6 +150,42 @@ export function DatasetDescriptionView({
         </CardContent>
       </Card>
 
+      {/* Quality Tag Card */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg">Quality Tag</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {dataset.qualityTag ? (
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-muted-foreground text-sm">
+                  Current tag:{" "}
+                </span>
+                <Badge variant="secondary" className="text-base">
+                  {dataset.qualityTag}
+                </Badge>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => setIsQualityTagModalOpen(true)}
+              >
+                Update Tag
+              </Button>
+            </div>
+          ) : (
+            <div className="flex flex-col items-start gap-3">
+              <p className="text-sm text-muted-foreground italic">
+                No quality tag set for this dataset.
+              </p>
+              <Button onClick={() => setIsQualityTagModalOpen(true)}>
+                Set Quality Tag
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Preview Card */}
       <Card>
         <CardHeader className="pb-2">
@@ -203,6 +245,15 @@ export function DatasetDescriptionView({
       <AddDatasetComment
         onSubmit={onAddComment}
         isSubmitting={isAddingComment}
+      />
+
+      {/* Quality Tag Modal */}
+      <AddQualityTagModal
+        open={isQualityTagModalOpen}
+        onOpenChange={setIsQualityTagModalOpen}
+        onSubmit={onSetQualityTag}
+        isSubmitting={isSettingQualityTag}
+        currentTag={dataset.qualityTag}
       />
     </div>
   );

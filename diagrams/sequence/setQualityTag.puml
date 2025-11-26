@@ -15,7 +15,8 @@ participant "Dataset API" as Http
 
 == Open Quality Tag Form View ==
 User -> View : Clicked "Set quality tag" button
-View -> Presenter : Present Quality tag form
+View -> Controller : Present Quality tag form
+Controller -> Presenter : Show quality Tag form
 Presenter -> TagView : render()
 TagView -> User : Show quality tag form
 == Submit Quality Tag Data ==
