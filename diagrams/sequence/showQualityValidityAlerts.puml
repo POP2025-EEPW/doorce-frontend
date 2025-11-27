@@ -1,0 +1,29 @@
+@startuml
+title showQualityValidityAlerts use case
+autonumber
+
+actor "Data Quality Manager" as DataQualityManager
+
+participant "DatasetListView" as DatasetListView
+participant "DatasetAlertsListView" as View
+participant "RegisterDistributionForm" as Form
+participant "DatasetAlertsListPresenter" as Presenter
+participant "QualityController" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "API" as Http
+
+
+DataQualityManager -> DatasetListView : Clicked "Show Alerts" button on dataset
+DatasetListView -> Controller: onShowAlerts(datasetId)
+Controller -> UseCase : listQualityValidityAlerts(datasetId)
+UseCase -> Client : listQualityValidityAlerts(datasetId)
+Client -> Http : GET api/quality/alerts
+Http --> Client : QualityValidityAlert[]
+Client --> UseCase : QualityValidityAlert[]
+UseCase --> Controller : QualityValidityAlert[]
+Controller -> Presenter: openDatasetAlertsListView(QualityValidityAlert[])
+Presenter -> View : render(QualityValidityAlert[])
+View --> DataQualityManager : Show dataset alerts list
+
+@enduml

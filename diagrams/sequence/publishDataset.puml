@@ -1,0 +1,28 @@
+@startuml
+title publishDataset use case
+autonumber
+
+actor "Acquisition App User" as User
+
+participant "DatasetsListView" as View
+participant "DatasetsPresenter" as Presenter
+participant "DatasetsController" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "API" as Http
+
+User -> View : Clicks "Publish" on dataset
+View -> Controller: publishDataset(datasetId)
+Controller -> UseCase : publishDataset(datasetId)
+UseCase -> Client : publishDataset(datasetId)
+Client -> Http : POST /datasets/{datasetId}/publish
+Http --> Client : Dataset
+Client --> UseCase : Dataset
+UseCase --> Controller : Dataset
+Controller --> Presenter : updateDataset(datasetId, Dataset)
+Presenter -> View : render(Dataset[])
+View --> User : Show updated datasets list
+
+@enduml
+
+
