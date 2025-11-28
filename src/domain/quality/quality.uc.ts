@@ -31,13 +31,11 @@ export default class QualityUseCase {
         throw new Error("error/set/quality-tag");
       }
 
-      // Use case calls presenter on success
       this.outputPort.presentSetQualityTagSuccess();
     } catch (error) {
-      // Use case calls presenter on error
       console.log("usecase");
       this.outputPort.presentSetQualityTagError(error);
-      throw error; // Re-throw so React Query knows it failed
+      throw error;
     }
   }
 
@@ -78,10 +76,6 @@ export default class QualityUseCase {
         },
       );
 
-      console.log("loadDatasetComments response:", response);
-      console.log("response.error:", response.error);
-      console.log("response.data:", response.data);
-
       if (response.error) {
         throw new Error("error/load/dataset-comments");
       }
@@ -92,7 +86,6 @@ export default class QualityUseCase {
 
       return comments;
     } catch (error) {
-      console.log("loadDatasetComments caught error:", error);
       this.outputPort.presentLoadCommentsError(error);
       throw error;
     }

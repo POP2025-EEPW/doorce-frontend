@@ -1,5 +1,8 @@
+// ui/dataset/components/DatasetList.view.tsx
+import { useEffect } from "react";
 import { MoreHorizontal, Pencil, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import type { DatasetSummary } from "@/domain/dataset/dataset.types";
 import {
@@ -20,9 +23,7 @@ import { Separator } from "@/ui/lib/components/ui/separator";
 import { EditDatasetModalView } from "./EditDatasetForm.view";
 import { SelectDataSchemaModalView } from "./SelectDataSchemaModal.view";
 import { useEditDatasetController } from "@/application/dataset/editDataset.controller";
-import { useEditDatasetPresenter } from "@/application/dataset/editDatasetPresenter";
-import { useSetDatasetSchemaController } from "@/application/schema/setDataSchema.controller.ts";
-import { useSetDatasetSchemaPresenter } from "@/application/schema/setDatasetSchemaPresenter";
+import { useSetDatasetSchemaController } from "@/application/schema/setDataSchema.controller";
 
 interface DatasetListViewProps {
   datasets: DatasetSummary[];
@@ -31,47 +32,56 @@ interface DatasetListViewProps {
 
 export function DatasetListView(props: DatasetListViewProps) {
   const { datasets, onDatasetUpdated } = props;
-
   const nav = useNavigate();
-
   const safeDatasets = Array.isArray(datasets) ? datasets : [];
 
-  // Edit controller
-  const editController = useEditDatasetController({
+  // Edit controller - now returns viewProps directly
+  const {
+    viewProps: editModalViewProps,
+    notification: editNotification,
+    clearNotification: clearEditNotification,
+    openEditModal,
+  } = useEditDatasetController({
     onDatasetUpdated: () => {
       onDatasetUpdated?.();
     },
   });
 
-  const { viewProps: editModalViewProps } = useEditDatasetPresenter({
-    dataset: editController.selectedDataset,
-    isOpen: editController.isModalOpen,
-    isPending: editController.isPending,
-    isLoadingDataset: editController.isLoadingDataset,
-    schemaName: editController.schemaName,
-    onClose: editController.closeEditModal,
-    onSubmit: editController.submitEdit,
-  });
+  // Handle edit notifications
+  useEffect(() => {
+    if (editNotification) {
+      if (editNotification.type === "success") {
+        toast.success(editNotification.message);
+      } else {
+        toast.error(editNotification.message);
+      }
+      clearEditNotification();
+    }
+  }, [editNotification, clearEditNotification]);
 
-  // Set schema controller
-  const schemaController = useSetDatasetSchemaController({
+  // Set schema controller (assuming similar refactor)
+  const {
+    viewProps: schemaModalViewProps,
+    notification: schemaNotification,
+    clearNotification: clearSchemaNotification,
+    openSchemaModal,
+  } = useSetDatasetSchemaController({
     onSchemaUpdated: () => {
       onDatasetUpdated?.();
     },
   });
 
-  const { viewProps: schemaModalViewProps } = useSetDatasetSchemaPresenter({
-    isModalOpen: schemaController.isModalOpen,
-    selectedDataset: schemaController.selectedDataset,
-    schemas: schemaController.schemas,
-    selectedSchemaId: schemaController.selectedSchemaId,
-    isLoadingSchemas: schemaController.isLoadingSchemas,
-    isLoadingDataset: schemaController.isLoadingDataset,
-    isSaving: schemaController.isSaving,
-    onSelectSchema: schemaController.selectSchema,
-    onConfirm: schemaController.confirmSchema,
-    onClose: schemaController.closeSchemaModal,
-  });
+  // Handle schema notifications
+  useEffect(() => {
+    if (schemaNotification) {
+      if (schemaNotification.type === "success") {
+        toast.success(schemaNotification.message);
+      } else {
+        toast.error(schemaNotification.message);
+      }
+      clearSchemaNotification();
+    }
+  }, [schemaNotification, clearSchemaNotification]);
 
   return (
     <>
@@ -103,7 +113,7 @@ export function DatasetListView(props: DatasetListViewProps) {
                       <DropdownMenuItem
                         onClick={(e) => {
                           e.stopPropagation();
-                          editController.openEditModal(dataset);
+                          openEditModal(dataset);
                         }}
                       >
                         <Pencil className="mr-2 h-4 w-4" />
@@ -112,7 +122,7 @@ export function DatasetListView(props: DatasetListViewProps) {
                       <DropdownMenuItem
                         onClick={(e) => {
                           e.stopPropagation();
-                          schemaController.openSchemaModal(dataset);
+                          openSchemaModal(dataset);
                         }}
                       >
                         <FileText className="mr-2 h-4 w-4" />
@@ -138,6 +148,7 @@ export function DatasetListView(props: DatasetListViewProps) {
         )}
       </div>
 
+      {/* Modals receive viewProps directly from controllers */}
       <EditDatasetModalView {...editModalViewProps} />
       <SelectDataSchemaModalView {...schemaModalViewProps} />
     </>

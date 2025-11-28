@@ -1,141 +1,155 @@
-import { useState, useCallback, useRef } from "react";
+// application/schema/setDatasetSchema.controller.ts
+import { useCallback, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import type { Dataset, DatasetSummary } from "@/domain/dataset/dataset.types";
-import type { DataSchema } from "@/domain/schema/schema.type";
-import DatasetUseCase from "@/domain/dataset/dataset.uc";
-import SchemaUseCase from "@/domain/schema/schema.uc";
-import DatasetPresenter from "@/application/dataset/dataset.presenter.ts";
+
+import SetDatasetSchemaUseCase from "@/domain/schema/setDatasetSchema.uc";
+import SetDatasetSchemaPresenter, {
+  type SetDatasetSchemaViewState,
+} from "./setDatasetSchemaPresenter.ts";
 import { apiClient } from "@/api/client";
+
+import type { DatasetSummary } from "@/domain/dataset/dataset.types";
+import type { SelectDataSchemaModalViewProps } from "@/ui/dataset/components/SelectDataSchemaModal.view";
+
+const initialState: SetDatasetSchemaViewState = {
+  dataset: null,
+  schemas: [],
+  isModalOpen: false,
+  notification: null,
+};
 
 interface UseSetDatasetSchemaControllerInput {
   onSchemaUpdated?: () => void;
 }
 
-interface UseSetDatasetSchemaControllerOutput {
-  isModalOpen: boolean;
-  selectedDataset: Dataset | null;
-  schemas: DataSchema[];
-  selectedSchemaId: string | null;
-  isLoadingSchemas: boolean;
-  isLoadingDataset: boolean;
-  isSaving: boolean;
-
-  openSchemaModal: (dataset: DatasetSummary) => void;
-  closeSchemaModal: () => void;
-  selectSchema: (schemaId: string) => void;
-  confirmSchema: () => Promise<void>;
-}
-
 export function useSetDatasetSchemaController(
   input: UseSetDatasetSchemaControllerInput = {},
-): UseSetDatasetSchemaControllerOutput {
+) {
   const { onSchemaUpdated } = input;
-  const queryClient = useQueryClient();
 
-  const deps = useRef<{
-    datasetUseCase: DatasetUseCase;
-    schemaUseCase: SchemaUseCase;
-    presenter: DatasetPresenter;
-  } | null>(null);
-
-  deps.current ??= {
-    datasetUseCase: new DatasetUseCase(apiClient),
-    schemaUseCase: new SchemaUseCase(apiClient),
-    presenter: new DatasetPresenter(),
-  };
-
-  const { datasetUseCase, schemaUseCase, presenter } = deps.current;
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [state, setState] = useState<SetDatasetSchemaViewState>(initialState);
   const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(
     null,
   );
   const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
 
-  // Fetch full dataset to get current schemaId
-  const { data: selectedDataset, isLoading: isLoadingDataset } = useQuery({
+  const queryClient = useQueryClient();
+
+  // Initialize dependencies once
+  const deps = useRef<{
+    useCase: SetDatasetSchemaUseCase;
+    presenter: SetDatasetSchemaPresenter;
+  } | null>(null);
+
+  if (!deps.current) {
+    const presenter = new SetDatasetSchemaPresenter(setState);
+    const useCase = new SetDatasetSchemaUseCase(apiClient, presenter);
+    deps.current = { useCase, presenter };
+  }
+
+  const { useCase } = deps.current;
+
+  // Clear notification
+  const clearNotification = useCallback(() => {
+    setState((prev) => ({ ...prev, notification: null }));
+  }, []);
+
+  // Load dataset query
+  const { isLoading: isLoadingDataset } = useQuery({
     queryKey: ["getDataset", selectedDatasetId],
-    queryFn: () => datasetUseCase.getDataset(selectedDatasetId!),
-    select: (data) => presenter.getDataset(data),
-    enabled: !!selectedDatasetId && isModalOpen,
+    queryFn: () => useCase.loadDataset(selectedDatasetId!),
+    enabled: !!selectedDatasetId && state.isModalOpen,
     retry: false,
   });
 
-  // Fetch schemas when modal is open
-  const { data: schemas = [], isLoading: isLoadingSchemas } = useQuery({
+  // Load schemas query
+  const { isLoading: isLoadingSchemas } = useQuery({
     queryKey: ["listDataSchemas"],
-    queryFn: () => schemaUseCase.listSchemas(),
-    enabled: isModalOpen,
+    queryFn: () => useCase.loadSchemas(),
+    enabled: state.isModalOpen,
+    retry: false,
   });
 
-  // Update selectedSchemaId when dataset is loaded
-  if (
-    selectedDataset &&
-    selectedSchemaId === null &&
-    selectedDataset.schemaId
-  ) {
-    setSelectedSchemaId(selectedDataset.schemaId);
+  // Sync selectedSchemaId when dataset loads
+  if (state.dataset && selectedSchemaId === null && state.dataset.schemaId) {
+    setSelectedSchemaId(state.dataset.schemaId);
   }
 
-  // Mutation to update dataset schema using dedicated endpoint
+  // Set schema mutation
   const setSchemaMutation = useMutation({
-    mutationFn: (vars: { datasetId: string; schemaId: string | null }) =>
-      datasetUseCase.setSchema(vars.datasetId, vars.schemaId),
+    mutationFn: (schemaId: string | null) =>
+      useCase.setSchema(selectedDatasetId!, schemaId),
     onSuccess: () => {
+      // Only cache invalidation here - notification handled by use case -> presenter
       queryClient.invalidateQueries({ queryKey: ["listDatasets"] });
       queryClient.invalidateQueries({
         queryKey: ["getDataset", selectedDatasetId],
       });
       queryClient.invalidateQueries({ queryKey: ["listCatalogDatasets"] });
-      toast.success("Schema assigned successfully");
 
       if (onSchemaUpdated) {
         onSchemaUpdated();
       }
-      closeSchemaModal();
     },
-    onError: (err) => {
-      const errorMessage = presenter.getErrorMessage(err);
-      toast.error(errorMessage);
-    },
+    // No onError - handled by use case -> presenter
   });
 
+  // Action handlers
   const openSchemaModal = useCallback((dataset: DatasetSummary) => {
     setSelectedDatasetId(dataset.id);
-    setIsModalOpen(true);
+    setSelectedSchemaId(null);
+    setState((prev) => ({
+      ...prev,
+      isModalOpen: true,
+      notification: null,
+      dataset: null,
+      schemas: [],
+    }));
   }, []);
 
   const closeSchemaModal = useCallback(() => {
-    setIsModalOpen(false);
     setSelectedDatasetId(null);
     setSelectedSchemaId(null);
+    setState((prev) => ({
+      ...prev,
+      isModalOpen: false,
+      dataset: null,
+    }));
   }, []);
 
   const selectSchema = useCallback((schemaId: string) => {
     setSelectedSchemaId(schemaId);
   }, []);
 
-  const confirmSchema = useCallback(async () => {
+  const confirmSchema = useCallback(() => {
     if (!selectedDatasetId) return;
-
-    await setSchemaMutation.mutateAsync({
-      datasetId: selectedDatasetId,
-      schemaId: selectedSchemaId,
-    });
+    setSchemaMutation.mutate(selectedSchemaId);
   }, [selectedDatasetId, selectedSchemaId, setSchemaMutation]);
 
-  return {
-    isModalOpen,
-    selectedDataset: selectedDataset ?? null,
-    schemas,
+  // Build view props
+  const viewProps: SelectDataSchemaModalViewProps = {
+    open: state.isModalOpen,
+    schemas: state.schemas,
     selectedSchemaId,
-    isLoadingSchemas,
-    isLoadingDataset,
+    isLoading: isLoadingSchemas || isLoadingDataset,
     isSaving: setSchemaMutation.isPending,
+    onSelectSchema: selectSchema,
+    onConfirm: confirmSchema,
+    onCancel: closeSchemaModal,
+    onOpenChange: (open) => {
+      if (!open) closeSchemaModal();
+    },
+  };
+
+  return {
+    // View props for modal
+    viewProps,
+
+    // Notification from presenter state
+    notification: state.notification,
+    clearNotification,
+
+    // Actions
     openSchemaModal,
-    closeSchemaModal,
-    selectSchema,
-    confirmSchema,
   };
 }

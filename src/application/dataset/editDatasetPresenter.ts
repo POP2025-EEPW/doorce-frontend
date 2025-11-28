@@ -1,57 +1,88 @@
-import { useMemo } from "react";
-import type { Dataset } from "@/domain/dataset/dataset.types";
-import type { EditDatasetModalViewProps } from "@/ui/dataset/components/EditDatasetForm.view";
+// application/dataset/editDataset.presenter.ts
+import type {
+  EditDatasetOutputPort,
+  Dataset,
+} from "@/domain/dataset/dataset.types";
 
-interface UseEditDatasetPresenterInput {
+export interface EditDatasetNotification {
+  type: "success" | "error";
+  message: string;
+}
+
+export interface EditDatasetViewState {
   dataset: Dataset | null;
-  isOpen: boolean;
-  isPending: boolean;
-  isLoadingDataset: boolean;
-  schemaName: string | null;
-  onClose: () => void;
-  onSubmit: EditDatasetModalViewProps["onSubmit"];
+  isModalOpen: boolean;
+  notification: EditDatasetNotification | null;
 }
 
-interface UseEditDatasetPresenterOutput {
-  viewProps: EditDatasetModalViewProps;
-}
+type StateUpdater = (
+  updater: (prev: EditDatasetViewState) => EditDatasetViewState,
+) => void;
 
-export function useEditDatasetPresenter(
-  input: UseEditDatasetPresenterInput,
-): UseEditDatasetPresenterOutput {
-  const {
-    dataset,
-    isOpen,
-    isPending,
-    isLoadingDataset,
-    schemaName,
-    onClose,
-    onSubmit,
-  } = input;
+export default class EditDatasetPresenter implements EditDatasetOutputPort {
+  constructor(private readonly updateState: StateUpdater) {}
 
-  const viewProps = useMemo<EditDatasetModalViewProps>(() => {
-    return {
-      isOpen,
-      isPending,
-      isLoadingDataset,
-      initialTitle: dataset?.title ?? "",
-      initialDescription: dataset?.description ?? "",
-      initialStatus: dataset?.status ?? "draft",
-      initialCatalogId: dataset?.catalogId ?? "",
-      initialSchemaId: dataset?.schemaId ?? null,
-      currentSchemaName: schemaName,
-      onClose,
-      onSubmit,
-    };
-  }, [
-    dataset,
-    isOpen,
-    isPending,
-    isLoadingDataset,
-    schemaName,
-    onClose,
-    onSubmit,
-  ]);
+  // --- Load Dataset ---
+  presentDataset(dataset: Dataset): void {
+    this.updateState((prev) => ({
+      ...prev,
+      dataset,
+    }));
+  }
 
-  return { viewProps };
+  presentLoadDatasetError(error: unknown): void {
+    this.updateState((prev) => ({
+      ...prev,
+      dataset: null,
+      notification: { type: "error", message: this.getErrorMessage(error) },
+    }));
+  }
+
+  // --- Edit Dataset ---
+  presentEditDatasetSuccess(): void {
+    this.updateState((prev) => ({
+      ...prev,
+      isModalOpen: false,
+      notification: {
+        type: "success",
+        message: "Dataset updated successfully",
+      },
+    }));
+  }
+
+  presentEditDatasetError(error: unknown): void {
+    this.updateState((prev) => ({
+      ...prev,
+      notification: { type: "error", message: this.getErrorMessage(error) },
+    }));
+  }
+
+  // --- Helpers ---
+  private getErrorMessage(error: unknown): string {
+    const message = this.extractMessage(error);
+    switch (message) {
+      case "error/get/dataset":
+        return "Failed to load dataset.";
+      case "no-data/get/dataset":
+        return "Dataset not found.";
+      case "error/edit/dataset":
+        return "Failed to update dataset.";
+      default:
+        return "Something went wrong. Please try again.";
+    }
+  }
+
+  private extractMessage(error: unknown): string | undefined {
+    if (!error) return undefined;
+    if (typeof error === "string") return error;
+    if (error instanceof Error) return error.message;
+    if (
+      typeof error === "object" &&
+      "message" in (error as Record<string, unknown>)
+    ) {
+      const msg = (error as Record<string, unknown>).message;
+      if (typeof msg === "string") return msg;
+    }
+    return undefined;
+  }
 }

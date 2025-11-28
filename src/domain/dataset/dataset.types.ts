@@ -59,3 +59,10 @@ export interface DatasetPreview {
   entryCount: number;
   sampleEntries: DataEntryPreview[];
 }
+
+export interface EditDatasetOutputPort {
+  presentDataset(dataset: Dataset): void;
+  presentLoadDatasetError(error: unknown): void;
+  presentEditDatasetSuccess(): void;
+  presentEditDatasetError(error: unknown): void;
+}

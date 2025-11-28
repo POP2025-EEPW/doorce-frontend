@@ -2,9 +2,7 @@ import type {
   Dataset,
   DatasetSummary,
   DatasetDescription,
-  DatasetPreview,
 } from "@/domain/dataset/dataset.types";
-import type { DatasetComment } from "@/domain/quality/quality.type";
 
 export default class DatasetPresenter {
   listDatasets(datasets: DatasetSummary[]): DatasetSummary[] {
@@ -17,24 +15,6 @@ export default class DatasetPresenter {
 
   getDatasetDescription(description: DatasetDescription): DatasetDescription {
     return description;
-  }
-
-  getDatasetPreview(preview: DatasetPreview): DatasetPreview {
-    return preview;
-  }
-
-  listOwnedDatasets(datasets: DatasetSummary[]): DatasetSummary[] {
-    return datasets;
-  }
-
-  listQualityControllableDatasets(
-    datasets: DatasetSummary[],
-  ): DatasetSummary[] {
-    return datasets;
-  }
-
-  listDatasetComments(comments: DatasetComment[]): DatasetComment[] {
-    return comments;
   }
 
   getErrorMessage(error: unknown): string {
