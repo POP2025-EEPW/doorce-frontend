@@ -3,6 +3,8 @@ import { useDatasetController } from "@/application/dataset/dataset.controller";
 import { useDataQualityController } from "@/application/dataquality/dataQuality.controller.ts";
 import { useParams } from "react-router-dom";
 import { Skeleton } from "@/ui/lib/components/ui/skeleton";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export default function DatasetDescriptionPage() {
   const { id } = useParams<{ id: string }>();
@@ -23,7 +25,21 @@ export default function DatasetDescriptionPage() {
     isSettingQualityTag,
     onAddComment,
     onSetQualityTag,
+    notification,
+    clearNotification,
   } = useDataQualityController(datasetId);
+
+  // Handle notifications from controller
+  useEffect(() => {
+    if (notification) {
+      if (notification.type === "success") {
+        toast.success(notification.message);
+      } else {
+        toast.error(notification.message);
+      }
+      clearNotification();
+    }
+  }, [notification, clearNotification]);
 
   const isLoading =
     isCurrentDatasetLoading || isDescriptionLoading || isCommentsLoading;

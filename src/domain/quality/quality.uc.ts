@@ -1,64 +1,110 @@
+// domain/quality/quality.uc.ts
 import { createApiClient } from "@/api/client";
 import type {
   CreateDatasetCommentDto,
   DatasetComment,
   SetQualityTagDto,
 } from "./quality.type";
+import type { QualityOutputPort } from "./quality.type.ts";
 
 export default class QualityUseCase {
-  constructor(private readonly client: ReturnType<typeof createApiClient>) {}
-
-  async addDatasetComment(
-    datasetId: string,
-    comment: CreateDatasetCommentDto,
-  ): Promise<void> {
-    const response = await this.client.POST(
-      "/api/datasets/{datasetId}/comments",
-      {
-        params: {
-          path: {
-            datasetId: datasetId,
-          },
-        },
-        body: comment,
-      },
-    );
-
-    if (response.error) {
-      throw new Error("error/add/comment");
-    }
-  }
+  constructor(
+    private readonly client: ReturnType<typeof createApiClient>,
+    private readonly outputPort: QualityOutputPort,
+  ) {}
 
   async setQualityTag(
     datasetId: string,
     qualityTag: SetQualityTagDto,
   ): Promise<void> {
-    const response = await this.client.PUT(
-      "/api/quality/datasets/{datasetId}/quality-tag",
-      {
-        params: {
-          path: {
-            datasetId: datasetId,
+    try {
+      const response = await this.client.PUT(
+        "/api/quality/datasets/{datasetId}/quality-tag",
+        {
+          params: {
+            path: { datasetId },
+          },
+          body: qualityTag,
+        },
+      );
+      if (!response.response.ok) {
+        throw new Error("error/set/quality-tag");
+      }
+
+      // Use case calls presenter on success
+      this.outputPort.presentSetQualityTagSuccess();
+    } catch (error) {
+      // Use case calls presenter on error
+      console.log("usecase");
+      this.outputPort.presentSetQualityTagError(error);
+      throw error; // Re-throw so React Query knows it failed
+    }
+  }
+
+  async addDatasetComment(
+    datasetId: string,
+    comment: CreateDatasetCommentDto,
+  ): Promise<void> {
+    try {
+      const response = await this.client.POST(
+        "/api/datasets/{datasetId}/comments",
+        {
+          params: {
+            path: { datasetId },
+          },
+          body: comment,
+        },
+      );
+
+      if (response.error) {
+        throw new Error("error/add/comment");
+      }
+
+      this.outputPort.presentAddCommentSuccess();
+    } catch (error) {
+      this.outputPort.presentAddCommentError(error);
+      throw error;
+    }
+  }
+
+  async loadDatasetComments(datasetId: string): Promise<DatasetComment[]> {
+    try {
+      const response = await this.client.GET(
+        "/api/datasets/{datasetId}/comments",
+        {
+          params: {
+            path: { datasetId },
           },
         },
-        body: qualityTag,
-      },
-    );
+      );
 
-    if (!response.response.ok) {
-      console.error("Error updating quality tag");
-      throw new Error("error/set/quality-tag");
+      console.log("loadDatasetComments response:", response);
+      console.log("response.error:", response.error);
+      console.log("response.data:", response.data);
+
+      if (response.error) {
+        throw new Error("error/load/dataset-comments");
+      }
+
+      const comments = response.data as unknown as DatasetComment[];
+
+      this.outputPort.presentComments(comments);
+
+      return comments;
+    } catch (error) {
+      console.log("loadDatasetComments caught error:", error);
+      this.outputPort.presentLoadCommentsError(error);
+      throw error;
     }
   }
 
   async markDataEntryErroneous(entryId: string): Promise<void> {
+    // Similar pattern...
     const response = await this.client.POST(
       "/api/quality/entries/{entryId}/mark-erroneous",
       {
         params: {
-          path: {
-            entryId: entryId,
-          },
+          path: { entryId },
         },
       },
     );
@@ -66,23 +112,5 @@ export default class QualityUseCase {
     if (response.error) {
       throw new Error("error/mark/entry-erroneous");
     }
-  }
-
-  async loadDatasetComments(datasetId: string): Promise<DatasetComment[]> {
-    const response = await this.client.GET(
-      "/api/datasets/{datasetId}/comments",
-      {
-        params: {
-          path: {
-            datasetId: datasetId,
-          },
-        },
-      },
-    );
-    if (response.error) {
-      throw new Error("error/load/dataset-comments");
-    }
-
-    return response.data as unknown as DatasetComment[];
   }
 }

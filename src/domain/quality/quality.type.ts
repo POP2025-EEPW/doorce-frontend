@@ -18,3 +18,17 @@ export interface CreateDatasetCommentDto {
 export interface SetQualityTagDto {
   qualityTag: string;
 }
+
+export interface QualityOutputPort {
+  // Set quality tag
+  presentSetQualityTagSuccess(): void;
+  presentSetQualityTagError(error: unknown): void;
+
+  // Add comment
+  presentAddCommentSuccess(): void;
+  presentAddCommentError(error: unknown): void;
+
+  // Load comments
+  presentComments(comments: DatasetComment[]): void;
+  presentLoadCommentsError(error: unknown): void;
+}

@@ -1,3 +1,4 @@
+// dataset.controller.ts
 import type {
   Dataset,
   DatasetSummary,
@@ -6,9 +7,7 @@ import type {
   DatasetFilter,
   DatasetPreview,
 } from "@/domain/dataset/dataset.types";
-import type { CreateDatasetCommentDto } from "@/domain/quality/quality.type";
 import DatasetUseCase from "@/domain/dataset/dataset.uc";
-import QualityUseCase from "@/domain/quality/quality.uc";
 import { useCallback, useEffect, useRef, useState } from "react";
 import DatasetPresenter from "./dataset.presenter";
 import { apiClient } from "@/api/client";
@@ -26,17 +25,15 @@ export function useDatasetController(
 
   const deps = useRef<{
     datasetUseCase: DatasetUseCase;
-    qualityUseCase: QualityUseCase;
     presenter: DatasetPresenter;
   } | null>(null);
 
   deps.current ??= {
     datasetUseCase: new DatasetUseCase(apiClient),
-    qualityUseCase: new QualityUseCase(apiClient),
     presenter: new DatasetPresenter(),
   };
 
-  const { datasetUseCase, qualityUseCase, presenter } = deps.current;
+  const { datasetUseCase, presenter } = deps.current;
   const queryClient = useQueryClient();
 
   // List datasets query
@@ -98,25 +95,6 @@ export function useDatasetController(
     }
   }, [descriptionError, presenter]);
 
-  // Get dataset comments query
-  const {
-    data: datasetComments,
-    isLoading: isCommentsLoading,
-    error: commentsError,
-  } = useQuery({
-    queryKey: ["getDatasetComments", datasetId],
-    queryFn: () => qualityUseCase.loadDatasetComments(datasetId ?? "0"),
-    select: (data) => presenter.listDatasetComments(data),
-    enabled: !!datasetId,
-    retry: false,
-  });
-
-  useEffect(() => {
-    if (commentsError) {
-      toast.error(presenter.getErrorMessage(commentsError));
-    }
-  }, [commentsError, presenter]);
-
   // Clear state when datasetId changes
   useEffect(() => {
     setCurrentDataset(null);
@@ -153,22 +131,6 @@ export function useDatasetController(
     },
   });
 
-  // Add comment mutation
-  const addCommentMutation = useMutation({
-    mutationFn: (comment: CreateDatasetCommentDto) =>
-      qualityUseCase.addDatasetComment(datasetId ?? "0", comment),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["getDatasetComments", datasetId],
-      });
-      toast.success("Comment added");
-    },
-    onError: (error) => {
-      toast.error(presenter.getErrorMessage(error));
-      console.error("addComment error", error);
-    },
-  });
-
   const onAddDatasetClick = useCallback(
     (dataset: CreateDatasetDto) => {
       addDatasetMutation.mutate(dataset);
@@ -181,13 +143,6 @@ export function useDatasetController(
       editDatasetMutation.mutate({ id, dataset });
     },
     [editDatasetMutation],
-  );
-
-  const onAddComment = useCallback(
-    (comment: CreateDatasetCommentDto) => {
-      addCommentMutation.mutate(comment);
-    },
-    [addCommentMutation],
   );
 
   const setSelectedDatasetId = useCallback(
@@ -226,23 +181,19 @@ export function useDatasetController(
     datasets,
     currentDataset,
     datasetDescription,
-    datasetComments: datasetComments ?? [],
     datasetId,
 
     // Loading states
     isDatasetsLoading,
     isCurrentDatasetLoading,
     isDescriptionLoading,
-    isCommentsLoading,
     isAddingDataset: addDatasetMutation.isPending,
     isEditingDataset: editDatasetMutation.isPending,
-    isAddingComment: addCommentMutation.isPending,
 
     // Actions
     setSelectedDatasetId,
     onAddDatasetClick,
     onEditDatasetClick,
-    onAddComment,
     onShowPreview,
     onBack,
   };
