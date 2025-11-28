@@ -106,26 +106,53 @@ export function DatasetDescriptionView({
 
           <Separator />
 
-          {/* Metadata */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div>
-              <span className="text-muted-foreground">Dataset ID</span>
-              <p className="font-mono">{dataset.id}</p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Catalog ID</span>
-              <p className="font-mono">{dataset.catalogId}</p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Owner ID</span>
-              <p className="font-mono">{dataset.ownerId}</p>
-            </div>
-            {dataset.schemaId && (
+          {/* Metadata + Quality Tag */}
+          <div className="flex justify-between items-start gap-6">
+            {/* Metadata - lewa strona */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm flex-1">
               <div>
-                <span className="text-muted-foreground">Schema ID</span>
-                <p className="font-mono">{dataset.schemaId}</p>
+                <span className="text-muted-foreground">Dataset ID</span>
+                <p className="font-mono">{dataset.id}</p>
               </div>
-            )}
+              <div>
+                <span className="text-muted-foreground">Catalog ID</span>
+                <p className="font-mono">{dataset.catalogId}</p>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Owner ID</span>
+                <p className="font-mono">{dataset.ownerId}</p>
+              </div>
+              {dataset.schemaId && (
+                <div>
+                  <span className="text-muted-foreground">Schema ID</span>
+                  <p className="font-mono">{dataset.schemaId}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Quality Tag - prawa strona */}
+            <div className="flex flex-col items-center gap-2 text-sm">
+              <span className="text-muted-foreground">Quality Tag</span>
+              {dataset.qualityTag ? (
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">{dataset.qualityTag}</Badge>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsQualityTagModalOpen(true)}
+                  >
+                    Update
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  size="sm"
+                  onClick={() => setIsQualityTagModalOpen(true)}
+                >
+                  Set Tag
+                </Button>
+              )}
+            </div>
           </div>
 
           {(dataset.createdAt ?? dataset.updatedAt) && (
@@ -146,42 +173,6 @@ export function DatasetDescriptionView({
                 )}
               </div>
             </>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Quality Tag Card */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg">Quality Tag</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {dataset.qualityTag ? (
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-muted-foreground text-sm">
-                  Current tag:{" "}
-                </span>
-                <Badge variant="secondary" className="text-base">
-                  {dataset.qualityTag}
-                </Badge>
-              </div>
-              <Button
-                variant="outline"
-                onClick={() => setIsQualityTagModalOpen(true)}
-              >
-                Update Tag
-              </Button>
-            </div>
-          ) : (
-            <div className="flex flex-col items-start gap-3">
-              <p className="text-sm text-muted-foreground italic">
-                No quality tag set for this dataset.
-              </p>
-              <Button onClick={() => setIsQualityTagModalOpen(true)}>
-                Set Quality Tag
-              </Button>
-            </div>
           )}
         </CardContent>
       </Card>
