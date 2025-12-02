@@ -6,6 +6,7 @@ import type { Role } from "@/domain/auth/auth.type";
 import { useAuth } from "./auth-store";
 import AuthPresenter from "./auth.presenter";
 import { toast } from "sonner";
+import { navigateToRole } from "@/lib/navigate";
 import { useNavigate } from "react-router-dom";
 
 export function useAuthController() {
@@ -15,7 +16,6 @@ export function useAuthController() {
     login: loginToStore,
     logout: logoutFromStore,
   } = useAuth();
-  const navigate = useNavigate();
   const deps = useRef<{
     useCase: AuthUseCase;
     presenter: AuthPresenter;
@@ -24,6 +24,7 @@ export function useAuthController() {
     useCase: new AuthUseCase(apiClient),
     presenter: new AuthPresenter(),
   };
+  const navigate = useNavigate();
 
   const { useCase, presenter } = deps.current;
 
@@ -37,8 +38,8 @@ export function useAuthController() {
     }) => useCase.login({ username, password }),
     onSuccess: (token, variables) => {
       // Persist returned token as userId for now; adjust when backend returns explicit userId
-      loginToStore(token, variables.username);
-      navigate("/");
+      loginToStore(token, variables.username, ["DataUser"]);
+      navigateToRole(["DataUser"], navigate);
     },
     onError: (error) => {
       toast.error(presenter.getErrorMessage(error));
@@ -57,8 +58,8 @@ export function useAuthController() {
     }) => useCase.register({ username, password, roles }),
     onSuccess: (token, variables) => {
       // Auto-login after successful registration
-      loginToStore(token, variables.username);
-      navigate("/");
+      loginToStore(token, variables.username, variables.roles);
+      navigateToRole(variables.roles, navigate);
     },
     onError: (error) => {
       console.log("register error", error);

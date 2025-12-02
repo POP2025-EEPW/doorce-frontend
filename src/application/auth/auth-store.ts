@@ -1,20 +1,26 @@
 import { create } from "zustand";
+import type { Role } from "@/domain/auth/auth.type";
 
 interface AuthState {
   username: string | null;
   token: string | null;
-  login: (token: string, username: string) => void;
+  roles: Role[];
+  login: (token: string, username: string, roles: Role[]) => void;
   logout: () => void;
 }
 
 export const useAuth = create<AuthState>((set) => ({
   username: localStorage.getItem("username"),
   token: localStorage.getItem("token"),
+  roles: localStorage.getItem("roles")
+    ? JSON.parse(localStorage.getItem("roles") ?? "[]")
+    : [],
 
-  login: (token, username) => {
+  login: (token, username, roles) => {
     localStorage.setItem("token", token);
     localStorage.setItem("username", username);
-    set({ username, token });
+    localStorage.setItem("roles", JSON.stringify(roles));
+    set({ username, token, roles });
   },
   logout: () => {
     localStorage.removeItem("username");
