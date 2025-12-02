@@ -1,3 +1,4 @@
+"use client";
 import {
   Sidebar,
   SidebarContent,
@@ -13,6 +14,7 @@ import { Button } from "@/ui/lib/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { MENU_ITEMS } from "./sidebar.const";
 import AddDataRelatedRequestModal from "@/ui/dataset/components/AddDataRelatedRequest.view";
+import { useState } from "react";
 
 interface SidebarViewProps {
   username: string | null;

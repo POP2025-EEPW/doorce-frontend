@@ -1,9 +1,11 @@
+"use client";
 import { Button } from "@/ui/lib/components/ui/button";
 import { Input } from "@/ui/lib/components/ui/input";
 import { Textarea } from "@/ui/lib/components/ui/textarea";
 import { Dialog } from "@/ui/lib/components/ui/dialog";
 import { toast } from "sonner";
 import { useDataRelatedRequests } from "@/application/dataset/dataset.presenter";
+import { useState } from "react";
 
 interface Props {
   onClose: () => void;
