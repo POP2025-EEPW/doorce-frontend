@@ -8,7 +8,7 @@ export default class QualityUseCase {
     datasetId: string,
     comment: CreateDatasetCommentDto,
   ): Promise<string> {
-    console.log(datasetId, comment);
+    console.log(datasetId, comment, this.client);
 
     return new Promise((resolve) => {
       setTimeout(() => {
