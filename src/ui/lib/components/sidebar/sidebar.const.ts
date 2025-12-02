@@ -6,7 +6,7 @@ export const MENU_ITEMS: MenuItem[] = [
     title: "Catalogs",
     url: "/catalogs",
     icon: Folder,
-    roles: ["DataUser"],
+    roles: ["DataUser", "MetadataManager"],
   },
   {
     title: "Datasets",
