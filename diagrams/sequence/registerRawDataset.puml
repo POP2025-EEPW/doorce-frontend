@@ -1,0 +1,37 @@
+@startuml
+title registerRawDataset use case
+autonumber
+
+actor "Data Supplier" as DataSupplier
+
+participant "DatasetListView" as View
+participant "RegisterDistributionForm" as Form
+participant "DatasetListPresenter" as DatasetListPresenter
+participant "RegisterDistributionFormPresenter" as Presenter
+participant "DatasetsController" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "API" as Http
+
+==Open Register Distribution Form==
+
+DataSupplier -> View : Clicked "Add Distribution" button on dataset
+View -> Controller: onOpenRegisterDistributionForm(datasetId)
+Controller -> Presenter: openRegisterDistributionForm(datasetId)
+Presenter -> Form :render()
+
+==Register Distribution==
+
+DataSupplier -> Form : Input data and submit
+Form -> Controller : onRegisterDistributionFormSubmit(datasetId, distributionSource)
+Controller -> UseCase : registerDistributionForm(datasetId, distributionSource)
+UseCase -> Client : registerDistributionForm(datasetId, distributionSource)
+Client -> Http : POST /datasets/{datasetId}/register-raw
+Http --> Client : Dataset
+Client --> UseCase : Dataset
+UseCase --> Controller : Dataset
+Controller --> DatasetListPresenter : updateDataset(datasetId, Dataset)
+DatasetListPresenter -> View : render(Dataset[])
+View --> DataSupplier : Show updated datasets list
+
+@enduml

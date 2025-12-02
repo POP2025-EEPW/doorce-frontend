@@ -1,0 +1,35 @@
+@startuml
+title getRawDownloadLink use case
+autonumber
+
+actor "Data User" as User
+
+participant "DatasetListView" as View
+participant "DownloadForm" as Form
+participant "DatasetListPresenter" as DatasetListPresenter
+participant "DownloadFormPresenter" as Presenter
+participant "DatasetsController" as Controller
+participant "uc.dataset" as UseCase
+participant "CombinedClient" as Client
+participant "API" as Http
+
+==Open Download Dataset Form==
+
+User -> View : Clicked "Download" button on dataset
+View -> Controller: onDownload(datasetId)
+Controller -> Presenter: openDownloadDatasetForm(datasetId)
+Presenter -> Form :render()
+
+==Download Dataset==
+
+User -> Form : Select distribution and submit
+Form -> Controller : onDownloadFormSubmit(datasetId, distribution)
+Controller -> UseCase : downloadDataset(datasetId, distribution)
+UseCase -> Client : downloadDataset(datasetId, distribution)
+Client -> Http : GET /api/quality/datasets/{datasetId}/raw-download-link
+Http --> Client : DownloadLink
+Client --> UseCase : DownloadLink
+UseCase --> Controller : DownloadLink
+Controller -> Controller : startDownload(DownloadLink)
+
+@enduml
