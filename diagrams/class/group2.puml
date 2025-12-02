@@ -1,0 +1,96 @@
+@startuml
+title Dataset Feature - PVCUC component view
+
+skinparam packageStyle rectangle
+
+package "Views" {
+  class EditDatasetForm {
+    +render(dataset)
+    +handleSubmit()
+  }
+
+  class SelectDataSchemaModal {
+    +render(Schemas[])
+    +onConfirm()
+  }
+  class AddDatasetCommentForm {
+    +render()
+    +handleSubmit()
+  }
+}
+
+package "Presenters" {
+  class DatasetEditPresenter {
+    +renderView(dataset)
+  }
+
+  class SelectDataSchemaModalPresenter {
+    +renderModal(Schemas[])
+  }
+
+  class AddDatasetCommentPresenter {
+    +present(result)
+  }
+}
+
+package "Controllers" {
+  class DatasetsController {
+    +getDataset(id)
+    +addDataset(input)
+    +listCatalogDatasets(catalogId, page, pageSize)
+    +listDatasets(filter, page, pageSize)
+    +getDatasetDescription(datasetId)
+    +listOwnedDatasets(ownerId)
+    +listQualityControllableDatasets(controllerId)
+    +updateDataset(id, input)
+    +setDataSchemaForDataset(datasetId, schemaId)
+    +loadDataSchemas()
+  }
+  class DatasetCommentController {
+    +submitDatasetComment(datasetId, input)
+    }
+}
+
+package "Use-case Layer" {
+interface DatasetUseCases {
+    +getDataset(id)
+    +addDataset(input)
+    +updateDataset(id, input)
+    +setDataSchemaForDataset(datasetId, schemaId)
+    +listCatalogDatasets(catalogId, page, pageSize)
+    +getCatalog(id)
+    +listCatalogs(parentId)
+    +getDatasetDescription(datasetId)
+    +listOwnedDatasets(ownerId)
+    +listQualityControllableDatasets(controllerId)
+    +listDataSchemas()
+  }
+ interface QualityUseCases {
+    +addDatasetComment(datasetId, input)
+    +listDatasetComments(datasetId)
+    +submitDataRelatedRequest()
+    +listDataRelatedRequests()
+  }
+}
+
+package "DI Container" {
+  class UCContainer {
+    +dataset: DatasetUseCases
+  }
+}
+
+SelectDataSchemaModal --> DatasetsController
+EditDatasetForm --> DatasetsController
+DatasetsController --> UCContainer
+UCContainer --> DatasetEditPresenter
+UCContainer --> SelectDataSchemaModalPresenter
+DatasetEditPresenter --> EditDatasetForm
+SelectDataSchemaModalPresenter --> SelectDataSchemaModal
+DatasetCommentController --> UCContainer
+AddDatasetCommentPresenter --> AddDatasetCommentForm
+UCContainer --> AddDatasetCommentPresenter
+AddDatasetCommentForm --> DatasetCommentController
+
+UCContainer --> DatasetUseCases : provides implementation
+UCContainer --> QualityUseCases : provides implementation
+@enduml
