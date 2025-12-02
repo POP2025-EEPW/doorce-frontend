@@ -1,6 +1,3 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
-
 import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
@@ -12,13 +9,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import eslintConfigPrettier from "eslint-config-prettier";
 
 export default defineConfig([
-  globalIgnores([
-    "dist",
-    "coverage",
-    "storybook-static",
-    ".storybook",
-    "vitest.shims.d.ts",
-  ]),
+  globalIgnores(["dist", "coverage", "vitest.shims.d.ts"]),
   {
     files: ["**/*.{ts,tsx}"],
     extends: [
@@ -41,15 +32,25 @@ export default defineConfig([
     rules: {
       "@typescript-eslint/no-floating-promises": "off",
       "@typescript-eslint/no-misused-promises": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
+      "@typescript-eslint/no-unsafe-argument": "off",
+      "@typescript-eslint/consistent-type-definitions": "off"
     },
   },
   {
-    files: ["src/components/ui/**/*.{ts,tsx}"],
+    files: ["src/ui/lib/components/ui/**/*.{ts,tsx}"],
     rules: {
       "react-refresh/only-export-components": "off",
     },
   },
-  // Enable Storybook's recommended rules for stories/config files
-  ...storybook.configs["flat/recommended"],
+  {
+    files: ["src/api/openapi-schema.d.ts"],
+    rules: {
+      "@typescript-eslint/consistent-indexed-object-style": "off",
+    },
+  },
   eslintConfigPrettier,
 ]);

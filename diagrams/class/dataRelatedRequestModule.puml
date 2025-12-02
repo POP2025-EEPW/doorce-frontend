@@ -1,0 +1,75 @@
+@startuml
+title Class Diagram - DataRelatedRequest feature
+
+class AddDataRelatedRequestModal {
+  +datasetId: string
+  +subject: string
+  +description: string
+  +onClose(): void
+  +handleSubmit(e): Promise<void>
+}
+
+class SidebarView {
+  +openDataRequestModal: boolean
+  +render(): JSX.Element
+}
+
+class useDataRelatedRequests {
+  +datasetId?: string
+  +requests: DataRelatedRequest[]
+  +loading: boolean
+  +loadingList: boolean
+  +error?: string
+  +page: int
+  +pageSize: int
+  +load(nextPage:int): Promise<void>
+  +submit(payload:DataRelatedRequestPayload): Promise<any>
+  +setDatasetId(id:string): void
+}
+
+class DatasetController {
+  +submitDataRelatedRequest(datasetId:string, payload:DataRelatedRequestPayload): Promise<any>
+  +listDataRelatedRequest(datasetId:string, page:int, pageSize:int): Promise<any[]>
+}
+
+class DatasetUseCase {
+  +submitDataRelatedRequest(datasetId:string, payload:DataRelatedRequestPayload): Promise<any>
+  +listDataRelatedRequests(datasetId:string, page:int, pageSize:int): Promise<any[]>
+}
+
+class ApiClient {
+  +submitDataRelatedRequest(datasetId:string, payload:DataRelatedRequestPayload): Promise<any>
+  +listDataRelatedRequests(datasetId:string, page:int, pageSize:int): Promise<any[]>
+}
+
+class DataRelatedRequestPayload {
+  +subject: string
+  +description: string
+}
+
+class DataRelatedRequest {
+  +id: string
+  +datasetId: string
+  +requesterId: string
+  +requesterUsername: string
+  +subject: string
+  +description: string
+  +status: string
+  +createdAt: string
+  +updatedAt: string
+}
+
+AddDataRelatedRequestModal --> useDataRelatedRequests : uses
+useDataRelatedRequests --> DatasetController : calls
+DatasetController --> DatasetUseCase : delegates
+DatasetUseCase --> ApiClient : performs HTTP calls
+ApiClient ..> "HTTP API\nPOST /api/datasets/{datasetId}/requests" : <<dependency>>
+SidebarView --> AddDataRelatedRequestModal : opens
+
+useDataRelatedRequests ..> DataRelatedRequestPayload
+useDataRelatedRequests ..> DataRelatedRequest
+DatasetController ..> DataRelatedRequestPayload
+DatasetUseCase ..> DataRelatedRequestPayload
+ApiClient ..> DataRelatedRequestPayload
+ApiClient ..> DataRelatedRequest
+@enduml

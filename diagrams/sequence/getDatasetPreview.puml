@@ -1,0 +1,26 @@
+@startuml
+title Show dataset preview use case
+autonumber
+
+actor DataUser as User
+
+participant "CatalogsPageView" as CatalogsPageView
+participant "DatasetPreviewView" as View
+participant "DatasetDetailPresenter" as Presenter
+participant "datasets.controller.ts" as Controller
+participant "dataset.uc" as UseCase
+participant "APIClient" as Client
+participant "Dataset API\nGET /datasets/{id}" as Http
+
+User ->> CatalogsPageView : Click on 'Show dataset preview'
+CatalogsPageView ->> Controller : loadDatasetPreview(datasetId)
+Controller ->> UseCase : getDatasetPreview(datasetId)
+UseCase -> Client : getDatasetPreview(datasetId)
+Client ->> Http : GET /datasets/{id}/preview
+Http ->> Client : DatasetPreview
+Client --> UseCase : DatasetPreview
+UseCase ->> Presenter : present(DatasetPreview)
+Presenter ->> View : render(DatasetPreview)
+View ->> User : Show dataset preview
+
+@enduml
