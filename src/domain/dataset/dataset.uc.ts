@@ -152,7 +152,7 @@ export async function submitDataRelatedRequest(
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("token");
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(url, {
@@ -179,7 +179,7 @@ export async function listDataRelatedRequests(
   });
   const url = `/api/datasets/${encodeURIComponent(datasetId)}/requests?${params.toString()}`;
   const headers: Record<string, string> = {};
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("token");
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(url, { headers });
