@@ -1,0 +1,47 @@
+[
+  {
+    "id": "1f4c2d10-8e23-4a0d-9d65-3eaf113c0001",
+    "content": "kwant",
+    "created_at": "2025-02-01T10:12:45.000000Z",
+    "erroneous": false,
+    "suspicious": false,
+    "updated_at": "2025-02-01T10:12:45.000000Z",
+    "dataset_id": "750e8400-e29b-41d4-a716-446655440001"
+  },
+  {
+    "id": "2b6f0c20-7862-4dbf-a5ee-72b8221c0002",
+    "content": "fala",
+    "created_at": "2025-02-01T10:13:10.000000Z",
+    "erroneous": false,
+    "suspicious": false,
+    "updated_at": "2025-02-01T10:13:10.000000Z",
+    "dataset_id": "750e8400-e29b-41d4-a716-446655440001"
+  },
+  {
+    "id": "3c9a7a30-2b44-4eaa-9f10-0899123c0003",
+    "content": "spin",
+    "created_at": "2025-02-01T10:13:40.000000Z",
+    "erroneous": false,
+    "suspicious": false,
+    "updated_at": "2025-02-01T10:13:40.000000Z",
+    "dataset_id": "750e8400-e29b-41d4-a716-446655440001"
+  },
+  {
+    "id": "4de78340-55e4-43c5-8ee0-dcac44aa0004",
+    "content": "masa",
+    "created_at": "2025-02-01T10:14:05.000000Z",
+    "erroneous": false,
+    "suspicious": false,
+    "updated_at": "2025-02-01T10:14:05.000000Z",
+    "dataset_id": "750e8400-e29b-41d4-a716-446655440001"
+  },
+  {
+    "id": "5ef89450-9033-4b1f-bfc4-a99b221f0005",
+    "content": "siła",
+    "created_at": "2025-02-01T10:14:30.000000Z",
+    "erroneous": false,
+    "suspicious": false,
+    "updated_at": "2025-02-01T10:14:30.000000Z",
+    "dataset_id": "750e8400-e29b-41d4-a716-446655440001"
+  }
+]
