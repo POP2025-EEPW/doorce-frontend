@@ -13,6 +13,8 @@ import { CatalogListView } from "./CatalogList.view";
 import { DatasetListView } from "@/ui/dataset/components/DatasetList.view";
 import { AddCatalogFormView } from "./AddCatalogForm.view";
 import { SidebarTrigger } from "@/ui/lib/components/ui/sidebar";
+import { Button } from "@/ui/lib/components/ui/button.tsx";
+import { ChevronLeft } from "lucide-react";
 
 interface CatalogDetailsViewProps {
   catalog: Catalog | null;
@@ -25,6 +27,7 @@ interface CatalogDetailsViewProps {
 
   setSelectedCatalogId: (catalogId: string) => void;
   onAddCatalogClick: (catalog: CreateCatalogDto) => void;
+  onNavigateToParent: () => void;
 }
 
 export default function CatalogDetailsView(props: CatalogDetailsViewProps) {
@@ -39,15 +42,30 @@ export default function CatalogDetailsView(props: CatalogDetailsViewProps) {
 
     setSelectedCatalogId,
     onAddCatalogClick,
+    onNavigateToParent,
   } = props;
+
+  const canGoBack = catalog !== null;
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-semibold tracking-tight">
-          <SidebarTrigger /> Catalog
-        </h2>
-        <div className="text-sm text-muted-foreground">{catalog?.title}</div>
+      <div className="flex items-center gap-2">
+        {canGoBack && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onNavigateToParent}
+            aria-label="Go to parent catalog"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+        )}
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight">
+            <SidebarTrigger /> Catalog
+          </h2>
+          <div className="text-sm text-muted-foreground">{catalog?.title}</div>
+        </div>
       </div>
 
       {isCatalogLoading && catalog === null ? (
