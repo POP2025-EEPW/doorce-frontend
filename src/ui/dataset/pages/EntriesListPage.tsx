@@ -11,8 +11,14 @@ export default function EntriesListPage() {
   const navigate = useNavigate();
   const datasetId = id ?? null;
 
-  const { entries, isLoading, onSetErroneous, onSetSuspicious } =
-    useEntryController(datasetId);
+  const {
+    entries,
+    isLoading,
+    isAddingEntry,
+    onAddEntry,
+    onSetErroneous,
+    onSetSuspicious,
+  } = useEntryController(datasetId);
 
   const onBack = useCallback(() => {
     navigate(-1);
@@ -33,8 +39,10 @@ export default function EntriesListPage() {
     <main className="flex-1">
       <EntriesListView
         entries={entries}
+        onAddEntry={onAddEntry}
         onSetErroneous={onSetErroneous}
         onSetSuspicious={onSetSuspicious}
+        isAddingEntry={isAddingEntry}
         onBack={onBack}
       />
     </main>

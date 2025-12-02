@@ -1,5 +1,6 @@
 // EntriesList.view.tsx
 
+import { useState } from "react";
 import type { DatasetEntry } from "@/domain/dataset/dataset.types";
 import {
   Card,
@@ -9,20 +10,34 @@ import {
 } from "@/ui/lib/components/ui/card";
 import { Badge } from "@/ui/lib/components/ui/badge";
 import { Button } from "@/ui/lib/components/ui/button";
+import { Input } from "@/ui/lib/components/ui/input";
 
 interface EntriesListViewProps {
   entries: DatasetEntry[];
-  onSetErroneous: (entryId: string, erroneous: boolean) => void;
-  onSetSuspicious: (entryId: string, suspicious: boolean) => void;
+  onAddEntry: (content: string) => void;
+  onSetErroneous: (entryId: string) => void;
+  onSetSuspicious: (entryId: string) => void;
+  isAddingEntry?: boolean;
   onBack?: () => void;
 }
 
 export function EntriesListView({
   entries,
+  onAddEntry,
   onSetErroneous,
   onSetSuspicious,
+  isAddingEntry = false,
   onBack,
 }: EntriesListViewProps) {
+  const [content, setContent] = useState("");
+
+  const handleAddEntry = () => {
+    if (content.trim()) {
+      onAddEntry(content.trim());
+      setContent("");
+    }
+  };
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       {onBack && (
@@ -30,6 +45,28 @@ export function EntriesListView({
           &larr; Back to dataset
         </Button>
       )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Add New Entry</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-2">
+            <Input
+              placeholder="Enter content..."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleAddEntry()}
+            />
+            <Button
+              onClick={handleAddEntry}
+              disabled={isAddingEntry || !content.trim()}
+            >
+              {isAddingEntry ? "Adding..." : "Add Entry"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -65,22 +102,18 @@ export function EntriesListView({
                       <Button
                         variant={entry.erroneous ? "destructive" : "outline"}
                         size="sm"
-                        onClick={() =>
-                          onSetErroneous(entry.id, !entry.erroneous)
-                        }
+                        onClick={() => onSetErroneous(entry.id)}
+                        disabled={entry.erroneous}
                       >
-                        {entry.erroneous ? "Unset Erroneous" : "Set Erroneous"}
+                        {entry.erroneous ? "Erroneous" : "Mark Erroneous"}
                       </Button>
                       <Button
                         variant={entry.suspicious ? "secondary" : "outline"}
                         size="sm"
-                        onClick={() =>
-                          onSetSuspicious(entry.id, !entry.suspicious)
-                        }
+                        onClick={() => onSetSuspicious(entry.id)}
+                        disabled={entry.suspicious}
                       >
-                        {entry.suspicious
-                          ? "Unset Suspicious"
-                          : "Set Suspicious"}
+                        {entry.suspicious ? "Suspicious" : "Mark Suspicious"}
                       </Button>
                     </div>
                   </div>

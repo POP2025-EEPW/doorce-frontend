@@ -14,6 +14,8 @@ export default class EntryPresenter {
         return "Failed to load entries.";
       case "no-data/list/entries":
         return "No entries found.";
+      case "error/add/entry":
+        return "Failed to add entry.";
       case "error/set/erroneous":
         return "Failed to update erroneous status.";
       case "error/set/suspicious":

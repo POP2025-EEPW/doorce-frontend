@@ -10,72 +10,83 @@ export default class EntryUseCase {
   constructor(private readonly client: ReturnType<typeof createApiClient>) {}
 
   async listEntries(datasetId: string): Promise<DatasetEntry[]> {
-    const result = entries as DatasetEntry[];
-
-    const filtered = result.filter((entry) => entry.dataset_id === datasetId);
+    const filtered = mockEntries.filter(
+      (entry) => entry.dataset_id === datasetId,
+    );
 
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(filtered);
       }, 500);
     });
-
-    // eslint-disable-next-line @typescript-eslint/no-base-to-string
-    console.log(this.client.toString());
-    //   const response = await this.client.GET("/api/datasets/{id}/entries", {
-    //     params: {
-    //       path: { id: datasetId },
-    //     },
-    //   });
-    //
-    //   if (response.error) {
-    //     throw new Error("error/list/entries");
-    //   }
-    //
-    //   if (!response.data) {
-    //     throw new Error("no-data/list/entries");
-    //   }
-    //
-    //   return response.data as unknown as DatasetEntry[];
   }
 
-  async setErroneous(
-    datasetId: string,
-    entryId: string,
-    erroneous: boolean,
-  ): Promise<void> {
-    // Mock: update local data
-    const entry = mockEntries.find(
-      (e) => e.id === entryId && e.dataset_id === datasetId,
+  async addEntry(datasetId: string, content: string): Promise<void> {
+    const response = await this.client.POST(
+      "/api/datasets/{datasetId}/entries",
+      {
+        params: {
+          path: { datasetId },
+        },
+        body: { content: content as unknown as Record<string, never> },
+      },
     );
-    if (entry) {
-      entry.erroneous = erroneous;
+
+    if (response.error) {
+      throw new Error("error/add/entry");
     }
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, 300);
+    // Add to mock data for frontend display
+    mockEntries.push({
+      id: crypto.randomUUID(),
+      dataset_id: datasetId,
+      content,
+      erroneous: false,
+      suspicious: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     });
   }
 
-  async setSuspicious(
-    datasetId: string,
-    entryId: string,
-    suspicious: boolean,
-  ): Promise<void> {
-    // Mock: update local data
-    const entry = mockEntries.find(
-      (e) => e.id === entryId && e.dataset_id === datasetId,
+  async setErroneous(entryId: string): Promise<void> {
+    const response = await this.client.POST(
+      "/api/quality/entries/{entryId}/mark-erroneous",
+      {
+        params: {
+          path: { entryId },
+        },
+      },
     );
-    if (entry) {
-      entry.suspicious = suspicious;
+
+    if (response.error) {
+      throw new Error("error/set/erroneous");
     }
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, 300);
-    });
+    // Update mock data
+    const entry = mockEntries.find((e) => e.id === entryId);
+    if (entry) {
+      entry.erroneous = true;
+    }
+  }
+
+  async setSuspicious(entryId: string): Promise<void> {
+    const response = await this.client.POST(
+      "/api/quality/entries/{entryId}/mark-suspicious",
+      {
+        params: {
+          path: { entryId },
+        },
+      },
+    );
+
+    if (response.error) {
+      throw new Error("error/set/suspicious");
+    }
+
+    // Update mock data
+    const entry = mockEntries.find((e) => e.id === entryId);
+    if (entry) {
+      entry.suspicious = true;
+    }
   }
 }
