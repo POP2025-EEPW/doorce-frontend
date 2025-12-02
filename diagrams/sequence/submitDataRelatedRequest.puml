@@ -1,0 +1,24 @@
+@startuml
+title submitDataRelatedRequest use case
+autonumber
+
+actor User
+participant "Submit button" as Button
+participant "Request form view" as View
+participant "quality.controller.ts" as Controller
+participant "uc.quality" as UseCase
+participant "CombinedClient" as Client
+participant "Quality API\nPOST /data-related-requests" as Http
+participant "Presenter" as Presenter
+
+User ->> Button : Clicks 'Submit'
+Button ->> Controller : submitDataRelatedRequest(req)
+Controller ->> UseCase : submitDataRelatedRequest(req)
+UseCase -> Client : submitDataRelatedRequest(req)
+Client -> Http : POST /data-related-requests
+Http --> Client : { id }
+Client --> UseCase : { id }
+Controller -> Presenter : presentSubmitResult({ id })
+Presenter ->> View : render success ({ id })
+View ->> User : Confirmation
+@enduml

@@ -1,0 +1,24 @@
+@startuml
+title listDataRelatedRequests use case
+autonumber
+
+actor User
+participant "Menu/Button" as Button
+participant "Requests list view" as View
+participant "quality.controller.ts" as Controller
+participant "uc.quality" as UseCase
+participant "CombinedClient" as Client
+participant "Quality API\nGET /data-related-requests" as Http
+participant "Presenter" as Presenter
+
+User ->> Button : User clicks 'Show Requests'
+Button ->> Controller : listDataRelatedRequests(filter?)
+Controller ->> UseCase : listDataRelatedRequests(filter?)
+UseCase -> Client : listDataRelatedRequests(filter?)
+Client -> Http : GET /data-related-requests
+Http --> Client : DataRelatedRequest[]
+Client --> UseCase : DataRelatedRequest[]
+Controller -> Presenter : presentRequests(DataRelatedRequest[])
+Presenter ->> View : render list
+View -->> User : Show requests
+@enduml

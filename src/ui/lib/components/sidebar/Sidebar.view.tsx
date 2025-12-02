@@ -1,3 +1,4 @@
+"use client";
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +13,8 @@ import {
 import { Button } from "@/ui/lib/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { MENU_ITEMS } from "./sidebar.const";
+import AddDataRelatedRequestModal from "@/ui/dataset/components/AddDataRelatedRequest.view";
+import { useState } from "react";
 
 interface SidebarViewProps {
   username: string | null;
@@ -20,8 +23,8 @@ interface SidebarViewProps {
 
 export function SidebarView(props: SidebarViewProps) {
   const { username, onLogout } = props;
-
   const nav = useNavigate();
+  const [openDataRequestModal, setOpenDataRequestModal] = useState(false);
 
   return (
     <Sidebar>
@@ -33,7 +36,14 @@ export function SidebarView(props: SidebarViewProps) {
               {MENU_ITEMS.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a onClick={() => nav(item.url)}>
+                    <a
+                      onClick={() =>
+                        item.url === "/datasets/requests"
+                          ? setOpenDataRequestModal(true)
+                          : nav(item.url)
+                      }
+                      className="flex items-center gap-2"
+                    >
                       <item.icon />
                       <span>{item.title}</span>
                     </a>
@@ -56,6 +66,11 @@ export function SidebarView(props: SidebarViewProps) {
           )}
         </div>
       </SidebarFooter>
+      {openDataRequestModal && (
+        <AddDataRelatedRequestModal
+          onClose={() => setOpenDataRequestModal(false)}
+        />
+      )}
     </Sidebar>
   );
 }
