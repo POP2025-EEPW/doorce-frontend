@@ -1,14 +1,12 @@
 // dataset.controller.ts
 import type {
-  Dataset,
-  DatasetSummary,
   CreateDatasetDto,
   UpdateDatasetDto,
   DatasetFilter,
   DatasetPreview,
 } from "@/domain/dataset/dataset.types";
 import DatasetUseCase from "@/domain/dataset/dataset.uc";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import DatasetPresenter from "./dataset.presenter";
 import { apiClient } from "@/api/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -20,8 +18,6 @@ export function useDatasetController(
   filter?: DatasetFilter,
 ) {
   const navigate = useNavigate();
-  const [datasets, setDatasets] = useState<DatasetSummary[]>([]);
-  const [currentDataset, setCurrentDataset] = useState<Dataset | null>(null);
 
   const deps = useRef<{
     datasetUseCase: DatasetUseCase;
@@ -37,21 +33,15 @@ export function useDatasetController(
   const queryClient = useQueryClient();
 
   // List datasets query
-  const { data: datasetsData, isLoading: isDatasetsLoading } = useQuery({
+  const { data: datasets = [], isLoading: isDatasetsLoading } = useQuery({
     queryKey: ["listDatasets", filter],
     queryFn: () => datasetUseCase.listDatasets(filter),
     select: (data) => presenter.listDatasets(data),
   });
 
-  useEffect(() => {
-    if (datasetsData) {
-      setDatasets(datasetsData);
-    }
-  }, [datasetsData]);
-
   // Get single dataset query
   const {
-    data: currentDatasetData,
+    data: currentDataset,
     isLoading: isCurrentDatasetLoading,
     error: datasetError,
   } = useQuery({
@@ -67,14 +57,6 @@ export function useDatasetController(
       toast.error(presenter.getErrorMessage(datasetError));
     }
   }, [datasetError, presenter]);
-
-  useEffect(() => {
-    if (currentDatasetData) {
-      setCurrentDataset(currentDatasetData);
-    } else if (!datasetId) {
-      setCurrentDataset(null);
-    }
-  }, [currentDatasetData, datasetId]);
 
   // Get dataset description query
   const {
@@ -94,11 +76,6 @@ export function useDatasetController(
       toast.error(presenter.getErrorMessage(descriptionError));
     }
   }, [descriptionError, presenter]);
-
-  // Clear state when datasetId changes
-  useEffect(() => {
-    setCurrentDataset(null);
-  }, [datasetId]);
 
   // Add dataset mutation
   const addDatasetMutation = useMutation({
@@ -177,9 +154,9 @@ export function useDatasetController(
   }, [navigate]);
 
   return {
-    // Data
+    // Data - directly from React Query
     datasets,
-    currentDataset,
+    currentDataset: currentDataset ?? null,
     datasetDescription,
     datasetId,
 
