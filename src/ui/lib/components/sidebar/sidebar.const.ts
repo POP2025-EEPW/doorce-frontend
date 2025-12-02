@@ -1,18 +1,18 @@
 import { type MenuItem } from "./sidebar.type";
-import { Folder, Table, Boxes, BadgeCheck, MessageSquare } from "lucide-react";
+import { Folder, Table, Boxes, MessageSquare } from "lucide-react";
 
 export const MENU_ITEMS: MenuItem[] = [
   {
     title: "Catalogs",
     url: "/catalogs",
     icon: Folder,
-    roles: ["MetadataManager"],
+    roles: ["DataUser"],
   },
   {
     title: "Datasets",
     url: "/datasets",
     icon: Table,
-    roles: ["DataSupplier"],
+    roles: ["DataSupplier", "DataQualityManager"],
   },
   {
     title: "Schemas",
@@ -21,15 +21,8 @@ export const MENU_ITEMS: MenuItem[] = [
     roles: ["MetadataManager"],
   },
   {
-    title: "Quality Controll",
-    url: "/quality-controll/datasets",
-    icon: BadgeCheck,
-    roles: ["DataQualityManager"],
-  },
-  {
     title: "Data Related Requests",
     url: "/datasets/requests",
     icon: MessageSquare,
-    roles: ["DataSupplier", "MetadataManager", "DataQualityManager"],
   },
 ];

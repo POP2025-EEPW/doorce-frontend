@@ -5,11 +5,11 @@ import { useAuth } from "@/application/auth/auth-store";
 import { useAuthController } from "@/application/auth/auth.controller";
 
 export function AppLayout() {
-  const { username } = useAuth();
+  const { username, roles } = useAuth();
   const { logout } = useAuthController();
   return (
     <SidebarProvider>
-      <SidebarView username={username} onLogout={logout} />
+      <SidebarView username={username} roles={roles} onLogout={logout} />
       <Outlet />
     </SidebarProvider>
   );

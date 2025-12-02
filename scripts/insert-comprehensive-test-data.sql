@@ -27,7 +27,7 @@ END $$;
 -- Delete test users
 DELETE
 FROM users
-WHERE username IN ('testuser', 'admin', 'manager', 'developer', 'supplier');
+WHERE username IN ('admin', 'metadata_manager', 'data_quality_manager', 'data_supplier', 'data_user');
 
 -- ============================================
 -- USERS
@@ -39,18 +39,17 @@ WHERE username IN ('testuser', 'admin', 'manager', 'developer', 'supplier');
 
 INSERT INTO users (id, username, password, roles, auth_token)
 VALUES
-    -- Admin user
-    ('550e8400-e29b-41d4-a716-446655440001', 'admin', '{noop}password', ARRAY[6]::smallint[], 'admin-token-001'),
-    -- Manager user
-    ('550e8400-e29b-41d4-a716-446655440002', 'manager', '{noop}password', ARRAY[0, 2]::smallint[], 'manager-token-002'),
-    -- Developer user
-    ('550e8400-e29b-41d4-a716-446655440003', 'developer', '{noop}password', ARRAY[5]::smallint[],
-     'developer-token-003'),
-    -- Regular user
-    ('550e8400-e29b-41d4-a716-446655440004', 'testuser', '{noop}password', ARRAY[4]::smallint[], 'testuser-token-004'),
-    -- Supplier user
-    ('550e8400-e29b-41d4-a716-446655440005', 'supplier', '{noop}password', ARRAY[3]::smallint[],
-     'supplier-token-005') ON CONFLICT (id) DO NOTHING;
+    -- Admin user (all roles)
+    ('00000000-0000-0000-0000-000000000001', 'admin', '{noop}password', ARRAY[0, 1, 2, 3, 4, 5, 6]::smallint[], 'admin-token-001'),
+    -- Metadata Manager
+    ('00000000-0000-0000-0000-000000000002', 'metadata_manager', '{noop}password', ARRAY[0]::smallint[], 'metadata-manager-token-002'),
+    -- Data Quality Manager
+    ('00000000-0000-0000-0000-000000000003', 'data_quality_manager', '{noop}password', ARRAY[2]::smallint[], 'data-quality-manager-token-003'),
+    -- Data Supplier
+    ('00000000-0000-0000-0000-000000000004', 'data_supplier', '{noop}password', ARRAY[3]::smallint[], 'data-supplier-token-004'),
+    -- Data User
+    ('00000000-0000-0000-0000-000000000005', 'data_user', '{noop}password', ARRAY[4]::smallint[], 'data-user-token-005')
+    ON CONFLICT (id) DO NOTHING;
 
 -- ============================================
 -- CATALOGS (Hierarchical Structure)
@@ -101,37 +100,37 @@ VALUES
 INSERT INTO datasets (id, title, description, status, quality_controllable, raw_data_available, schema_id, owner_id)
 VALUES
     -- Physics datasets (Scientific Schema)
-    ('750e8400-e29b-41d4-a716-446655440001', 'LHC Experiment Run 2024', 'Large Hadron Collider experiment data from 2024', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '550e8400-e29b-41d4-a716-446655440001'),
-    ('750e8400-e29b-41d4-a716-446655440002', 'Quantum Entanglement Study', 'Quantum entanglement measurement results', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '550e8400-e29b-41d4-a716-446655440001'),
-    ('750e8400-e29b-41d4-a716-446655440003', 'Higgs Boson Analysis', 'Analysis data for Higgs boson detection', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '550e8400-e29b-41d4-a716-446655440001'),
+    ('750e8400-e29b-41d4-a716-446655440001', 'LHC Experiment Run 2024', 'Large Hadron Collider experiment data from 2024', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '00000000-0000-0000-0000-000000000002'),
+    ('750e8400-e29b-41d4-a716-446655440002', 'Quantum Entanglement Study', 'Quantum entanglement measurement results', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '00000000-0000-0000-0000-000000000002'),
+    ('750e8400-e29b-41d4-a716-446655440003', 'Higgs Boson Analysis', 'Analysis data for Higgs boson detection', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '00000000-0000-0000-0000-000000000002'),
 
     -- Chemistry datasets (Scientific Schema)
-    ('750e8400-e29b-41d4-a716-446655440010', 'Organic Synthesis Results', 'Results from organic synthesis experiments', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '550e8400-e29b-41d4-a716-446655440001'),
-    ('750e8400-e29b-41d4-a716-446655440011', 'Molecular Structure Database', 'Database of molecular structures', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '550e8400-e29b-41d4-a716-446655440001'),
+    ('750e8400-e29b-41d4-a716-446655440010', 'Organic Synthesis Results', 'Results from organic synthesis experiments', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '00000000-0000-0000-0000-000000000002'),
+    ('750e8400-e29b-41d4-a716-446655440011', 'Molecular Structure Database', 'Database of molecular structures', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '00000000-0000-0000-0000-000000000002'),
 
     -- Biology datasets (Scientific Schema)
-    ('750e8400-e29b-41d4-a716-446655440020', 'Human Genome Sequencing', 'Complete human genome sequencing data', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '550e8400-e29b-41d4-a716-446655440001'),
-    ('750e8400-e29b-41d4-a716-446655440021', 'Protein Folding Analysis', 'Analysis of protein folding patterns', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '550e8400-e29b-41d4-a716-446655440001'),
-    ('750e8400-e29b-41d4-a716-446655440022', 'CRISPR Experiment Results', 'CRISPR gene editing experiment data', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '550e8400-e29b-41d4-a716-446655440001'),
+    ('750e8400-e29b-41d4-a716-446655440020', 'Human Genome Sequencing', 'Complete human genome sequencing data', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '00000000-0000-0000-0000-000000000002'),
+    ('750e8400-e29b-41d4-a716-446655440021', 'Protein Folding Analysis', 'Analysis of protein folding patterns', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '00000000-0000-0000-0000-000000000002'),
+    ('750e8400-e29b-41d4-a716-446655440022', 'CRISPR Experiment Results', 'CRISPR gene editing experiment data', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c71', '00000000-0000-0000-0000-000000000002'),
 
     -- Sales datasets (Business Schema)
-    ('750e8400-e29b-41d4-a716-446655440030', 'Sales Transactions Q1 2024', 'All sales transactions from Q1 2024', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '550e8400-e29b-41d4-a716-446655440001'),
-    ('750e8400-e29b-41d4-a716-446655440031', 'Customer Demographics', 'Customer demographic information', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '550e8400-e29b-41d4-a716-446655440001'),
-    ('750e8400-e29b-41d4-a716-446655440032', 'Product Performance Metrics', 'Metrics on product sales performance', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '550e8400-e29b-41d4-a716-446655440001'),
+    ('750e8400-e29b-41d4-a716-446655440030', 'Sales Transactions Q1 2024', 'All sales transactions from Q1 2024', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '00000000-0000-0000-0000-000000000001'),
+    ('750e8400-e29b-41d4-a716-446655440031', 'Customer Demographics', 'Customer demographic information', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '00000000-0000-0000-0000-000000000001'),
+    ('750e8400-e29b-41d4-a716-446655440032', 'Product Performance Metrics', 'Metrics on product sales performance', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '00000000-0000-0000-0000-000000000001'),
 
     -- Marketing datasets (Business Schema)
-    ('750e8400-e29b-41d4-a716-446655440040', 'Email Campaign Results', 'Results from email marketing campaigns', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '550e8400-e29b-41d4-a716-446655440001'),
-    ('750e8400-e29b-41d4-a716-446655440041', 'Social Media Engagement', 'Social media engagement metrics', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '550e8400-e29b-41d4-a716-446655440001'),
-    ('750e8400-e29b-41d4-a716-446655440042', 'A/B Test Results', 'Results from A/B testing campaigns', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '550e8400-e29b-41d4-a716-446655440001'),
+    ('750e8400-e29b-41d4-a716-446655440040', 'Email Campaign Results', 'Results from email marketing campaigns', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '00000000-0000-0000-0000-000000000001'),
+    ('750e8400-e29b-41d4-a716-446655440041', 'Social Media Engagement', 'Social media engagement metrics', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '00000000-0000-0000-0000-000000000001'),
+    ('750e8400-e29b-41d4-a716-446655440042', 'A/B Test Results', 'Results from A/B testing campaigns', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '00000000-0000-0000-0000-000000000001'),
 
     -- Financial datasets (Business Schema)
-    ('750e8400-e29b-41d4-a716-446655440050', 'Quarterly Financial Reports', 'Quarterly financial statement data', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '550e8400-e29b-41d4-a716-446655440001'),
-    ('750e8400-e29b-41d4-a716-446655440051', 'Budget Analysis', 'Budget planning and analysis data', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '550e8400-e29b-41d4-a716-446655440001'),
-    ('750e8400-e29b-41d4-a716-446655440052', 'Investment Portfolio', 'Investment portfolio tracking data', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '550e8400-e29b-41d4-a716-446655440001'),
+    ('750e8400-e29b-41d4-a716-446655440050', 'Quarterly Financial Reports', 'Quarterly financial statement data', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '00000000-0000-0000-0000-000000000001'),
+    ('750e8400-e29b-41d4-a716-446655440051', 'Budget Analysis', 'Budget planning and analysis data', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '00000000-0000-0000-0000-000000000001'),
+    ('750e8400-e29b-41d4-a716-446655440052', 'Investment Portfolio', 'Investment portfolio tracking data', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c72', '00000000-0000-0000-0000-000000000001'),
 
     -- Archive datasets (Archive Schema)
-    ('750e8400-e29b-41d4-a716-446655440060', 'Historical Sales Data 2020', 'Sales data archive from 2020', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c73', '550e8400-e29b-41d4-a716-446655440001'),
-    ('750e8400-e29b-41d4-a716-446655440061', 'Legacy System Migration', 'Data migrated from legacy systems', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c73', '550e8400-e29b-41d4-a716-446655440001')
+    ('750e8400-e29b-41d4-a716-446655440060', 'Historical Sales Data 2020', 'Sales data archive from 2020', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c73', '00000000-0000-0000-0000-000000000001'),
+    ('750e8400-e29b-41d4-a716-446655440061', 'Legacy System Migration', 'Data migrated from legacy systems', 'ACTIVE', true, false, '82477822-0ee6-4c18-aebb-500697d36c73', '00000000-0000-0000-0000-000000000001')
     ON CONFLICT (id) DO NOTHING;
 
 -- ============================================

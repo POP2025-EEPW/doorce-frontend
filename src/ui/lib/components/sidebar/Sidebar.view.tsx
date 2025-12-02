@@ -15,14 +15,16 @@ import { useNavigate } from "react-router-dom";
 import { MENU_ITEMS } from "./sidebar.const";
 import AddDataRelatedRequestModal from "@/ui/dataset/components/AddDataRelatedRequest.view";
 import { useState } from "react";
+import type { Role } from "@/domain/auth/auth.type";
 
 interface SidebarViewProps {
   username: string | null;
+  roles: Role[];
   onLogout: () => void;
 }
 
 export function SidebarView(props: SidebarViewProps) {
-  const { username, onLogout } = props;
+  const { username, roles, onLogout } = props;
   const nav = useNavigate();
   const [openDataRequestModal, setOpenDataRequestModal] = useState(false);
 
@@ -33,7 +35,11 @@ export function SidebarView(props: SidebarViewProps) {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {MENU_ITEMS.map((item) => (
+              {MENU_ITEMS.filter((item) =>
+                item.roles
+                  ? item.roles.some((role) => roles.includes(role))
+                  : true,
+              ).map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a
