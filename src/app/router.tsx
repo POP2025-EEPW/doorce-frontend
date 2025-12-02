@@ -45,7 +45,7 @@ const router = createBrowserRouter([
         element: <DatasetDescriptionPage />,
       },
       {
-        path: "dataset/:id/entries", // <-- dodaj route
+        path: "dataset/:id/entries",
         element: <EntriesListPage />,
       },
       // { path: "dataset/add", element: <DatasetsPresenter /> },

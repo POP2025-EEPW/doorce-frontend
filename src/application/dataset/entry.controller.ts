@@ -40,12 +40,23 @@ export function useEntryController(datasetId: string | null) {
     }
   }, [error, presenter]);
 
-  const setErroneousMutation = useMutation({
-    mutationFn: (vars: { entryId: string; erroneous: boolean }) =>
-      entryUseCase.setErroneous(datasetId ?? "", vars.entryId, vars.erroneous),
+  const addEntryMutation = useMutation({
+    mutationFn: (content: string) =>
+      entryUseCase.addEntry(datasetId ?? "", content),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["listEntries", datasetId] });
-      toast.success("Entry updated");
+      toast.success("Entry added");
+    },
+    onError: (error) => {
+      toast.error(presenter.getErrorMessage(error));
+    },
+  });
+
+  const setErroneousMutation = useMutation({
+    mutationFn: (entryId: string) => entryUseCase.setErroneous(entryId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["listEntries", datasetId] });
+      toast.success("Entry marked as erroneous");
     },
     onError: (error) => {
       toast.error(presenter.getErrorMessage(error));
@@ -53,31 +64,33 @@ export function useEntryController(datasetId: string | null) {
   });
 
   const setSuspiciousMutation = useMutation({
-    mutationFn: (vars: { entryId: string; suspicious: boolean }) =>
-      entryUseCase.setSuspicious(
-        datasetId ?? "",
-        vars.entryId,
-        vars.suspicious,
-      ),
+    mutationFn: (entryId: string) => entryUseCase.setSuspicious(entryId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["listEntries", datasetId] });
-      toast.success("Entry updated");
+      toast.success("Entry marked as suspicious");
     },
     onError: (error) => {
       toast.error(presenter.getErrorMessage(error));
     },
   });
 
+  const onAddEntry = useCallback(
+    (content: string) => {
+      addEntryMutation.mutate(content);
+    },
+    [addEntryMutation],
+  );
+
   const onSetErroneous = useCallback(
-    (entryId: string, erroneous: boolean) => {
-      setErroneousMutation.mutate({ entryId, erroneous });
+    (entryId: string) => {
+      setErroneousMutation.mutate(entryId);
     },
     [setErroneousMutation],
   );
 
   const onSetSuspicious = useCallback(
-    (entryId: string, suspicious: boolean) => {
-      setSuspiciousMutation.mutate({ entryId, suspicious });
+    (entryId: string) => {
+      setSuspiciousMutation.mutate(entryId);
     },
     [setSuspiciousMutation],
   );
@@ -85,6 +98,8 @@ export function useEntryController(datasetId: string | null) {
   return {
     entries,
     isLoading,
+    isAddingEntry: addEntryMutation.isPending,
+    onAddEntry,
     onSetErroneous,
     onSetSuspicious,
   };
