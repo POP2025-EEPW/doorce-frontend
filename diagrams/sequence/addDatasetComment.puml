@@ -1,0 +1,34 @@
+@startuml
+title Add dataset comment use case
+
+autonumber
+
+actor DataUser as User
+
+participant "DatasetCommentFormView" as DatasetCommentFormView
+participant "DatasetPreviewView" as View
+participant "AddDatasetCommentPresenter" as Presenter
+participant "dataset-comment.controller" as Controller
+participant "uc.quality" as UseCase
+participant "CombinedClient" as Client
+participant "API" as Http
+
+User ->> DatasetCommentFormView : Click "Submit Comment"
+DatasetCommentFormView ->> Controller : addDatasetComment(datasetId, input)
+Controller ->> UseCase : addDatasetComment(datasetId,input)
+UseCase -> Client : addDatasetComment(datasetId,input)
+Client ->> Http : PUT /datasets/{id}/comment
+Http ->> Client : OK 200
+Client --> UseCase : OK 200
+UseCase --> Controller : OK 200
+Controller ->> UseCase: getDatasetPreview(datasetId)
+UseCase -> Client : getDatasetPreview(datasetId)
+Client ->> Http : GET /datasets/{id}/preview
+Http ->> Client : DatasetPreview
+Client --> UseCase : DatasetPreview
+UseCase ->> Presenter : present(DatasetPreview)
+Presenter ->> View : render(DatasetPreview)
+View ->> User : Show updated dataset preview with comment
+
+
+@enduml
