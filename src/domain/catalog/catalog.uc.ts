@@ -46,7 +46,7 @@ export default class CatalogUseCase {
       throw new Error("no-data/get/catalog");
     }
 
-    const data = response as unknown as Catalog;
+    const data = response.data as unknown as Catalog;
 
     return data;
   }

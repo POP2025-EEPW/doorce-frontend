@@ -5,7 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/ui/lib/components/ui/card";
-import { Badge } from "@/ui/lib/components/ui/badge";
 import type { DatasetSummary } from "@/domain/dataset/dataset.types";
 import type { CatalogSummary } from "@/domain/catalog/catalog.type";
 import { Separator } from "@/ui/lib/components/ui/separator";
@@ -15,6 +14,7 @@ import { AddCatalogFormView } from "./AddCatalogForm.view";
 import { SidebarTrigger } from "@/ui/lib/components/ui/sidebar";
 import { Button } from "@/ui/lib/components/ui/button.tsx";
 import { ChevronLeft } from "lucide-react";
+import type { Role } from "@/domain/auth/auth.type.ts";
 
 interface CatalogDetailsViewProps {
   catalog: Catalog | null;
@@ -28,6 +28,8 @@ interface CatalogDetailsViewProps {
   setSelectedCatalogId: (catalogId: string) => void;
   onAddCatalogClick: (catalog: CreateCatalogDto) => void;
   onNavigateToParent: () => void;
+
+  userRoles: Role[];
 }
 
 export default function CatalogDetailsView(props: CatalogDetailsViewProps) {
@@ -43,10 +45,14 @@ export default function CatalogDetailsView(props: CatalogDetailsViewProps) {
     setSelectedCatalogId,
     onAddCatalogClick,
     onNavigateToParent,
+
+    userRoles,
   } = props;
 
   const canGoBack = catalog !== null;
 
+  const canAddCatalog = userRoles.includes("MetadataManager");
+  console.log("User roles in CatalogDetailsView:", userRoles);
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-2">
@@ -83,17 +89,17 @@ export default function CatalogDetailsView(props: CatalogDetailsViewProps) {
             <div className="text-sm text-muted-foreground">
               {catalog?.description ?? "No description provided."}
             </div>
-
-            <div className="flex flex-wrap items-center gap-2 text-sm">
-              <span className="text-muted-foreground">Parent:</span>
-              {catalog.parentCatalogId ? (
-                <Badge variant="secondary" className="font-mono">
-                  {catalog.parentCatalogId}
-                </Badge>
-              ) : (
-                <Badge variant="outline">Root catalog</Badge>
-              )}
-            </div>
+            {/*Wywalam to bo w danych z backendu nie ma zapisanego co jest rodzicem*/}
+            {/*<div className="flex flex-wrap items-center gap-2 text-sm">*/}
+            {/*  <span className="text-muted-foreground">Parent:</span>*/}
+            {/*  {catalog.parentCatalogId ? (*/}
+            {/*    <Badge variant="secondary" className="font-mono">*/}
+            {/*      {catalog.parentCatalogId}*/}
+            {/*    </Badge>*/}
+            {/*  ) : (*/}
+            {/*    <Badge variant="outline">Root catalog</Badge>*/}
+            {/*  )}*/}
+            {/*</div>*/}
 
             <div className="text-xs text-muted-foreground">
               ID: <span className="font-mono">{catalog.id}</span>
@@ -116,16 +122,18 @@ export default function CatalogDetailsView(props: CatalogDetailsViewProps) {
         />
       )}
 
-      <Card className="max-w-xl">
-        <CardHeader>
-          <CardTitle className="text-lg leading-none">
-            Add {catalog === null ? "root catalog" : "subcatalog"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <AddCatalogFormView onAddCatalogClick={onAddCatalogClick} />
-        </CardContent>
-      </Card>
+      {canAddCatalog && (
+        <Card className="max-w-xl">
+          <CardHeader>
+            <CardTitle className="text-lg leading-none">
+              Add {catalog === null ? "root catalog" : "subcatalog"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <AddCatalogFormView onAddCatalogClick={onAddCatalogClick} />
+          </CardContent>
+        </Card>
+      )}
 
       <Separator />
 
