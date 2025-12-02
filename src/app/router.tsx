@@ -8,6 +8,7 @@ import { AppLayout } from "@/app/Layout";
 import LoginPage from "@/ui/auth/pages/Login.page";
 import CatalogPage from "@/ui/catalog/pages/Catalog.page";
 import RegisterPage from "@/ui/auth/pages/Register.page";
+import DatasetDescriptionPage from "@/ui/dataset/pages/DatasetDescriptionPage.tsx";
 
 const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -30,10 +31,10 @@ const router = createBrowserRouter([
         children: [{ path: ":id", element: <CatalogPage /> }],
       },
 
-      // {
-      //   path: "dataset/:id",
-      //   element: <DatasetPage />,
-      // },
+      {
+        path: "dataset/:id",
+        element: <DatasetDescriptionPage />,
+      },
       // { path: "dataset/add", element: <DatasetsPresenter /> },
       // {
       //   path: "quality-controll/datasets",

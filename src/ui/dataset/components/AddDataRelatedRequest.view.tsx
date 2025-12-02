@@ -4,29 +4,65 @@ import { Input } from "@/ui/lib/components/ui/input";
 import { Textarea } from "@/ui/lib/components/ui/textarea";
 import { Dialog } from "@/ui/lib/components/ui/dialog";
 import { toast } from "sonner";
-import { useDataRelatedRequests } from "@/application/dataset/dataset.presenter";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import {
+  submitDataRelatedRequest,
+  listDataRelatedRequests,
+  type DataRelatedRequestPayload,
+} from "@/domain/dataset/dataset.uc";
+
+interface DataRelatedRequest {
+  id: string;
+  subject: string;
+  description: string;
+  status: string;
+  requesterUsername: string;
+  createdAt?: string;
+}
 
 interface Props {
   onClose: () => void;
 }
 
+const PAGE_SIZE = 20;
+
 export default function AddDataRelatedRequestModal({ onClose }: Props) {
-  const {
-    datasetId,
-    setDatasetId,
-    requests,
-    loading,
-    loadingList,
-    error,
-    page,
-    pageSize,
-    load,
-    submit,
-  } = useDataRelatedRequests();
+  const [datasetId, setDatasetId] = useState("");
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const [requests, setRequests] = useState<DataRelatedRequest[]>([]);
+  const [loadingList, setLoadingList] = useState(false);
+  const [page, setPage] = useState(0);
+
+  const loadRequests = useCallback(
+    async (pageNum: number) => {
+      if (!datasetId) {
+        setLocalError("Please provide the dataset ID first");
+        return;
+      }
+      setLoadingList(true);
+      setLocalError(null);
+      try {
+        const data = await listDataRelatedRequests(
+          datasetId,
+          pageNum,
+          PAGE_SIZE,
+        );
+        setRequests(data as DataRelatedRequest[]);
+        setPage(pageNum);
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error ? err.message : "Failed to load requests";
+        setLocalError(message);
+      } finally {
+        setLoadingList(false);
+      }
+    },
+    [datasetId],
+  );
 
   async function handleSubmit(e?: React.FormEvent) {
     e?.preventDefault();
@@ -39,18 +75,26 @@ export default function AddDataRelatedRequestModal({ onClose }: Props) {
       setLocalError("Please fill in all fields");
       return;
     }
+    setLoading(true);
     try {
-      await submit({ subject, description });
+      const payload: DataRelatedRequestPayload = { subject, description };
+      await submitDataRelatedRequest(datasetId, payload);
       toast.success("Request submitted");
       setSubject("");
       setDescription("");
-    } catch (err: any) {
-      setLocalError(err?.message ?? "Failed to submit request");
+      await loadRequests(0);
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Failed to submit request";
+      setLocalError(message);
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <Dialog
+      open
       onOpenChange={(open) => {
         if (!open) onClose();
       }}
@@ -69,7 +113,7 @@ export default function AddDataRelatedRequestModal({ onClose }: Props) {
           <div className="space-y-1">
             <label className="text-sm font-medium">Dataset ID</label>
             <Input
-              value={datasetId ?? ""}
+              value={datasetId}
               onChange={(e) =>
                 setDatasetId((e.target as HTMLInputElement).value)
               }
@@ -97,8 +141,8 @@ export default function AddDataRelatedRequestModal({ onClose }: Props) {
               className="w-full min-h-[100px]"
             />
           </div>
-          {(localError ?? error) && (
-            <div className="text-sm text-red-600">{localError ?? error}</div>
+          {localError && (
+            <div className="text-sm text-red-600">{localError}</div>
           )}
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={onClose} disabled={loading}>
@@ -117,7 +161,7 @@ export default function AddDataRelatedRequestModal({ onClose }: Props) {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => load(0)}
+                onClick={() => loadRequests(0)}
                 disabled={loadingList}
               >
                 Load
@@ -125,7 +169,7 @@ export default function AddDataRelatedRequestModal({ onClose }: Props) {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => load(Math.max(0, page - 1))}
+                onClick={() => loadRequests(Math.max(0, page - 1))}
                 disabled={loadingList || page === 0}
               >
                 Prev
@@ -133,8 +177,8 @@ export default function AddDataRelatedRequestModal({ onClose }: Props) {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => load(page + 1)}
-                disabled={loadingList || requests.length < pageSize}
+                onClick={() => loadRequests(page + 1)}
+                disabled={loadingList || requests.length < PAGE_SIZE}
               >
                 Next
               </Button>
@@ -149,7 +193,7 @@ export default function AddDataRelatedRequestModal({ onClose }: Props) {
             </div>
           ) : (
             <div className="grid gap-3 max-h-64 overflow-auto pr-2">
-              {requests.map((r: any) => (
+              {requests.map((r) => (
                 <div
                   key={r.id}
                   className="p-4 border rounded-lg bg-white shadow-sm"

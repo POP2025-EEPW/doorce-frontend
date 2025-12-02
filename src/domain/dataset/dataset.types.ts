@@ -15,11 +15,14 @@ export interface Dataset extends DatasetSummary {
   schemaId?: ID | null;
   createdAt?: ISODateString;
   updatedAt?: ISODateString;
+  qualityTag?: string;
 }
 
 export interface CreateDatasetDto {
   title: string;
   description: string;
+  qualityControllable: boolean;
+  schemaId: string;
 }
 
 export interface UpdateDatasetDto {
@@ -55,4 +58,11 @@ export interface DatasetPreview {
   description: string;
   entryCount: number;
   sampleEntries: DataEntryPreview[];
+}
+
+export interface EditDatasetOutputPort {
+  presentDataset(dataset: Dataset): void;
+  presentLoadDatasetError(error: unknown): void;
+  presentEditDatasetSuccess(): void;
+  presentEditDatasetError(error: unknown): void;
 }

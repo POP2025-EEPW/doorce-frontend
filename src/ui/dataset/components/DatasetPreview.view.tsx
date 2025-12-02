@@ -53,8 +53,8 @@ export function DatasetPreviewView({
                   </tr>
                 </thead>
                 <tbody>
-                  {preview.sampleEntries.map((entry, rowIndex) => (
-                    <tr key={rowIndex} className="odd:bg-white even:bg-gray-50">
+                  {preview.sampleEntries.map((entry) => (
+                    <tr key={entry.id} className="odd:bg-white even:bg-gray-50">
                       {columns.map((col) => (
                         <td key={col} className="px-4 py-2 border-b">
                           {String(entry.content)}

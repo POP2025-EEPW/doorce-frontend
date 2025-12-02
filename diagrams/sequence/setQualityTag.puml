@@ -1,0 +1,35 @@
+@startuml
+title listQualityControllableDatasets use case
+autonumber
+
+actor DataQualityManager as User
+
+participant "Quality control view" as View
+participant "Quality tag form" as TagView
+participant "QualityTagsPresenter" as Presenter
+participant "DatasetDetailPresenter" as DatasetPresenter
+participant "Data Quality Controller" as Controller
+participant "uc.quality" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API" as Http
+
+== Open Quality Tag Form View ==
+User -> View : Clicked "Set quality tag" button
+View -> Controller : Show Quality tag form
+Controller -> UseCase : Show Quality tag form
+UseCase -> Presenter : Show quality Tag form
+Presenter -> TagView : render()
+TagView -> User : Show quality tag form
+== Submit Quality Tag Data ==
+User -> TagView : Input data and submit
+TagView -> Controller : addQualityTag(datasetId, QualityTag)
+Controller ->> UseCase : addQualityTag(datasetId, QualityTag)
+UseCase -> Client : addQualityTag(datasetId, tag)
+Client ->> Http : POST /datasets/qualityTags?datasetId={datasetId}
+Http ->> Client : DatasetSummary[]
+Client -> UseCase : DatasetSummary[]
+UseCase -> DatasetPresenter : present(DatasetSummary[])
+DatasetPresenter -> View : render(DatasetSummary[])
+View ->> User : Show datasets list
+
+@enduml

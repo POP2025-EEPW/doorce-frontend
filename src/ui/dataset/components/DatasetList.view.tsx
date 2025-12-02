@@ -1,3 +1,9 @@
+// ui/dataset/components/DatasetList.view.tsx
+import { useEffect } from "react";
+import { MoreHorizontal, Pencil, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+
 import type { DatasetSummary } from "@/domain/dataset/dataset.types";
 import {
   Card,
@@ -5,45 +11,146 @@ import {
   CardHeader,
   CardTitle,
 } from "@/ui/lib/components/ui/card";
+import { Button } from "@/ui/lib/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/ui/lib/components/ui/dropdown-menu";
 import { Separator } from "@/ui/lib/components/ui/separator";
-import { useNavigate } from "react-router-dom";
+
+import { EditDatasetModalView } from "./EditDatasetForm.view";
+import { SelectDataSchemaModalView } from "./SelectDataSchemaModal.view";
+import { useEditDatasetController } from "@/application/dataset/editDataset.controller";
+import { useSetDatasetSchemaController } from "@/application/schema/setDataSchema.controller";
 
 interface DatasetListViewProps {
   datasets: DatasetSummary[];
+  onDatasetUpdated?: () => void;
 }
 
 export function DatasetListView(props: DatasetListViewProps) {
-  const { datasets } = props;
-
+  const { datasets, onDatasetUpdated } = props;
   const nav = useNavigate();
-
   const safeDatasets = Array.isArray(datasets) ? datasets : [];
 
+  // Edit controller - now returns viewProps directly
+  const {
+    viewProps: editModalViewProps,
+    notification: editNotification,
+    clearNotification: clearEditNotification,
+    openEditModal,
+  } = useEditDatasetController({
+    onDatasetUpdated: () => {
+      onDatasetUpdated?.();
+    },
+  });
+
+  // Handle edit notifications
+  useEffect(() => {
+    if (editNotification) {
+      if (editNotification.type === "success") {
+        toast.success(editNotification.message);
+      } else {
+        toast.error(editNotification.message);
+      }
+      clearEditNotification();
+    }
+  }, [editNotification, clearEditNotification]);
+
+  // Set schema controller (assuming similar refactor)
+  const {
+    viewProps: schemaModalViewProps,
+    notification: schemaNotification,
+    clearNotification: clearSchemaNotification,
+    openSchemaModal,
+  } = useSetDatasetSchemaController({
+    onSchemaUpdated: () => {
+      onDatasetUpdated?.();
+    },
+  });
+
+  // Handle schema notifications
+  useEffect(() => {
+    if (schemaNotification) {
+      if (schemaNotification.type === "success") {
+        toast.success(schemaNotification.message);
+      } else {
+        toast.error(schemaNotification.message);
+      }
+      clearSchemaNotification();
+    }
+  }, [schemaNotification, clearSchemaNotification]);
+
   return (
-    <div className="space-y-3">
-      {safeDatasets.map((c, idx) => (
-        <div key={c.id}>
-          <Card
-            className="cursor-pointer transition-colors hover:bg-accent/50"
-            onClick={() => nav(`/dataset/${c.id}`)}
-          >
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg leading-none">{c.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              {c.description && (
-                <div className="text-sm text-muted-foreground">
-                  {c.description}
+    <>
+      <div className="space-y-3">
+        {safeDatasets.map((dataset, idx) => (
+          <div key={dataset.id}>
+            <Card
+              className="cursor-pointer transition-colors hover:bg-accent/50"
+              onClick={() => nav(`/dataset/${dataset.id}`)}
+            >
+              <CardHeader className="pb-2">
+                <div className="flex items-start justify-between">
+                  <CardTitle className="text-lg leading-none">
+                    {dataset.title}
+                  </CardTitle>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 shrink-0 -mt-1 -mr-2"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openEditModal(dataset);
+                        }}
+                      >
+                        <Pencil className="mr-2 h-4 w-4" />
+                        Edit dataset
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openSchemaModal(dataset);
+                        }}
+                      >
+                        <FileText className="mr-2 h-4 w-4" />
+                        Set schema
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-          {idx < safeDatasets.length - 1 && <Separator className="my-3" />}
-        </div>
-      ))}
-      {safeDatasets.length === 0 && (
-        <div className="text-sm text-muted-foreground">No datasets</div>
-      )}
-    </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                {dataset.description && (
+                  <div className="text-sm text-muted-foreground">
+                    {dataset.description}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            {idx < safeDatasets.length - 1 && <Separator className="my-3" />}
+          </div>
+        ))}
+        {safeDatasets.length === 0 && (
+          <div className="text-sm text-muted-foreground">No datasets</div>
+        )}
+      </div>
+
+      {/* Modals receive viewProps directly from controllers */}
+      <EditDatasetModalView {...editModalViewProps} />
+      <SelectDataSchemaModalView {...schemaModalViewProps} />
+    </>
   );
 }

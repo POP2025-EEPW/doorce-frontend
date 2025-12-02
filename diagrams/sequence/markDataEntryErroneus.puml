@@ -1,0 +1,34 @@
+@startuml
+title listQualityControllableDatasets use case
+autonumber
+
+actor DataQualityManager as User
+
+participant "DatasetView" as View
+participant "MarkAsErroneous Form" as FormView
+participant "MarkAsErroneous Presenter" as Presenter
+participant "DatasetDetailPresenter" as DatasetPresenter
+participant "Data Quality Controller" as Controller
+participant "uc.quality" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API" as Http
+
+== Open Mark As Erroneous Form ==
+User -> View : Clicked "Mark as Erroneous" button
+View -> Controller : Show Mark as Erroneous form
+Controller -> UseCase : Show Mark as Erroneous form
+UseCase -> Presenter : Show Mark as Erroneous form
+Presenter -> FormView : render()
+FormView ->> User : Show Mark as Erroneous form
+== Submit Data Entry As Erroneous ==
+User -> FormView : Input data and submit
+FormView -> Controller : markDataEntryErroneous(datasetId, dataEntryId, notes)
+Controller -> UseCase : markDataEntryErroneous(datasetId, dataEntryId, notes)
+UseCase -> Client :  markDataEntryErroneous(datasetId, dataEntryId, notes)
+Client ->> Http : POST /datasets/markErroneous?datasetId={datasetId}
+Http ->> Client : Dataset
+Client -> UseCase : Dataset
+UseCase -> DatasetPresenter : present(Dataset)
+DatasetPresenter -> View : render(Dataset)
+View ->> User : Show datasets details
+@enduml

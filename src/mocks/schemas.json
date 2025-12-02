@@ -12,7 +12,7 @@
     "version": "2.1.3"
   },
   {
-    "id": "schema-003",
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "name": "Analytics Events Schema",
     "description": "Schema for tracking user interactions, page views, and custom events",
     "version": "3.0.0"

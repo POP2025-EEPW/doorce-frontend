@@ -23,12 +23,14 @@ export default class DatasetUseCase {
   }
 
   async editDataset(id: string, dataset: UpdateDatasetDto): Promise<void> {
-    console.log(id, dataset);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
+    const response = await this.client.PUT("/api/datasets/{id}", {
+      params: { path: { id } },
+      body: dataset,
     });
+
+    if (response.error) {
+      throw new Error("error/edit/dataset");
+    }
   }
 
   async getDataset(id: string): Promise<Dataset> {
@@ -48,6 +50,21 @@ export default class DatasetUseCase {
     const result = response.data as unknown as Dataset;
 
     return result;
+  }
+
+  async setSchema(datasetId: string, schemaId: string | null): Promise<void> {
+    const response = await this.client.PUT("/api/datasets/{id}/schema", {
+      params: {
+        path: { id: datasetId },
+      },
+      body: {
+        id: schemaId ?? undefined,
+      },
+    });
+
+    if (!response.response.ok) {
+      throw new Error("Failed to set dataset schema");
+    }
   }
 
   async listDatasets(
@@ -78,21 +95,22 @@ export default class DatasetUseCase {
   }
 
   async getDatasetDescription(datasetId: string): Promise<DatasetDescription> {
-    const result = datasets as Dataset[];
+    const response = await this.client.GET("/api/datasets/{id}", {
+      params: { path: { id: datasetId } },
+    });
 
-    const item = result.find((item) => item.id === datasetId);
-
-    if (!item) {
-      throw new Error("no-data/get/description");
+    if (response.error) {
+      throw new Error("error/get/dataset");
     }
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          description: item.description,
-        });
-      }, 1000);
-    });
+    if (!response.data) {
+      throw new Error("no-data/get/dataset");
+    }
+
+    //TODO: Consult with backend about bad reutrns
+    const result = response.data as unknown as Dataset;
+
+    return { description: result.description } as DatasetDescription;
   }
 
   async listOwnedDatasets(ownerId: string): Promise<DatasetSummary[]> {
@@ -134,7 +152,7 @@ export async function submitDataRelatedRequest(
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("token");
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(url, {
@@ -161,7 +179,7 @@ export async function listDataRelatedRequests(
   });
   const url = `/api/datasets/${encodeURIComponent(datasetId)}/requests?${params.toString()}`;
   const headers: Record<string, string> = {};
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("token");
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(url, { headers });
