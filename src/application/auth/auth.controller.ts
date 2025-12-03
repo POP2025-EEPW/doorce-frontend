@@ -38,8 +38,11 @@ export function useAuthController() {
     }) => useCase.login({ username, password }),
     onSuccess: (token, variables) => {
       // Persist returned token as userId for now; adjust when backend returns explicit userId
-      loginToStore(token, variables.username, ["DataUser"]);
-      navigateToRole(["DataUser"], navigate);
+      loginToStore(token, variables.username, [
+        "DataQualityManager",
+        "DataSupplier",
+      ]);
+      navigateToRole(["DataQualityManager", "DataSupplier"], navigate);
     },
     onError: (error) => {
       toast.error(presenter.getErrorMessage(error));

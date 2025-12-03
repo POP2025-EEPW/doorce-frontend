@@ -72,6 +72,23 @@ export default class DatasetUseCase {
     return response.data as unknown as string;
   }
 
+  async uploadRawDataset(datasetId: ID, url: string): Promise<void> {
+    const response = await this.client.POST("/api/datasets/{datasetId}/raw", {
+      params: {
+        path: {
+          datasetId,
+        },
+      },
+      body: {
+        dataUrl: url,
+      },
+    });
+
+    if (response.error) {
+      throw new Error("error/upload/raw-dataset");
+    }
+  }
+
   async setSchema(datasetId: string, schemaId: string | null): Promise<void> {
     const response = await this.client.PUT("/api/datasets/{id}/schema", {
       params: {

@@ -6,6 +6,7 @@ import {
   FileText,
   AlertCircle,
   Download,
+  Upload,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -31,6 +32,8 @@ import { useEditDatasetController } from "@/application/dataset/editDataset.cont
 import { useSetDatasetSchemaController } from "@/application/schema/setDataSchema.controller";
 import { DownloadDatasetModalView } from "@/ui/dataset/components/DownloadDatasetModal.view.tsx";
 import { useDownloadDatasetController } from "@/application/dataset/downloadDataset.controller.ts";
+import { useUploadRawDatasetController } from "@/application/dataset/uploadRawDataset.controller.ts";
+import { UploadRawDatasetModalView } from "@/ui/dataset/components/UploadRawDatasetModal.view.tsx";
 
 interface DatasetListViewProps {
   datasets: DatasetSummary[];
@@ -39,6 +42,7 @@ interface DatasetListViewProps {
   onShowAlerts?: (datasetId: DatasetSummary["id"]) => void;
   canDisplayAlerts?: boolean;
   canDownload?: boolean;
+  canAddRawLink?: boolean;
 }
 
 export function DatasetListView(props: DatasetListViewProps) {
@@ -49,6 +53,7 @@ export function DatasetListView(props: DatasetListViewProps) {
     onShowAlerts,
     canDisplayAlerts,
     canDownload,
+    canAddRawLink,
   } = props;
   const safeDatasets = Array.isArray(datasets) ? datasets : [];
 
@@ -103,17 +108,8 @@ export function DatasetListView(props: DatasetListViewProps) {
   const { viewProps: downloadModalViewProps, openDownloadModal } =
     useDownloadDatasetController();
 
-  // Handle schema notifications
-  useEffect(() => {
-    if (schemaNotification) {
-      if (schemaNotification.type === "success") {
-        toast.success(schemaNotification.message);
-      } else {
-        toast.error(schemaNotification.message);
-      }
-      clearSchemaNotification();
-    }
-  }, [schemaNotification, clearSchemaNotification]);
+  const { viewProps: uploadRawModalViewProps, openUploadRawModal } =
+    useUploadRawDatasetController();
 
   return (
     <>
@@ -182,6 +178,17 @@ export function DatasetListView(props: DatasetListViewProps) {
                           Download
                         </DropdownMenuItem>
                       )}
+                      {canAddRawLink && (
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openUploadRawModal(dataset);
+                          }}
+                        >
+                          <Upload className="mr-2 h-4 w-4" />
+                          Upload Raw Dataset
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -206,6 +213,7 @@ export function DatasetListView(props: DatasetListViewProps) {
       <EditDatasetModalView {...editModalViewProps} />
       <SelectDataSchemaModalView {...schemaModalViewProps} />
       <DownloadDatasetModalView {...downloadModalViewProps} />
+      <UploadRawDatasetModalView {...uploadRawModalViewProps} />
     </>
   );
 }

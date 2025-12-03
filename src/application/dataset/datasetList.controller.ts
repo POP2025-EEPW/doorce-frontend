@@ -1,6 +1,7 @@
 import type {
   DatasetFilter,
   DatasetSummary,
+  DatasetTab,
 } from "@/domain/dataset/dataset.types.ts";
 import { useCallback, useEffect, useRef, useState } from "react";
 import DatasetUseCase from "@/domain/dataset/dataset.uc.ts";
@@ -11,10 +12,24 @@ import { toast } from "sonner";
 import DatasetListPresenter from "@/application/dataset/datasetList.presenter.ts";
 import { useNavigate } from "react-router-dom";
 
+type DataListPermissions = {
+  canDisplayAlerts: boolean;
+  canDownload: boolean;
+  canAddRawLink: boolean;
+};
+
+const initialPermissions = {
+  canDisplayAlerts: false,
+  canDownload: false,
+  canAddRawLink: false,
+};
+
 export function useDatasetListController(filter?: DatasetFilter) {
   const [filters, setFilters] = useState<DatasetFilter>(filter ?? {});
-  const [canDisplayAlerts, setCanDisplayAlerts] = useState<boolean>(false);
-  const [canDownload, setCanDownload] = useState<boolean>(false);
+  const [tabs, setTabs] = useState<DatasetTab[]>([]);
+  const [activeTab, setActiveTab] = useState<DatasetTab | undefined>(undefined);
+  const [permissions, setPermissions] =
+    useState<DataListPermissions>(initialPermissions);
 
   const deps = useRef<{
     datasetUseCase: DatasetUseCase;
@@ -30,24 +45,39 @@ export function useDatasetListController(filter?: DatasetFilter) {
   const auth = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const localTabs: DatasetTab[] = [];
+
+    if (auth.roles.includes("DataQualityManager"))
+      localTabs.push("qualityControllable");
+    if (auth.roles.includes("DataSupplier")) localTabs.push("owned");
+    if (auth.roles.includes("Admin")) localTabs.push("all");
+
+    setActiveTab(localTabs[0]);
+    setTabs(localTabs);
+  }, [auth]);
+
   // List datasets query
   const {
     data: datasets = [],
     isLoading: isDatasetsLoading,
     error: datasetListError,
   } = useQuery({
-    queryKey: ["listDatasets", filter],
+    queryKey: ["listDatasets", filter, activeTab],
     queryFn: () => {
-      const isDataQualityManger = auth.roles.includes("DataQualityManager");
-      const isDataSupplier = auth.roles.includes("DataSupplier");
+      switch (activeTab) {
+        case "qualityControllable":
+          return datasetUseCase.listQualityControllableDatasets();
 
-      if (isDataQualityManger && !isDataSupplier)
-        return datasetUseCase.listQualityControllableDatasets();
+        case "owned":
+          return datasetUseCase.listOwnedDatasets();
 
-      if (isDataSupplier && !isDataQualityManger)
-        return datasetUseCase.listOwnedDatasets();
+        case "all":
+          return datasetUseCase.listDatasets(filter);
 
-      return datasetUseCase.listDatasets(filter);
+        default:
+          return [];
+      }
     },
     select: (data) => presenter.listDatasets(data),
   });
@@ -62,12 +92,24 @@ export function useDatasetListController(filter?: DatasetFilter) {
     const isDataQualityManger = auth.roles.includes("DataQualityManager");
     const isDataSupplier = auth.roles.includes("DataSupplier");
 
-    setCanDisplayAlerts(isDataQualityManger || isDataSupplier);
+    setPermissions((prev) => ({
+      ...prev,
+      canDisplayAlerts: isDataQualityManger || isDataSupplier,
+    }));
   }, [auth]);
 
   useEffect(() => {
-    setCanDownload(auth.roles.includes("DataUser"));
+    setPermissions((prev) => ({
+      ...prev,
+      canDownload: auth.roles.includes("DataUser"),
+    }));
   }, [auth]);
+
+  useEffect(() => {
+    const canAddRawLink =
+      auth.roles.includes("DataSupplier") && activeTab === "owned";
+    setPermissions((prev) => ({ ...prev, canAddRawLink }));
+  }, [auth, activeTab]);
 
   const onFilterChange = useCallback(
     (filter: keyof DatasetFilter, newValue: string) => {
@@ -106,20 +148,26 @@ export function useDatasetListController(filter?: DatasetFilter) {
     [auth, navigate],
   );
 
+  const onTabChange = useCallback((selectedTab: DatasetTab) => {
+    setActiveTab(selectedTab);
+  }, []);
+
   return {
     // Data - directly from React Query
     datasets,
     filters,
+    tabs,
+    activeTab,
 
     // Loading states
     isDatasetsLoading,
 
     // Actions
     onFilterChange,
+    onTabChange,
     resetFilters,
     onDatasetSelected,
     onShowAlerts,
-    canDisplayAlerts,
-    canDownload,
+    permissions,
   };
 }
