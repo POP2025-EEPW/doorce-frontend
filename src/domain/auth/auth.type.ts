@@ -7,6 +7,8 @@ export interface Me {
 
 export interface LoginResponse {
   userId: ID;
+  token: string;
+  roles: Role[];
 }
 
 export type Role =

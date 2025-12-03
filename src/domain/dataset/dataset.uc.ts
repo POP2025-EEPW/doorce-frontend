@@ -164,11 +164,11 @@ export default class DatasetUseCase {
     return { description: result.description } as DatasetDescription;
   }
 
-  async listOwnedDatasets(): Promise<DatasetSummary[]> {
+  async listOwnedDatasets(userId: ID): Promise<DatasetSummary[]> {
     const response = await this.client.GET("/api/datasets/ownedby", {
       params: {
         query: {
-          userId: "00000000-0000-0000-0000-000000000004",
+          userId,
         },
       },
     });

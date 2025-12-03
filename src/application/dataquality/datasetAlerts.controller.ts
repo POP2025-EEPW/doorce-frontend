@@ -6,7 +6,7 @@ import QualityUseCase from "@/domain/quality/quality.uc.ts";
 import DatasetAlertsPresenter from "@/application/dataquality/datasetAlerts.presenter.ts";
 
 export function useDatasetAlertsController(datasetId: string) {
-  const [unresolvedOnly, setUnresolvedOnly] = useState<boolean>(true);
+  const [unresolvedOnly, setUnresolvedOnly] = useState<boolean>(false);
 
   const deps = useRef<{
     qualityUseCase: QualityUseCase;

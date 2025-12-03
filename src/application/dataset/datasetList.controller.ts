@@ -63,14 +63,14 @@ export function useDatasetListController(filter?: DatasetFilter) {
     isLoading: isDatasetsLoading,
     error: datasetListError,
   } = useQuery({
-    queryKey: ["listDatasets", filter, activeTab],
+    queryKey: ["listDatasets", filter, activeTab, auth],
     queryFn: () => {
       switch (activeTab) {
         case "qualityControllable":
           return datasetUseCase.listQualityControllableDatasets();
 
         case "owned":
-          return datasetUseCase.listOwnedDatasets();
+          return datasetUseCase.listOwnedDatasets(auth.userId ?? "");
 
         case "all":
           return datasetUseCase.listDatasets(filter);
@@ -124,17 +124,14 @@ export function useDatasetListController(filter?: DatasetFilter) {
 
   const onDatasetSelected = useCallback(
     (datasetId: DatasetSummary["id"]) => {
-      const isDataQualityManger = auth.roles.includes("DataQualityManager");
-      const isDataSupplier = auth.roles.includes("DataSupplier");
-
-      if (isDataQualityManger && !isDataSupplier) {
+      if (activeTab == "qualityControllable") {
         navigate(`/dataset/${datasetId}/entries`);
         return;
       }
 
       navigate(`/dataset/${datasetId}`);
     },
-    [auth, navigate],
+    [activeTab, navigate],
   );
 
   const onShowAlerts = useCallback(

@@ -36,13 +36,15 @@ export function useAuthController() {
       username: string;
       password: string;
     }) => useCase.login({ username, password }),
-    onSuccess: (token, variables) => {
+    onSuccess: (loginResponse, variables) => {
       // Persist returned token as userId for now; adjust when backend returns explicit userId
-      loginToStore(token, variables.username, [
-        "DataQualityManager",
-        "DataSupplier",
-      ]);
-      navigateToRole(["DataQualityManager", "DataSupplier"], navigate);
+      loginToStore(
+        loginResponse.userId,
+        loginResponse.token,
+        variables.username,
+        loginResponse.roles,
+      );
+      navigateToRole(loginResponse.roles, navigate);
     },
     onError: (error) => {
       toast.error(presenter.getErrorMessage(error));
@@ -61,7 +63,7 @@ export function useAuthController() {
     }) => useCase.register({ username, password, roles }),
     onSuccess: (token, variables) => {
       // Auto-login after successful registration
-      loginToStore(token, variables.username, variables.roles);
+      loginToStore("", token, variables.username, variables.roles);
       navigateToRole(variables.roles, navigate);
     },
     onError: (error) => {

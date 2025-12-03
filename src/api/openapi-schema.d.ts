@@ -238,7 +238,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    get: operations["getAllDataEntries"];
     put?: never;
     post: operations["addDataEntry"];
     delete?: never;
@@ -973,6 +973,28 @@ export interface operations {
         "application/json": components["schemas"]["AppendBatchRequest"];
       };
     };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  getAllDataEntries: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
     responses: {
       /** @description OK */
       200: {
