@@ -11,21 +11,24 @@ import { apiClient } from "@/api/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import EntryUseCase from "@/domain/dataset/entry.uc.ts";
 
 export function useDatasetController(datasetId: string | null) {
   const navigate = useNavigate();
 
   const deps = useRef<{
     datasetUseCase: DatasetUseCase;
+    entryUseCase: EntryUseCase;
     presenter: DatasetPresenter;
   } | null>(null);
 
   deps.current ??= {
     datasetUseCase: new DatasetUseCase(apiClient),
+    entryUseCase: new EntryUseCase(apiClient),
     presenter: new DatasetPresenter(),
   };
 
-  const { datasetUseCase, presenter } = deps.current;
+  const { datasetUseCase, entryUseCase, presenter } = deps.current;
   const queryClient = useQueryClient();
 
   // Get single dataset query
@@ -118,24 +121,31 @@ export function useDatasetController(datasetId: string | null) {
     [navigate],
   );
 
-  // Fetch dataset preview on demand
   const onShowPreview = useCallback(
     async (previewId: string): Promise<DatasetPreview | null | undefined> => {
       try {
-        await Promise.resolve();
+        const entries = await entryUseCase.listEntries(previewId);
+        console.log(entries[0].createdAt);
+        const sampleEntries = entries.slice(0, 10).map((entry) => ({
+          id: entry.id,
+          content: entry.content,
+          createdAt: entry.createdAt,
+          updatedAt: entry.updatedAt,
+        }));
+        console.log(sampleEntries[0].createdAt);
         return {
           datasetId: previewId,
           title: currentDataset?.title ?? "",
           description: currentDataset?.description ?? "",
-          entryCount: 0,
-          sampleEntries: [],
+          entryCount: entries.length,
+          sampleEntries,
         };
       } catch (error) {
         toast.error(presenter.getErrorMessage(error));
         return null;
       }
     },
-    [currentDataset, presenter],
+    [currentDataset, entryUseCase, presenter],
   );
 
   const onBack = useCallback(() => {

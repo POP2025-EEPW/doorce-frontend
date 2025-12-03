@@ -10,11 +10,6 @@ export function DatasetPreviewView({
   preview,
   onClose,
 }: DatasetPreviewViewProps) {
-  const columns =
-    preview?.sampleEntries && preview.sampleEntries.length > 0
-      ? Object.keys(preview.sampleEntries[0])
-      : [];
-
   return (
     <div className="space-y-6 p-6 bg-white rounded-2xl shadow-sm border">
       <div className="flex justify-between items-center">
@@ -45,26 +40,30 @@ export function DatasetPreviewView({
               <table className="min-w-full text-sm text-left">
                 <thead className="bg-gray-100 text-gray-600 font-semibold">
                   <tr>
-                    {columns.map((col) => (
-                      <th key={col} className="px-4 py-2 border-b">
-                        {col}
-                      </th>
-                    ))}
+                    <th className="px-4 py-2 border-b">ID</th>
+                    <th className="px-4 py-2 border-b">Content</th>
+                    <th className="px-4 py-2 border-b">Created At</th>
+                    <th className="px-4 py-2 border-b">Updated At</th>
                   </tr>
                 </thead>
                 <tbody>
                   {preview.sampleEntries.map((entry) => (
                     <tr key={entry.id} className="odd:bg-white even:bg-gray-50">
-                      {columns.map((col) => (
-                        <td key={col} className="px-4 py-2 border-b">
-                          {String(entry.content)}
-                        </td>
-                      ))}
+                      <td className="px-4 py-2 border-b font-mono text-xs">
+                        {entry.id.slice(0, 8)}...
+                      </td>
+                      <td className="px-4 py-2 border-b">{entry.content}</td>
+                      <td className="px-4 py-2 border-b text-gray-500">
+                        {new Date(entry.createdAt).toLocaleString()}
+                      </td>
+                      <td className="px-4 py-2 border-b text-gray-500">
+                        {new Date(entry.updatedAt).toLocaleString()}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <p className="text-xs text-gray-400 mt-2 px-2">
+              <p className="text-xs text-gray-400 mt-2 px-2 pb-2">
                 Showing {preview.sampleEntries.length} sample entries
               </p>
             </div>
