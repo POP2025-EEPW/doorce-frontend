@@ -66,3 +66,13 @@ export interface EditDatasetOutputPort {
   presentEditDatasetSuccess(): void;
   presentEditDatasetError(error: unknown): void;
 }
+
+export interface DatasetEntry {
+  id: string;
+  dataset_id: string;
+  content: string;
+  erroneous: boolean;
+  suspicious: boolean;
+  created_at: string;
+  updated_at: string;
+}

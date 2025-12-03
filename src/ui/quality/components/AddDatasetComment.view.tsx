@@ -7,7 +7,6 @@ import {
 import { Button } from "@/ui/lib/components/ui/button";
 import { Textarea } from "@/ui/lib/components/ui/textarea";
 import { Label } from "@/ui/lib/components/ui/label";
-import { Input } from "@/ui/lib/components/ui/input";
 import { useForm } from "react-hook-form";
 import type { CreateDatasetCommentDto } from "@/domain/quality/quality.type";
 
@@ -52,26 +51,6 @@ export function AddDatasetComment({
               rows={4}
               disabled={isSubmitting}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="priority">Priority (1-10)</Label>
-            <Input
-              id="priority"
-              type="number"
-              placeholder="Priority"
-              {...register("priority", {
-                required: true,
-                min: 1,
-                max: 10,
-                valueAsNumber: true,
-              })}
-              disabled={isSubmitting}
-            />
-            {formState.errors.priority && (
-              <p className="text-sm text-destructive">
-                Priority is required and must be between 1 and 10
-              </p>
-            )}
           </div>
           <Button type="submit" disabled={isSubmitting || !formState.isValid}>
             {isSubmitting ? "Submitting..." : "Submit Comment"}

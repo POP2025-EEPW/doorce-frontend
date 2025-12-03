@@ -25,6 +25,7 @@ export default class QualityUseCase {
             path: { datasetId },
           },
           body: qualityTag,
+          parseAs: "text",
         },
       );
       if (!response.response.ok) {

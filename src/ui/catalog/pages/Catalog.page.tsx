@@ -1,10 +1,12 @@
 import CatalogDetailsView from "../components/CatalogDetails.View";
 import { useCatalogController } from "@/application/catalog/catalog.controller";
 import { useParams } from "react-router-dom";
+import { useAuth } from "@/application/auth/auth-store"; // <-- add this
 
 export default function CatalogPage() {
   const { id } = useParams<{ id: string }>();
   const catalogId = id ?? null;
+  const { roles } = useAuth(); // <-- add this
 
   const {
     catalogs,
@@ -16,6 +18,8 @@ export default function CatalogPage() {
 
     setSelectedCatalogId,
     onAddCatalogClick,
+    onNavigateToParent,
+    onDatasetSelected,
   } = useCatalogController(catalogId);
 
   return (
@@ -30,6 +34,9 @@ export default function CatalogPage() {
           datasets={currentDataset}
           setSelectedCatalogId={setSelectedCatalogId}
           onAddCatalogClick={onAddCatalogClick}
+          onNavigateToParent={onNavigateToParent}
+          onDatasetSelected={onDatasetSelected}
+          userRoles={roles}
         />
       </div>
     </main>

@@ -1,7 +1,6 @@
 // ui/dataset/components/DatasetList.view.tsx
 import { useEffect } from "react";
 import { MoreHorizontal, Pencil, FileText } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import type { DatasetSummary } from "@/domain/dataset/dataset.types";
@@ -28,11 +27,11 @@ import { useSetDatasetSchemaController } from "@/application/schema/setDataSchem
 interface DatasetListViewProps {
   datasets: DatasetSummary[];
   onDatasetUpdated?: () => void;
+  onDatasetSelected?: (datasetId: DatasetSummary["id"]) => void;
 }
 
 export function DatasetListView(props: DatasetListViewProps) {
-  const { datasets, onDatasetUpdated } = props;
-  const nav = useNavigate();
+  const { datasets, onDatasetUpdated, onDatasetSelected } = props;
   const safeDatasets = Array.isArray(datasets) ? datasets : [];
 
   // Edit controller - now returns viewProps directly
@@ -90,7 +89,7 @@ export function DatasetListView(props: DatasetListViewProps) {
           <div key={dataset.id}>
             <Card
               className="cursor-pointer transition-colors hover:bg-accent/50"
-              onClick={() => nav(`/dataset/${dataset.id}`)}
+              onClick={() => onDatasetSelected?.(dataset.id)}
             >
               <CardHeader className="pb-2">
                 <div className="flex items-start justify-between">

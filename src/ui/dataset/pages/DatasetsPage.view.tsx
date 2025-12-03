@@ -10,10 +10,12 @@ export interface DatasetsPageViewProps {
   filters: DatasetFilter;
   onFilterChange: (filter: keyof DatasetFilter, newValue: string) => void;
   resetFilters: () => void;
+  onDatasetSelected?: (datasetId: DatasetSummary["id"]) => void;
 }
 
 export function DatasetsPageView(props: DatasetsPageViewProps) {
-  const { datasets, filters, onFilterChange, resetFilters } = props;
+  const { datasets, filters, onFilterChange, resetFilters, onDatasetSelected } =
+    props;
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold tracking-tight">Datasets</h1>
@@ -22,7 +24,10 @@ export function DatasetsPageView(props: DatasetsPageViewProps) {
         onFilterChange={onFilterChange}
         resetFilters={resetFilters}
       />
-      <DatasetListView datasets={datasets} />
+      <DatasetListView
+        datasets={datasets}
+        onDatasetSelected={onDatasetSelected}
+      />
     </div>
   );
 }

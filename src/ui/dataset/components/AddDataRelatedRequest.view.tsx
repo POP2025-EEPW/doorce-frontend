@@ -2,7 +2,13 @@
 import { Button } from "@/ui/lib/components/ui/button";
 import { Input } from "@/ui/lib/components/ui/input";
 import { Textarea } from "@/ui/lib/components/ui/textarea";
-import { Dialog } from "@/ui/lib/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/ui/lib/components/ui/dialog";
 import { toast } from "sonner";
 import { useState, useCallback } from "react";
 import {
@@ -99,15 +105,13 @@ export default function AddDataRelatedRequestModal({ onClose }: Props) {
         if (!open) onClose();
       }}
     >
-      <div className="p-6 max-w-3xl w-full mx-auto space-y-6">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-semibold">Data Related Requests</h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              Submit a new request or view existing ones for a dataset.
-            </p>
-          </div>
-        </div>
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Data Related Requests</DialogTitle>
+          <DialogDescription>
+            Submit a new request or view existing ones for a dataset.
+          </DialogDescription>
+        </DialogHeader>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
           <div className="space-y-1">
@@ -145,7 +149,12 @@ export default function AddDataRelatedRequestModal({ onClose }: Props) {
             <div className="text-sm text-red-600">{localError}</div>
           )}
           <div className="flex justify-end gap-2">
-            <Button variant="ghost" onClick={onClose} disabled={loading}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onClose}
+              disabled={loading}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
@@ -218,7 +227,7 @@ export default function AddDataRelatedRequestModal({ onClose }: Props) {
             </div>
           )}
         </div>
-      </div>
+      </DialogContent>
     </Dialog>
   );
 }

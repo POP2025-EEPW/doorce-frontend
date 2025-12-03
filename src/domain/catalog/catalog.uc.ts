@@ -46,7 +46,7 @@ export default class CatalogUseCase {
       throw new Error("no-data/get/catalog");
     }
 
-    const data = response as unknown as Catalog;
+    const data = response.data as unknown as Catalog;
 
     return data;
   }
@@ -54,7 +54,6 @@ export default class CatalogUseCase {
   async listCatalogs(
     parentCatalogId: string | null,
   ): Promise<CatalogSummary[]> {
-    console.log("parentCatalogId", parentCatalogId);
     const response = await this.client.GET("/api/catalogs", {
       params: {
         query: {

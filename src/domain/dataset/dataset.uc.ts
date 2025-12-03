@@ -7,7 +7,6 @@ import type {
   DatasetSummary,
   UpdateDatasetDto,
 } from "./dataset.types";
-import datasets from "@/mocks/datasets.json";
 
 export default class DatasetUseCase {
   constructor(private readonly client: ReturnType<typeof createApiClient>) {}
@@ -69,12 +68,32 @@ export default class DatasetUseCase {
 
   async listDatasets(
     filter?: DatasetFilter,
-    page = 1,
-    pageSize = 10,
+    page = 0,
+    pageSize = 20,
   ): Promise<DatasetSummary[]> {
-    const result = datasets as Dataset[];
+    const response = await this.client.GET("/api/datasets", {
+      params: {
+        query: {
+          title: filter?.text,
+          page,
+          pageSize,
+        },
+      },
+    });
 
-    const filtered = result.filter((item) => {
+    if (response.error) {
+      throw new Error("error/list/datasets");
+    }
+
+    if (!response.data) {
+      throw new Error("error/list/datasets");
+    }
+
+    const result = response.data as unknown as DatasetSummary[];
+
+    return result;
+
+    /*const filtered = result.filter((item) => {
       const matchesCatalog = filter?.catalogId
         ? item.catalogId === filter.catalogId
         : true;
@@ -85,13 +104,7 @@ export default class DatasetUseCase {
     });
 
     const startIndex = (page - 1) * pageSize;
-    const pagedResults = filtered.slice(startIndex, startIndex + pageSize);
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(pagedResults);
-      }, 1000);
-    });
+    const pagedResults = filtered.slice(startIndex, startIndex + pageSize);*/
   }
 
   async getDatasetDescription(datasetId: string): Promise<DatasetDescription> {
@@ -113,30 +126,43 @@ export default class DatasetUseCase {
     return { description: result.description } as DatasetDescription;
   }
 
-  async listOwnedDatasets(ownerId: string): Promise<DatasetSummary[]> {
-    const result = datasets as Dataset[];
-
-    const filtered = result.filter((item) => item.ownerId === ownerId);
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(filtered as DatasetSummary[]);
-      }, 1000);
+  async listOwnedDatasets(): Promise<DatasetSummary[]> {
+    const response = await this.client.GET("/api/datasets/ownedby", {
+      params: {
+        query: {
+          userId: "00000000-0000-0000-0000-000000000004",
+        },
+      },
     });
+
+    if (response.error) {
+      throw new Error("error/list/owned-datasets");
+    }
+
+    if (!response.data) {
+      throw new Error("error/list/owned-datasets");
+    }
+
+    const result = response.data as unknown as DatasetSummary[];
+
+    return result;
+    //const filtered = result.filter((item) => item.ownerId === ownerId);
   }
 
-  async listQualityControllableDatasets(
-    controllerId: string,
-  ): Promise<DatasetSummary[]> {
-    const result = datasets as Dataset[];
+  async listQualityControllableDatasets(): Promise<DatasetSummary[]> {
+    const response = await this.client.GET("/api/datasets/qualityControllable");
 
-    console.log(controllerId);
+    if (response.error) {
+      throw new Error("error/list/quality-controllable-datasets");
+    }
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(result as DatasetSummary[]);
-      }, 1000);
-    });
+    if (!response.data) {
+      throw new Error("error/list/quality-controllable-datasets");
+    }
+
+    const result = response.data as unknown as DatasetSummary[];
+
+    return result;
   }
 }
 export interface DataRelatedRequestPayload {
