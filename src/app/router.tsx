@@ -9,7 +9,7 @@ import LoginPage from "@/ui/auth/pages/Login.page";
 import CatalogPage from "@/ui/catalog/pages/Catalog.page";
 import RegisterPage from "@/ui/auth/pages/Register.page";
 import DatasetDescriptionPage from "@/ui/dataset/pages/DatasetDescriptionPage.tsx";
-import { DatasetsPage } from "@/ui/dataset/pages/Datasets.page";
+import { DatasetsPage } from "@/ui/dataset/pages/DatasetsPage.tsx";
 
 const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },

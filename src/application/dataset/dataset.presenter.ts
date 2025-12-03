@@ -28,16 +28,10 @@ export default class DatasetPresenter {
         return "Failed to create dataset.";
       case "error/edit/dataset":
         return "Failed to update dataset.";
-      case "error/list/datasets":
-        return "Failed to load datasets.";
       case "no-data/get/description":
         return "Dataset description not found.";
       case "error/get/description":
         return "Failed to load dataset description.";
-      case "error/list/owned-datasets":
-        return "Failed to load owned datasets.";
-      case "error/list/quality-controllable-datasets":
-        return "Failed to load quality controllable datasets.";
       case "error/load/comments":
         return "Failed to load comments.";
       case "error/add/comment":

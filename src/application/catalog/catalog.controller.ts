@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 export function useCatalogController(catalogId: string | null) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  console.log("catalogId changed:", catalogId);
   const deps = useRef<{
     useCase: CatalogUseCase;
     presenter: CatalogPresenter;

@@ -52,7 +52,6 @@ export default function CatalogDetailsView(props: CatalogDetailsViewProps) {
   const canGoBack = catalog !== null;
 
   const canAddCatalog = userRoles.includes("MetadataManager");
-  console.log("User roles in CatalogDetailsView:", userRoles);
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-2">

@@ -2,7 +2,6 @@
 import type {
   CreateDatasetDto,
   UpdateDatasetDto,
-  DatasetFilter,
   DatasetPreview,
 } from "@/domain/dataset/dataset.types";
 import DatasetUseCase from "@/domain/dataset/dataset.uc";
@@ -13,10 +12,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-export function useDatasetController(
-  datasetId: string | null,
-  filter?: DatasetFilter,
-) {
+export function useDatasetController(datasetId: string | null) {
   const navigate = useNavigate();
 
   const deps = useRef<{
@@ -31,13 +27,6 @@ export function useDatasetController(
 
   const { datasetUseCase, presenter } = deps.current;
   const queryClient = useQueryClient();
-
-  // List datasets query
-  const { data: datasets = [], isLoading: isDatasetsLoading } = useQuery({
-    queryKey: ["listDatasets", filter],
-    queryFn: () => datasetUseCase.listDatasets(filter),
-    select: (data) => presenter.listDatasets(data),
-  });
 
   // Get single dataset query
   const {
@@ -155,13 +144,11 @@ export function useDatasetController(
 
   return {
     // Data - directly from React Query
-    datasets,
     currentDataset: currentDataset ?? null,
     datasetDescription,
     datasetId,
 
     // Loading states
-    isDatasetsLoading,
     isCurrentDatasetLoading,
     isDescriptionLoading,
     isAddingDataset: addDatasetMutation.isPending,

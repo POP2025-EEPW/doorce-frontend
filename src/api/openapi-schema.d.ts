@@ -119,41 +119,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/quality/datasets/{datasetId}/register-raw": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Register raw dataset */
-    post: operations["registerRawDataset"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/quality/datasets/{datasetId}/raw-batches": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** List raw data batches */
-    get: operations["listRawBatches"];
-    put?: never;
-    /** Append raw data batch */
-    post: operations["appendRawBatch"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/datasets": {
     parameters: {
       query?: never;
@@ -170,6 +135,54 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/datasets/{id}/submit": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["submitDataset"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{id}/publish": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["publishDataset"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{id}/archive": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["archiveDataset"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/datasets/{datasetId}/requests": {
     parameters: {
       query?: never;
@@ -180,6 +193,38 @@ export interface paths {
     get: operations["listDataRelatedRequests"];
     put?: never;
     post: operations["submitDataRelatedRequest"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{datasetId}/raw": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["getRawDataset"];
+    put?: never;
+    post: operations["registerRawDataset"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{datasetId}/raw/batches": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["listRawBatches"];
+    put?: never;
+    post: operations["appendRawBatch"];
     delete?: never;
     options?: never;
     head?: never;
@@ -259,6 +304,23 @@ export interface paths {
     };
     /** Get raw data download link */
     get: operations["getRawDownloadLink"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quality/datasets/{datasetId}/raw-batches": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List raw data batches */
+    get: operations["listRawBatches_1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -423,6 +485,18 @@ export interface components {
     SubmitDataRelatedRequest: {
       subject: string;
       description: string;
+    };
+    RegisterRawDatasetRequest: {
+      dataUrl?: string;
+    };
+    AppendBatchRequest: {
+      storageReference?: string;
+      batchName?: string;
+      dataUrl?: string;
+      /** Format: int64 */
+      sizeInBytes?: number;
+      /** Format: int32 */
+      entryCount?: number;
     };
     AddDatasetCommentRequest: {
       content: string;
@@ -645,78 +719,6 @@ export interface operations {
       };
     };
   };
-  registerRawDataset: {
-    parameters: {
-      query: {
-        rawDataUrl: string;
-      };
-      header?: never;
-      path: {
-        datasetId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "*/*": Record<string, never>;
-        };
-      };
-    };
-  };
-  listRawBatches: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        datasetId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "*/*": Record<string, never>;
-        };
-      };
-    };
-  };
-  appendRawBatch: {
-    parameters: {
-      query: {
-        batchName: string;
-        dataUrl: string;
-        sizeInBytes?: number;
-      };
-      header?: never;
-      path: {
-        datasetId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "*/*": Record<string, never>;
-        };
-      };
-    };
-  };
   listDatasets: {
     parameters: {
       query?: {
@@ -767,6 +769,72 @@ export interface operations {
       };
     };
   };
+  submitDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  publishDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  archiveDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
   listDataRelatedRequests: {
     parameters: {
       query?: {
@@ -804,6 +872,105 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["SubmitDataRelatedRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  getRawDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  registerRawDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RegisterRawDatasetRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listRawBatches: {
+    parameters: {
+      query?: {
+        page?: number;
+        pageSize?: number;
+      };
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  appendRawBatch: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AppendBatchRequest"];
       };
     };
     responses: {
@@ -966,6 +1133,28 @@ export interface operations {
     };
   };
   getRawDownloadLink: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listRawBatches_1: {
     parameters: {
       query?: never;
       header?: never;

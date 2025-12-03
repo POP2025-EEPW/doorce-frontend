@@ -54,7 +54,6 @@ export default class CatalogUseCase {
   async listCatalogs(
     parentCatalogId: string | null,
   ): Promise<CatalogSummary[]> {
-    console.log("parentCatalogId", parentCatalogId);
     const response = await this.client.GET("/api/catalogs", {
       params: {
         query: {
