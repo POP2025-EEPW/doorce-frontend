@@ -29,6 +29,8 @@ import { EditDatasetModalView } from "./EditDatasetForm.view";
 import { SelectDataSchemaModalView } from "./SelectDataSchemaModal.view";
 import { useEditDatasetController } from "@/application/dataset/editDataset.controller";
 import { useSetDatasetSchemaController } from "@/application/schema/setDataSchema.controller";
+import { DownloadDatasetModalView } from "@/ui/dataset/components/DownloadDatasetModal.view.tsx";
+import { useDownloadDatasetController } from "@/application/dataset/downloadDataset.controller.ts";
 
 interface DatasetListViewProps {
   datasets: DatasetSummary[];
@@ -85,6 +87,21 @@ export function DatasetListView(props: DatasetListViewProps) {
       onDatasetUpdated?.();
     },
   });
+
+  // Handle schema notifications
+  useEffect(() => {
+    if (schemaNotification) {
+      if (schemaNotification.type === "success") {
+        toast.success(schemaNotification.message);
+      } else {
+        toast.error(schemaNotification.message);
+      }
+      clearSchemaNotification();
+    }
+  }, [schemaNotification, clearSchemaNotification]);
+
+  const { viewProps: downloadModalViewProps, openDownloadModal } =
+    useDownloadDatasetController();
 
   // Handle schema notifications
   useEffect(() => {
@@ -158,7 +175,7 @@ export function DatasetListView(props: DatasetListViewProps) {
                         <DropdownMenuItem
                           onClick={(e) => {
                             e.stopPropagation();
-                            onShowAlerts?.(dataset.id);
+                            openDownloadModal(dataset);
                           }}
                         >
                           <Download className="mr-2 h-4 w-4" />
@@ -188,6 +205,7 @@ export function DatasetListView(props: DatasetListViewProps) {
       {/* Modals receive viewProps directly from controllers */}
       <EditDatasetModalView {...editModalViewProps} />
       <SelectDataSchemaModalView {...schemaModalViewProps} />
+      <DownloadDatasetModalView {...downloadModalViewProps} />
     </>
   );
 }

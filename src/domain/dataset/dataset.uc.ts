@@ -7,6 +7,7 @@ import type {
   DatasetSummary,
   UpdateDatasetDto,
 } from "./dataset.types";
+import type { ID } from "@/domain/common.types.ts";
 
 export default class DatasetUseCase {
   constructor(private readonly client: ReturnType<typeof createApiClient>) {}
@@ -49,6 +50,26 @@ export default class DatasetUseCase {
     const result = response.data as unknown as Dataset;
 
     return result;
+  }
+
+  async downloadDataset(datasetId: ID): Promise<string> {
+    const response = await this.client.GET(
+      "/api/quality/datasets/{datasetId}/raw-download-link",
+      {
+        params: { path: { datasetId } },
+        parseAs: "text",
+      },
+    );
+
+    if (response.error) {
+      throw new Error("error/download/dataset");
+    }
+
+    if (!response.data) {
+      throw new Error("no-data/download/dataset");
+    }
+
+    return response.data as unknown as string;
   }
 
   async setSchema(datasetId: string, schemaId: string | null): Promise<void> {
