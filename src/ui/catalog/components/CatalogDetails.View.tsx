@@ -28,6 +28,7 @@ interface CatalogDetailsViewProps {
   setSelectedCatalogId: (catalogId: string) => void;
   onAddCatalogClick: (catalog: CreateCatalogDto) => void;
   onNavigateToParent: () => void;
+  onDatasetSelected?: (datasetId: DatasetSummary["id"]) => void;
 
   userRoles: Role[];
 }
@@ -45,6 +46,7 @@ export default function CatalogDetailsView(props: CatalogDetailsViewProps) {
     setSelectedCatalogId,
     onAddCatalogClick,
     onNavigateToParent,
+    onDatasetSelected,
 
     userRoles,
   } = props;
@@ -144,7 +146,10 @@ export default function CatalogDetailsView(props: CatalogDetailsViewProps) {
       ) : !Array.isArray(datasets) || datasets.length === 0 ? (
         <div>No datasets found</div>
       ) : (
-        <DatasetListView datasets={datasets} />
+        <DatasetListView
+          datasets={datasets}
+          onDatasetSelected={onDatasetSelected}
+        />
       )}
     </div>
   );

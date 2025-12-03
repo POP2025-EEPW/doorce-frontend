@@ -19,6 +19,7 @@ export default function CatalogPage() {
     setSelectedCatalogId,
     onAddCatalogClick,
     onNavigateToParent,
+    onDatasetSelected,
   } = useCatalogController(catalogId);
 
   return (
@@ -34,6 +35,7 @@ export default function CatalogPage() {
           setSelectedCatalogId={setSelectedCatalogId}
           onAddCatalogClick={onAddCatalogClick}
           onNavigateToParent={onNavigateToParent}
+          onDatasetSelected={onDatasetSelected}
           userRoles={roles}
         />
       </div>

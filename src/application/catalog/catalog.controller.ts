@@ -7,6 +7,7 @@ import { apiClient } from "@/api/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import type { DatasetSummary } from "@/domain/dataset/dataset.types.ts";
 
 export function useCatalogController(catalogId: string | null) {
   const navigate = useNavigate();
@@ -109,6 +110,13 @@ export function useCatalogController(catalogId: string | null) {
     }
   }, [currentCatalog?.parentCatalogId, navigate]);
 
+  const onDatasetSelected = useCallback(
+    (datasetId: DatasetSummary["id"]) => {
+      navigate(`/dataset/${datasetId}`);
+    },
+    [navigate],
+  );
+
   return {
     catalogs,
     currentCatalog,
@@ -120,5 +128,6 @@ export function useCatalogController(catalogId: string | null) {
     setSelectedCatalogId,
     onAddCatalogClick,
     onNavigateToParent,
+    onDatasetSelected,
   };
 }

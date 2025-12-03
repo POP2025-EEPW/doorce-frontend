@@ -4,8 +4,14 @@ import { Skeleton } from "@/ui/lib/components/ui/skeleton.tsx";
 import { Card, CardContent, CardHeader } from "@/ui/lib/components/ui/card.tsx";
 
 export function DatasetsPage() {
-  const { datasets, filters, isDatasetsLoading, onFilterChange, resetFilters } =
-    useDatasetListController();
+  const {
+    datasets,
+    filters,
+    isDatasetsLoading,
+    onFilterChange,
+    resetFilters,
+    onDatasetSelected,
+  } = useDatasetListController();
 
   if (isDatasetsLoading) {
     return (
@@ -48,6 +54,7 @@ export function DatasetsPage() {
       filters={filters}
       onFilterChange={onFilterChange}
       resetFilters={resetFilters}
+      onDatasetSelected={onDatasetSelected}
     />
   );
 }
