@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 
 export function useDatasetListController(filter?: DatasetFilter) {
   const [filters, setFilters] = useState<DatasetFilter>(filter ?? {});
+  const [canDisplayAlerts, setCanDisplayAlerts] = useState<boolean>(false);
+  const [canDownload, setCanDownload] = useState<boolean>(false);
 
   const deps = useRef<{
     datasetUseCase: DatasetUseCase;
@@ -56,6 +58,17 @@ export function useDatasetListController(filter?: DatasetFilter) {
     }
   }, [datasetListError, presenter]);
 
+  useEffect(() => {
+    const isDataQualityManger = auth.roles.includes("DataQualityManager");
+    const isDataSupplier = auth.roles.includes("DataSupplier");
+
+    setCanDisplayAlerts(isDataQualityManger || isDataSupplier);
+  }, [auth]);
+
+  useEffect(() => {
+    setCanDownload(auth.roles.includes("DataUser"));
+  }, [auth]);
+
   const onFilterChange = useCallback(
     (filter: keyof DatasetFilter, newValue: string) => {
       setFilters((prev) => ({ ...prev, [filter]: newValue }));
@@ -82,6 +95,17 @@ export function useDatasetListController(filter?: DatasetFilter) {
     [auth, navigate],
   );
 
+  const onShowAlerts = useCallback(
+    (datasetId: DatasetSummary["id"]) => {
+      const isDataQualityManger = auth.roles.includes("DataQualityManager");
+      const isDataSupplier = auth.roles.includes("DataSupplier");
+
+      if (isDataQualityManger || isDataSupplier)
+        navigate(`/dataset/${datasetId}/alerts`);
+    },
+    [auth, navigate],
+  );
+
   return {
     // Data - directly from React Query
     datasets,
@@ -94,5 +118,8 @@ export function useDatasetListController(filter?: DatasetFilter) {
     onFilterChange,
     resetFilters,
     onDatasetSelected,
+    onShowAlerts,
+    canDisplayAlerts,
+    canDownload,
   };
 }

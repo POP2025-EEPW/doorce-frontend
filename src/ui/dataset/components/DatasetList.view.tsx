@@ -1,6 +1,12 @@
 // ui/dataset/components/DatasetList.view.tsx
 import { useEffect } from "react";
-import { MoreHorizontal, Pencil, FileText } from "lucide-react";
+import {
+  MoreHorizontal,
+  Pencil,
+  FileText,
+  AlertCircle,
+  Download,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import type { DatasetSummary } from "@/domain/dataset/dataset.types";
@@ -28,10 +34,20 @@ interface DatasetListViewProps {
   datasets: DatasetSummary[];
   onDatasetUpdated?: () => void;
   onDatasetSelected?: (datasetId: DatasetSummary["id"]) => void;
+  onShowAlerts?: (datasetId: DatasetSummary["id"]) => void;
+  canDisplayAlerts?: boolean;
+  canDownload?: boolean;
 }
 
 export function DatasetListView(props: DatasetListViewProps) {
-  const { datasets, onDatasetUpdated, onDatasetSelected } = props;
+  const {
+    datasets,
+    onDatasetUpdated,
+    onDatasetSelected,
+    onShowAlerts,
+    canDisplayAlerts,
+    canDownload,
+  } = props;
   const safeDatasets = Array.isArray(datasets) ? datasets : [];
 
   // Edit controller - now returns viewProps directly
@@ -127,6 +143,28 @@ export function DatasetListView(props: DatasetListViewProps) {
                         <FileText className="mr-2 h-4 w-4" />
                         Set schema
                       </DropdownMenuItem>
+                      {canDisplayAlerts && (
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onShowAlerts?.(dataset.id);
+                          }}
+                        >
+                          <AlertCircle className="mr-2 h-4 w-4" />
+                          Show alerts
+                        </DropdownMenuItem>
+                      )}
+                      {canDownload && (
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onShowAlerts?.(dataset.id);
+                          }}
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          Download
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

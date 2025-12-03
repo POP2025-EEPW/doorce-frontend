@@ -11,6 +11,9 @@ export function DatasetsPage() {
     onFilterChange,
     resetFilters,
     onDatasetSelected,
+    onShowAlerts,
+    canDisplayAlerts,
+    canDownload,
   } = useDatasetListController();
 
   if (isDatasetsLoading) {
@@ -55,6 +58,9 @@ export function DatasetsPage() {
       onFilterChange={onFilterChange}
       resetFilters={resetFilters}
       onDatasetSelected={onDatasetSelected}
+      onShowAlerts={onShowAlerts}
+      canDisplayAlerts={canDisplayAlerts}
+      canDownload={canDownload}
     />
   );
 }

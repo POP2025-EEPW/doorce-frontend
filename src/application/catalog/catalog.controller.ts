@@ -1,6 +1,6 @@
 import type { CreateCatalogDto } from "@/domain/catalog/catalog.type";
 import CatalogUseCase from "@/domain/catalog/catalog.uc";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import CatalogPresenter from "./catalog.presenter";
 import { apiClient } from "@/api/client";
 
@@ -8,9 +8,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import type { DatasetSummary } from "@/domain/dataset/dataset.types.ts";
+import { useAuth } from "@/application/auth/auth-store.ts";
 
 export function useCatalogController(catalogId: string | null) {
+  const [canDownloadDataset, setCanDownloadDataset] = useState<boolean>(false);
   const navigate = useNavigate();
+  const auth = useAuth();
   const queryClient = useQueryClient();
   const deps = useRef<{
     useCase: CatalogUseCase;
@@ -84,6 +87,10 @@ export function useCatalogController(catalogId: string | null) {
     },
   });
 
+  useEffect(() => {
+    setCanDownloadDataset(auth.roles.includes("DataUser"));
+  }, [auth]);
+
   const onAddCatalogClick = useCallback(
     (catalog: CreateCatalogDto) => {
       addCatalogMutation.mutate({
@@ -129,5 +136,6 @@ export function useCatalogController(catalogId: string | null) {
     onAddCatalogClick,
     onNavigateToParent,
     onDatasetSelected,
+    canDownloadDataset,
   };
 }

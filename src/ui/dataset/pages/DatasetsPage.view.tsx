@@ -11,13 +11,24 @@ export interface DatasetsPageViewProps {
   onFilterChange: (filter: keyof DatasetFilter, newValue: string) => void;
   resetFilters: () => void;
   onDatasetSelected?: (datasetId: DatasetSummary["id"]) => void;
+  onShowAlerts?: (datasetId: DatasetSummary["id"]) => void;
+  canDisplayAlerts?: boolean;
+  canDownload?: boolean;
 }
 
 export function DatasetsPageView(props: DatasetsPageViewProps) {
-  const { datasets, filters, onFilterChange, resetFilters, onDatasetSelected } =
-    props;
+  const {
+    datasets,
+    filters,
+    onFilterChange,
+    resetFilters,
+    onDatasetSelected,
+    onShowAlerts,
+    canDisplayAlerts,
+    canDownload,
+  } = props;
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full p-5">
       <h1 className="text-2xl font-semibold tracking-tight">Datasets</h1>
       <DatasetFilterView
         filters={filters}
@@ -27,6 +38,9 @@ export function DatasetsPageView(props: DatasetsPageViewProps) {
       <DatasetListView
         datasets={datasets}
         onDatasetSelected={onDatasetSelected}
+        onShowAlerts={onShowAlerts}
+        canDisplayAlerts={canDisplayAlerts}
+        canDownload={canDownload}
       />
     </div>
   );
