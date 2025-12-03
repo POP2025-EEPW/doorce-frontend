@@ -72,8 +72,10 @@ export function useDatasetListController(filter?: DatasetFilter) {
       const isDataQualityManger = auth.roles.includes("DataQualityManager");
       const isDataSupplier = auth.roles.includes("DataSupplier");
 
-      if (isDataQualityManger && !isDataSupplier)
+      if (isDataQualityManger && !isDataSupplier) {
         navigate(`/dataset/${datasetId}/entries`);
+        return;
+      }
 
       navigate(`/dataset/${datasetId}`);
     },
