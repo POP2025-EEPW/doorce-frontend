@@ -1,6 +1,13 @@
 // ui/dataset/components/DatasetList.view.tsx
 import { useEffect } from "react";
-import { MoreHorizontal, Pencil, FileText } from "lucide-react";
+import {
+  MoreHorizontal,
+  Pencil,
+  FileText,
+  AlertCircle,
+  Download,
+  Upload,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import type { DatasetSummary } from "@/domain/dataset/dataset.types";
@@ -23,15 +30,31 @@ import { EditDatasetModalView } from "./EditDatasetForm.view";
 import { SelectDataSchemaModalView } from "./SelectDataSchemaModal.view";
 import { useEditDatasetController } from "@/application/dataset/editDataset.controller";
 import { useSetDatasetSchemaController } from "@/application/schema/setDataSchema.controller";
+import { DownloadDatasetModalView } from "@/ui/dataset/components/DownloadDatasetModal.view.tsx";
+import { useDownloadDatasetController } from "@/application/dataset/downloadDataset.controller.ts";
+import { useUploadRawDatasetController } from "@/application/dataset/uploadRawDataset.controller.ts";
+import { UploadRawDatasetModalView } from "@/ui/dataset/components/UploadRawDatasetModal.view.tsx";
 
 interface DatasetListViewProps {
   datasets: DatasetSummary[];
   onDatasetUpdated?: () => void;
   onDatasetSelected?: (datasetId: DatasetSummary["id"]) => void;
+  onShowAlerts?: (datasetId: DatasetSummary["id"]) => void;
+  canDisplayAlerts?: boolean;
+  canDownload?: boolean;
+  canAddRawLink?: boolean;
 }
 
 export function DatasetListView(props: DatasetListViewProps) {
-  const { datasets, onDatasetUpdated, onDatasetSelected } = props;
+  const {
+    datasets,
+    onDatasetUpdated,
+    onDatasetSelected,
+    onShowAlerts,
+    canDisplayAlerts,
+    canDownload,
+    canAddRawLink,
+  } = props;
   const safeDatasets = Array.isArray(datasets) ? datasets : [];
 
   // Edit controller - now returns viewProps directly
@@ -82,6 +105,12 @@ export function DatasetListView(props: DatasetListViewProps) {
     }
   }, [schemaNotification, clearSchemaNotification]);
 
+  const { viewProps: downloadModalViewProps, openDownloadModal } =
+    useDownloadDatasetController();
+
+  const { viewProps: uploadRawModalViewProps, openUploadRawModal } =
+    useUploadRawDatasetController();
+
   return (
     <>
       <div className="space-y-3">
@@ -127,6 +156,39 @@ export function DatasetListView(props: DatasetListViewProps) {
                         <FileText className="mr-2 h-4 w-4" />
                         Set schema
                       </DropdownMenuItem>
+                      {canDisplayAlerts && (
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onShowAlerts?.(dataset.id);
+                          }}
+                        >
+                          <AlertCircle className="mr-2 h-4 w-4" />
+                          Show alerts
+                        </DropdownMenuItem>
+                      )}
+                      {canDownload && (
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openDownloadModal(dataset);
+                          }}
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          Download
+                        </DropdownMenuItem>
+                      )}
+                      {canAddRawLink && (
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openUploadRawModal(dataset);
+                          }}
+                        >
+                          <Upload className="mr-2 h-4 w-4" />
+                          Upload Raw Dataset
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -150,6 +212,8 @@ export function DatasetListView(props: DatasetListViewProps) {
       {/* Modals receive viewProps directly from controllers */}
       <EditDatasetModalView {...editModalViewProps} />
       <SelectDataSchemaModalView {...schemaModalViewProps} />
+      <DownloadDatasetModalView {...downloadModalViewProps} />
+      <UploadRawDatasetModalView {...uploadRawModalViewProps} />
     </>
   );
 }

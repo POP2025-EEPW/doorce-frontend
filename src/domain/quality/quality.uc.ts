@@ -3,6 +3,7 @@ import { createApiClient } from "@/api/client";
 import type {
   CreateDatasetCommentDto,
   DatasetComment,
+  QualityValidityAlert,
   SetQualityTagDto,
 } from "./quality.type";
 import type { QualityOutputPort } from "./quality.type.ts";
@@ -10,7 +11,7 @@ import type { QualityOutputPort } from "./quality.type.ts";
 export default class QualityUseCase {
   constructor(
     private readonly client: ReturnType<typeof createApiClient>,
-    private readonly outputPort: QualityOutputPort,
+    private readonly outputPort?: QualityOutputPort,
   ) {}
 
   async setQualityTag(
@@ -32,10 +33,10 @@ export default class QualityUseCase {
         throw new Error("error/set/quality-tag");
       }
 
-      this.outputPort.presentSetQualityTagSuccess();
+      this.outputPort?.presentSetQualityTagSuccess();
     } catch (error) {
       console.log("usecase");
-      this.outputPort.presentSetQualityTagError(error);
+      this.outputPort?.presentSetQualityTagError(error);
       throw error;
     }
   }
@@ -59,9 +60,9 @@ export default class QualityUseCase {
         throw new Error("error/add/comment");
       }
 
-      this.outputPort.presentAddCommentSuccess();
+      this.outputPort?.presentAddCommentSuccess();
     } catch (error) {
-      this.outputPort.presentAddCommentError(error);
+      this.outputPort?.presentAddCommentError(error);
       throw error;
     }
   }
@@ -83,13 +84,37 @@ export default class QualityUseCase {
 
       const comments = response.data as unknown as DatasetComment[];
 
-      this.outputPort.presentComments(comments);
+      this.outputPort?.presentComments(comments);
 
       return comments;
     } catch (error) {
-      this.outputPort.presentLoadCommentsError(error);
+      this.outputPort?.presentLoadCommentsError(error);
       throw error;
     }
+  }
+
+  async listDatasetAlerts(
+    datasetId: string,
+    unresolvedOnly: boolean,
+  ): Promise<QualityValidityAlert[]> {
+    const response = await this.client.GET("/api/quality/alerts", {
+      params: {
+        query: {
+          datasetId,
+          unresolvedOnly,
+        },
+      },
+    });
+
+    if (response.error) {
+      throw new Error("error/list/datasetAlerts");
+    }
+
+    if (!response.data) {
+      throw new Error("no-data/list/datasetAlerts");
+    }
+
+    return response.data as unknown as QualityValidityAlert[];
   }
 
   async markDataEntryErroneous(entryId: string): Promise<void> {

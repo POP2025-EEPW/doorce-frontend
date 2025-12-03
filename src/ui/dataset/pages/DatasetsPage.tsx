@@ -7,10 +7,15 @@ export function DatasetsPage() {
   const {
     datasets,
     filters,
+    tabs,
+    activeTab,
     isDatasetsLoading,
     onFilterChange,
+    onTabChange,
     resetFilters,
     onDatasetSelected,
+    onShowAlerts,
+    permissions,
   } = useDatasetListController();
 
   if (isDatasetsLoading) {
@@ -52,9 +57,16 @@ export function DatasetsPage() {
     <DatasetsPageView
       datasets={datasets}
       filters={filters}
+      tabs={tabs}
+      activeTab={activeTab}
       onFilterChange={onFilterChange}
+      onTabChange={onTabChange}
       resetFilters={resetFilters}
       onDatasetSelected={onDatasetSelected}
+      onShowAlerts={onShowAlerts}
+      canDisplayAlerts={permissions.canDisplayAlerts}
+      canDownload={permissions.canDownload}
+      canAddRawLink={permissions.canAddRawLink}
     />
   );
 }

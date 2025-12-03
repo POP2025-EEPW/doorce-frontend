@@ -30,6 +30,8 @@ interface CatalogDetailsViewProps {
   onNavigateToParent: () => void;
   onDatasetSelected?: (datasetId: DatasetSummary["id"]) => void;
 
+  canDownloadDataset?: boolean;
+
   userRoles: Role[];
 }
 
@@ -47,6 +49,7 @@ export default function CatalogDetailsView(props: CatalogDetailsViewProps) {
     onAddCatalogClick,
     onNavigateToParent,
     onDatasetSelected,
+    canDownloadDataset,
 
     userRoles,
   } = props;
@@ -149,6 +152,7 @@ export default function CatalogDetailsView(props: CatalogDetailsViewProps) {
         <DatasetListView
           datasets={datasets}
           onDatasetSelected={onDatasetSelected}
+          canDownload={canDownloadDataset}
         />
       )}
     </div>

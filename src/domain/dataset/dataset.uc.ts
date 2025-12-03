@@ -7,6 +7,7 @@ import type {
   DatasetSummary,
   UpdateDatasetDto,
 } from "./dataset.types";
+import type { ID } from "@/domain/common.types.ts";
 
 export default class DatasetUseCase {
   constructor(private readonly client: ReturnType<typeof createApiClient>) {}
@@ -49,6 +50,43 @@ export default class DatasetUseCase {
     const result = response.data as unknown as Dataset;
 
     return result;
+  }
+
+  async downloadDataset(datasetId: ID): Promise<string> {
+    const response = await this.client.GET(
+      "/api/quality/datasets/{datasetId}/raw-download-link",
+      {
+        params: { path: { datasetId } },
+        parseAs: "text",
+      },
+    );
+
+    if (response.error) {
+      throw new Error("error/download/dataset");
+    }
+
+    if (!response.data) {
+      throw new Error("no-data/download/dataset");
+    }
+
+    return response.data as unknown as string;
+  }
+
+  async uploadRawDataset(datasetId: ID, url: string): Promise<void> {
+    const response = await this.client.POST("/api/datasets/{datasetId}/raw", {
+      params: {
+        path: {
+          datasetId,
+        },
+      },
+      body: {
+        dataUrl: url,
+      },
+    });
+
+    if (response.error) {
+      throw new Error("error/upload/raw-dataset");
+    }
   }
 
   async setSchema(datasetId: string, schemaId: string | null): Promise<void> {
@@ -126,11 +164,11 @@ export default class DatasetUseCase {
     return { description: result.description } as DatasetDescription;
   }
 
-  async listOwnedDatasets(): Promise<DatasetSummary[]> {
+  async listOwnedDatasets(userId: ID): Promise<DatasetSummary[]> {
     const response = await this.client.GET("/api/datasets/ownedby", {
       params: {
         query: {
-          userId: "00000000-0000-0000-0000-000000000004",
+          userId,
         },
       },
     });

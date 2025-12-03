@@ -10,6 +10,17 @@ export interface DatasetComment {
   updatedAt: ISODateString;
 }
 
+export interface QualityValidityAlert {
+  id: ID;
+  datasetId: ID;
+  datasetTitle: string;
+  alertType: string;
+  message: string;
+  severity: string;
+  createdAt: ISODateString;
+  resolved: boolean;
+}
+
 export interface CreateDatasetCommentDto {
   content: string;
   priority: number;

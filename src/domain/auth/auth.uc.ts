@@ -1,25 +1,27 @@
 import type { createApiClient } from "@/api/client";
-import type { Role } from "./auth.type";
+import type { LoginResponse, Role } from "./auth.type";
 
 export default class AuthUseCase {
   constructor(private readonly client: ReturnType<typeof createApiClient>) {}
 
-  async login(vars: { username: string; password: string }): Promise<string> {
+  async login(vars: {
+    username: string;
+    password: string;
+  }): Promise<LoginResponse> {
     const response = await this.client.POST("/api/auth/login", {
       body: vars,
-      parseAs: "text",
     });
 
     if (!response.response?.ok) {
       throw new Error("error/auth/login");
     }
 
-    const token = (response.data as unknown as string) ?? "";
-    if (!token) {
+    const result = (response.data as unknown as LoginResponse) ?? "";
+    if (!result) {
       throw new Error("no-data/auth/login/token");
     }
 
-    return token;
+    return result;
   }
 
   async register(vars: {

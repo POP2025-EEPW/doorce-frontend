@@ -20,6 +20,7 @@ export default function CatalogPage() {
     onAddCatalogClick,
     onNavigateToParent,
     onDatasetSelected,
+    canDownloadDataset,
   } = useCatalogController(catalogId);
 
   return (
@@ -37,6 +38,7 @@ export default function CatalogPage() {
           onNavigateToParent={onNavigateToParent}
           onDatasetSelected={onDatasetSelected}
           userRoles={roles}
+          canDownloadDataset={canDownloadDataset}
         />
       </div>
     </main>
