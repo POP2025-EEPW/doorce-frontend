@@ -1,0 +1,29 @@
+@startuml
+title Mark Data Entry as Erroneous
+autonumber
+
+actor DataQualityManager as User
+
+
+participant "DatasetEntriesView" as View
+participant "DatasetEntriesPresenter" as Presenter
+participant "DatasetEntriesController" as Controller
+participant "uc.quality" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API" as Http
+
+
+User -> View : Input data and submit
+View -> Controller : markEntryErroneus(entry id)
+Controller ->> UseCase : markEntryErroneus(datasetId)
+UseCase -> Client : markEntryErroneus(datasetId, tag)
+Client ->> Http : POST /api/quality/entries/{entryId}/mark-erroneous
+Http ->> Client : DatasetEntries[]
+Client -> UseCase : DatasetEntries[]
+UseCase -> Presenter : present(DatasetEntries[])
+Presenter -> View  : render(DatasetEntries[])
+View ->> User : Show datasets entries
+
+
+
+@enduml

@@ -69,12 +69,12 @@ export interface EditDatasetOutputPort {
 
 export interface DatasetEntry {
   id: string;
-  dataset_id: string;
+  datasetId: string;
   content: string;
   erroneous: boolean;
   suspicious: boolean;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type DatasetTab = "all" | "qualityControllable" | "owned";

@@ -96,7 +96,7 @@ export function EntriesListView({
 
                   <div className="flex items-center justify-between mt-3">
                     <p className="text-xs text-muted-foreground">
-                      Created: {new Date(entry.created_at).toLocaleString()}
+                      Created: {new Date(entry.createdAt).toLocaleString()}
                     </p>
                     <div className="flex gap-2">
                       <Button

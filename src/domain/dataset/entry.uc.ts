@@ -1,24 +1,24 @@
-// entry.uc.ts
-
 import { createApiClient } from "@/api/client";
 import type { DatasetEntry } from "./dataset.types.ts";
-import entries from "@/mocks/entries-mock.json";
-
-const mockEntries = entries as DatasetEntry[];
 
 export default class EntryUseCase {
   constructor(private readonly client: ReturnType<typeof createApiClient>) {}
 
   async listEntries(datasetId: string): Promise<DatasetEntry[]> {
-    const filtered = mockEntries.filter(
-      (entry) => entry.dataset_id === datasetId,
+    const response = await this.client.GET(
+      "/api/datasets/{datasetId}/entries",
+      {
+        params: {
+          path: { datasetId },
+        },
+      },
     );
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(filtered);
-      }, 500);
-    });
+    if (response.error) {
+      throw new Error("error/list/entries");
+    }
+
+    return response.data as unknown as DatasetEntry[];
   }
 
   async addEntry(datasetId: string, content: string): Promise<void> {
@@ -35,17 +35,6 @@ export default class EntryUseCase {
     if (response.error) {
       throw new Error("error/add/entry");
     }
-
-    // Add to mock data for frontend display
-    mockEntries.push({
-      id: crypto.randomUUID(),
-      dataset_id: datasetId,
-      content,
-      erroneous: false,
-      suspicious: false,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    });
   }
 
   async setErroneous(entryId: string): Promise<void> {
@@ -55,17 +44,12 @@ export default class EntryUseCase {
         params: {
           path: { entryId },
         },
+        parseAs: "text",
       },
     );
 
     if (response.error) {
       throw new Error("error/set/erroneous");
-    }
-
-    // Update mock data
-    const entry = mockEntries.find((e) => e.id === entryId);
-    if (entry) {
-      entry.erroneous = true;
     }
   }
 
@@ -76,17 +60,12 @@ export default class EntryUseCase {
         params: {
           path: { entryId },
         },
+        parseAs: "text",
       },
     );
 
     if (response.error) {
       throw new Error("error/set/suspicious");
-    }
-
-    // Update mock data
-    const entry = mockEntries.find((e) => e.id === entryId);
-    if (entry) {
-      entry.suspicious = true;
     }
   }
 }

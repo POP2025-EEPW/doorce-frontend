@@ -1,0 +1,29 @@
+@startuml
+title Mark Data Entry as Suspicious
+autonumber
+
+actor DataQualityManager as User
+
+
+participant "DatasetEntriesView" as View
+participant "DatasetEntriesPresenter" as Presenter
+participant "DatasetEntriesController" as Controller
+participant "uc.quality" as UseCase
+participant "CombinedClient" as Client
+participant "Dataset API" as Http
+
+
+User -> View : Input data and submit
+View -> Controller : markEntrySuspicious(entry id)
+Controller ->> UseCase : markEntrySuspicious(datasetId)
+UseCase -> Client : markEntrySuspicious(datasetId, tag)
+Client ->> Http : POST /api/quality/entries/{entryId}/mark-suspicious
+Http ->> Client : DatasetEntries[]
+Client -> UseCase : DatasetEntries[]
+UseCase -> Presenter : present(DatasetEntries[])
+Presenter -> View  : render(DatasetEntries[])
+View ->> User : Show datasets entries
+
+
+
+@enduml
