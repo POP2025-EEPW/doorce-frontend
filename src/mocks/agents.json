@@ -1,0 +1,7 @@
+[
+  {
+    "id": "a1",
+    "name": "Default Agent",
+    "roles": ["DataOwner"]
+  }
+]
