@@ -1,0 +1,74 @@
+@startuml
+title Data Schema Feature - PVCUC component view
+
+skinparam packageStyle rectangle
+
+package "Views" {
+  class DataSchemaPage {
+    +render(schemas[])
+    +onAddSchemaClick()
+  }
+
+  class DataSchemaListView {
+    +render(schemas[])
+    +onEdit(id)
+  }
+
+  class AddDataSchemaForm {
+    +render()
+    +handleSubmit(input)
+  }
+}
+
+package "Presenters" {
+  class DataSchemaListPresenter {
+    +onAddSuccess(schema)
+    +showAddSchemaForm()
+    +formatSchemaList(schemas)
+  }
+}
+
+package "Controllers" {
+  class DataSchemaController {
+    +addDataSchema(input)
+    +listDataSchemas()
+  }
+}
+
+package "Use-case Layer" {
+  interface DataSchemaUseCases {
+      +addDataSchema(input)
+      +listDataSchemas()
+  }
+}
+
+package "DI Container" {
+  class UCContainer {
+    +dataSchema: DataSchemaUseCases
+  }
+}
+
+package "API" {
+  class DataSchemaAPI {
+    +POST /data-schemas
+    +GET /data-schemas
+  }
+}
+
+
+DataSchemaPage --> DataSchemaController
+AddDataSchemaForm --> DataSchemaController
+
+DataSchemaController --> UCContainer
+UCContainer --> DataSchemaUseCases
+
+DataSchemaUseCases --> DataSchemaAPI
+
+DataSchemaListPresenter --> DataSchemaPage
+DataSchemaListPresenter --> AddDataSchemaForm
+DataSchemaPage --> DataSchemaListView : includes
+DataSchemaPage --> AddDataSchemaForm : includes (modal/route)
+
+UCContainer --> DataSchemaListPresenter
+
+@enduml

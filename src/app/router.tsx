@@ -12,6 +12,7 @@ import DatasetDescriptionPage from "@/ui/dataset/pages/DatasetDescriptionPage.ts
 import { DatasetsPage } from "@/ui/dataset/pages/DatasetsPage.tsx";
 import EntriesListPage from "@/ui/dataset/pages/EntriesListPage.tsx";
 import DatasetAlertsPage from "@/ui/quality/pages/DatasetAlertsPage.tsx";
+import DataSchemaPage from "@/ui/schema/pages/DataSchema.page";
 
 const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -35,7 +36,7 @@ const router = createBrowserRouter([
       },
       {
         path: "schemas",
-        element: <></>,
+        element: <DataSchemaPage/>,
       },
       {
         path: "datasets",
