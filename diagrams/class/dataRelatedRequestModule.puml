@@ -11,6 +11,20 @@ package "Views" {
   }
 }
 
+package "Presenters" {
+  class DatasetDetailPresenter {
+    +render()
+    +loadDataset(id)
+  }
+}
+
+package "Controllers" {
+  class DatasetsController {
+    +submitDataRelatedRequest(datasetId, payload)
+    +listDataRelatedRequests(datasetId, page, pageSize)
+  }
+}
+
 package "Use-case Layer" {
   class "dataset.uc.ts (DataRelatedRequest exports)" as DataRelatedRequestApiFns {
     +submitDataRelatedRequest(datasetId, payload): Promise<DataRelatedRequestDto>
@@ -35,14 +49,25 @@ package "Use-case Layer" {
   }
 }
 
+package "DI Container" {
+  class UCContainer {
+    +dataRelatedRequest: DataRelatedRequestApiFns
+  }
+}
+
 package "API (frontend client)" {
   class FetchAPI {
     +fetch(url, init)
   }
 }
 
-AddDataRelatedRequestModal --> DataRelatedRequestApiFns : submit/list
+DatasetDetailPresenter --> AddDataRelatedRequestModal : opens modal
+AddDataRelatedRequestModal --> DatasetsController : submit/list
+DatasetsController --> UCContainer : reads dataRelatedRequest
+DatasetsController --> DataRelatedRequestApiFns : delegates
 DataRelatedRequestApiFns ..> FetchAPI : fetch()
+
 DataRelatedRequestApiFns ..> DataRelatedRequestPayload
 DataRelatedRequestApiFns ..> DataRelatedRequestDto
+DataRelatedRequestApiFns --> DatasetDetailPresenter : present(DataRelatedRequestDto[])
 @enduml
