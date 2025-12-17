@@ -28,6 +28,11 @@ package "Views" {
   class CatalogsPageView {
     +render()
   }
+  class AddDataRelatedRequestModal {
+    +render()
+    +handleSubmit(e?)
+    +loadRequests(pageNum)
+  }
 }
 
 package "Presenters" {
@@ -73,6 +78,41 @@ package "Use-case Layer" {
     +listQualityControllableDatasets(controllerId)
     +getDatasetComments(datasetId)
   }
+
+  class DatasetUseCase {
+    +addDataset(input)
+    +editDataset(id, dataset)
+    +getDataset(id)
+    +downloadDataset(datasetId)
+    +uploadRawDataset(datasetId, url)
+    +setSchema(datasetId, schemaId)
+    +listDatasets(filter, page, pageSize)
+    +getDatasetDescription(datasetId)
+    +listOwnedDatasets(userId)
+    +listQualityControllableDatasets()
+  }
+
+  class DataRelatedRequestUseCases {
+    +submitDataRelatedRequest(datasetId, payload): Promise<DataRelatedRequestDto>
+    +listDataRelatedRequests(datasetId, page, pageSize): Promise<DataRelatedRequestDto[]>
+  }
+
+  class DataRelatedRequestPayload {
+    +subject: string
+    +description: string
+  }
+
+  class DataRelatedRequestDto {
+    +id: string
+    +datasetId: string
+    +requesterId: string
+    +requesterUsername: string
+    +subject: string
+    +description: string
+    +status: string
+    +createdAt: string
+    +updatedAt: string
+  }
 }
 
 package "DI Container" {
@@ -81,18 +121,14 @@ package "DI Container" {
   }
 }
 
-package "API" {
-  class DatasetAPI {
-    +GET /datasets/{id}
-    +POST /datasets
-    +GET /catalogs/{id}/datasets
-    +GET /catalogs/{id}
-    +GET /catalogs
-    +GET /datasets
-    +GET /datasets/{id}/description
-    +GET /users/{id}/datasets
-    +GET /users/{id}/quality-controllable-datasets
-    +GET /datasets/{id}/comments
+package "API (frontend client)" {
+  class ApiClient {
+    +GET(path, options)
+    +POST(path, options)
+    +PUT(path, options)
+  }
+  class FetchAPI {
+    +fetch(url, init)
   }
 }
 
@@ -111,19 +147,16 @@ DatasetDetailPresenter --> DatasetCommentsView : render(comments)
 
 DatasetsController --> DatasetUseCases : delegates
 CatalogsController --> DatasetUseCases : delegates shared calls
-DatasetsController --> DatasetUseCases : getDatasetComents(datasetId)
-DatasetsController --> DatasetUseCases : getDatasetPreview(id)
 
 DatasetsController --> UCContainer : reads dataset uc
 CatalogsController --> UCContainer : reads dataset uc
 UCContainer --> DatasetUseCases : provides implementation
 
-DatasetListView --> DatasetsController : loadDatasetComments(datasetId)
-CatalogsPageView --> DatasetsController :  loadDatasetPreview(datasetId)
+AddDataRelatedRequestModal --> DataRelatedRequestUseCases : submit/list
+DataRelatedRequestUseCases ..> FetchAPI : fetch()
 
-DatasetUseCases --> DatasetDetailPresenter : present(DatasetComment[])
-DatasetUseCases --> DatasetDetailPresenter : present(DatasetPreview)
-
-
+DatasetUseCases <|.. DatasetUseCase
+DataRelatedRequestUseCases ..> DataRelatedRequestPayload
+DataRelatedRequestUseCases ..> DataRelatedRequestDto
 
 @enduml

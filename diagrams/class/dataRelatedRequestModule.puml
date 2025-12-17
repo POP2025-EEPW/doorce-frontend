@@ -1,75 +1,48 @@
 @startuml
-title Class Diagram - DataRelatedRequest feature
+title DataRelatedRequest - PVCUC component view (frontend)
 
-class AddDataRelatedRequestModal {
-  +datasetId: string
-  +subject: string
-  +description: string
-  +onClose(): void
-  +handleSubmit(e): Promise<void>
+skinparam packageStyle rectangle
+
+package "Views" {
+  class AddDataRelatedRequestModal {
+    +render()
+    +handleSubmit(e?)
+    +loadRequests(pageNum)
+  }
 }
 
-class SidebarView {
-  +openDataRequestModal: boolean
-  +render(): JSX.Element
+package "Use-case Layer" {
+  class "dataset.uc.ts (DataRelatedRequest exports)" as DataRelatedRequestApiFns {
+    +submitDataRelatedRequest(datasetId, payload): Promise<DataRelatedRequestDto>
+    +listDataRelatedRequests(datasetId, page, pageSize): Promise<DataRelatedRequestDto[]>
+  }
+
+  class DataRelatedRequestPayload {
+    +subject: string
+    +description: string
+  }
+
+  class DataRelatedRequestDto {
+    +id: string
+    +datasetId: string
+    +requesterId: string
+    +requesterUsername: string
+    +subject: string
+    +description: string
+    +status: string
+    +createdAt: string
+    +updatedAt: string
+  }
 }
 
-class useDataRelatedRequests {
-  +datasetId?: string
-  +requests: DataRelatedRequest[]
-  +loading: boolean
-  +loadingList: boolean
-  +error?: string
-  +page: int
-  +pageSize: int
-  +load(nextPage:int): Promise<void>
-  +submit(payload:DataRelatedRequestPayload): Promise<any>
-  +setDatasetId(id:string): void
+package "API (frontend client)" {
+  class FetchAPI {
+    +fetch(url, init)
+  }
 }
 
-class DatasetController {
-  +submitDataRelatedRequest(datasetId:string, payload:DataRelatedRequestPayload): Promise<any>
-  +listDataRelatedRequest(datasetId:string, page:int, pageSize:int): Promise<any[]>
-}
-
-class DatasetUseCase {
-  +submitDataRelatedRequest(datasetId:string, payload:DataRelatedRequestPayload): Promise<any>
-  +listDataRelatedRequests(datasetId:string, page:int, pageSize:int): Promise<any[]>
-}
-
-class ApiClient {
-  +submitDataRelatedRequest(datasetId:string, payload:DataRelatedRequestPayload): Promise<any>
-  +listDataRelatedRequests(datasetId:string, page:int, pageSize:int): Promise<any[]>
-}
-
-class DataRelatedRequestPayload {
-  +subject: string
-  +description: string
-}
-
-class DataRelatedRequest {
-  +id: string
-  +datasetId: string
-  +requesterId: string
-  +requesterUsername: string
-  +subject: string
-  +description: string
-  +status: string
-  +createdAt: string
-  +updatedAt: string
-}
-
-AddDataRelatedRequestModal --> useDataRelatedRequests : uses
-useDataRelatedRequests --> DatasetController : calls
-DatasetController --> DatasetUseCase : delegates
-DatasetUseCase --> ApiClient : performs HTTP calls
-ApiClient ..> "HTTP API\nPOST /api/datasets/{datasetId}/requests" : <<dependency>>
-SidebarView --> AddDataRelatedRequestModal : opens
-
-useDataRelatedRequests ..> DataRelatedRequestPayload
-useDataRelatedRequests ..> DataRelatedRequest
-DatasetController ..> DataRelatedRequestPayload
-DatasetUseCase ..> DataRelatedRequestPayload
-ApiClient ..> DataRelatedRequestPayload
-ApiClient ..> DataRelatedRequest
+AddDataRelatedRequestModal --> DataRelatedRequestApiFns : submit/list
+DataRelatedRequestApiFns ..> FetchAPI : fetch()
+DataRelatedRequestApiFns ..> DataRelatedRequestPayload
+DataRelatedRequestApiFns ..> DataRelatedRequestDto
 @enduml
