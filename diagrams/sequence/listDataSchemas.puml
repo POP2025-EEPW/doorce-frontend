@@ -1,0 +1,25 @@
+@startuml
+title listDataSchemas Use Case
+autonumber
+
+actor "Metadata Manager" as User
+
+participant "DataSchemaPage" as View
+participant "SchemaPresenter" as Presenter
+participant "schema.controller.ts" as Controller
+participant "uc.schema" as UseCase
+participant "CombinedClient" as Client
+participant "DataSchema API\nGET /data-schemas" as Http
+
+User -> View : Navigate to /data-schemas
+View -> Controller : mount / useQuery
+Controller -> UseCase : listSchemas()
+UseCase -> Client : listSchemas()
+Client -> Http : GET /data-schemas
+Http --> Client : DataSchema[]
+Client --> UseCase : DataSchema[]
+UseCase -> Presenter : presentSchemas(schemas)
+Presenter -> View : updateState(schemas)
+View --> User : Show DataSchemaListView (Cards)
+
+@enduml

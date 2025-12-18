@@ -1,0 +1,46 @@
+@startuml
+title Add Data Schema Use Case
+autonumber
+
+actor "Metadata Manager" as User
+
+participant "DataSchemaPage" as Page
+participant "DataSchemaForm" as FormView
+participant "SchemaPresenter" as Presenter
+participant "schema.controller.ts" as Controller
+participant "uc.schema" as UseCase
+participant "CombinedClient" as Client
+participant "Schema API\nPOST /data-schemas" as Http
+
+== Open Form ==
+User -> Page : Click "Add Schema"
+Page -> Controller : showAddSchemaForm()
+Controller -> Presenter : showAddSchemaForm()
+Presenter -> Page : updateState(isModalOpen=true)
+Page -> FormView : Render Modal
+FormView --> User : Show empty form
+
+== Submit New Schema ==
+User -> FormView : Fill Name, Description, Concepts\nClick "Save Schema"
+FormView -> Controller : onSubmitSchema(dto)
+Controller -> UseCase : addSchema(dto)
+
+group Validation
+    UseCase -> UseCase : Validate (concepts.length > 0)
+end
+
+UseCase -> Client : addSchema(dto)
+Client -> Http : POST /data-schemas
+
+Http --> Client : 201 Created
+Client --> UseCase : void
+UseCase -> Presenter : presentAddSchemaSuccess()
+Presenter -> Page : updateState(isModalOpen=false, notification=Success)
+
+== Refresh List ==
+Controller -> UseCase : listSchemas()
+UseCase -> Presenter : presentSchemas(newList)
+Presenter -> Page : updateState(schemas=newList)
+Page --> User : Show updated list with new Schema & Success Toast
+
+@enduml
