@@ -1,0 +1,63 @@
+@startuml
+title Agent Feature - PVCUC component view
+
+skinparam packageStyle rectangle
+
+package "Views" {
+    class AgentPage {
+    +render(agents[])
+    +onAddAgentClick()
+  }
+
+  class AddAgentForm {
+    +render()
+    +handleSubmit()
+  }
+}
+
+package "Presenters" {
+  ' TODO: in sequence diagram there is only one presenter
+  class AgentListPresenter {
+    +onAddSuccess(agent)
+    +showAddAgentForm(result)
+  }
+}
+
+package "Controllers" {
+  class AgentController {
+    +addAgent(input)
+  }
+}
+
+package "Use-case Layer" {
+  interface AgentUseCases {
+      +addAgent(input)
+  }
+}
+
+package "DI Container" {
+  class UCContainer {
+    +agent: AgentUseCases
+  }
+}
+
+package "API" {
+  class AgentAPI {
+    +POST /agents
+  }
+}
+
+AgentPage --> AgentController
+AddAgentForm --> AgentController
+
+AgentController --> UCContainer
+UCContainer --> AgentUseCases
+
+AgentUseCases --> AgentAPI
+
+AgentListPresenter --> AgentPage
+AgentListPresenter --> AddAgentForm
+
+UCContainer --> AgentListPresenter
+
+@enduml
