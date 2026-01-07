@@ -1,5 +1,5 @@
 @startuml
-title Dataset Feature - PVCUC component view
+title Set datachema, edit dataset, and add dataset comment class diagram
 
 skinparam packageStyle rectangle
 
@@ -20,11 +20,11 @@ package "Views" {
 }
 
 package "Presenters" {
-  class DatasetEditPresenter {
+  class EditDatasetPresenter {
     +renderView(dataset)
   }
 
-  class SelectDataSchemaModalPresenter {
+  class SetDataSchemaPresenter {
     +renderModal(Schemas[])
   }
 
@@ -82,10 +82,10 @@ package "DI Container" {
 SelectDataSchemaModal --> DatasetsController
 EditDatasetForm --> DatasetsController
 DatasetsController --> UCContainer
-UCContainer --> DatasetEditPresenter
-UCContainer --> SelectDataSchemaModalPresenter
-DatasetEditPresenter --> EditDatasetForm
-SelectDataSchemaModalPresenter --> SelectDataSchemaModal
+UCContainer --> EditDatasetPresenter
+UCContainer --> SetDataSchemaPresenter
+EditDatasetPresenter --> EditDatasetForm
+SetDataSchemaPresenter --> SelectDataSchemaModal
 DatasetCommentController --> UCContainer
 AddDatasetCommentPresenter --> AddDatasetCommentForm
 UCContainer --> AddDatasetCommentPresenter

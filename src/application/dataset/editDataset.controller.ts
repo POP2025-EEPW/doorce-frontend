@@ -85,15 +85,22 @@ export function useEditDatasetController(
   });
 
   // Action handlers
-  const openEditModal = useCallback((datasetSummary: DatasetSummary) => {
-    setSelectedDatasetId(datasetSummary.id);
-    setState((prev) => ({
-      ...prev,
-      isModalOpen: true,
-      notification: null,
-      dataset: null,
-    }));
-  }, []);
+  const openEditModal = useCallback(
+    (datasetSummary: DatasetSummary) => {
+      queryClient.invalidateQueries({
+        queryKey: ["getDataset", datasetSummary.id],
+      });
+
+      setSelectedDatasetId(datasetSummary.id);
+      setState((prev) => ({
+        ...prev,
+        isModalOpen: true,
+        notification: null,
+        dataset: null,
+      }));
+    },
+    [queryClient],
+  );
 
   const closeEditModal = useCallback(() => {
     setSelectedDatasetId(null);

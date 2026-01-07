@@ -11,13 +11,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/ui/lib/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/ui/lib/components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/ui/lib/components/ui/select";
 
 import type {
   DatasetStatus,
@@ -55,7 +55,7 @@ export function EditDatasetModalView(props: EditDatasetModalViewProps) {
     onSubmit,
   } = props;
 
-  const { register, handleSubmit, formState, watch, setValue, reset } =
+  const { register, handleSubmit, formState, reset } =
     useForm<UpdateDatasetDto>({
       defaultValues: {
         title: initialTitle,
@@ -143,26 +143,26 @@ export function EditDatasetModalView(props: EditDatasetModalViewProps) {
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label htmlFor="edit-status">Status</Label>
-                <Select
-                  value={watch("status")}
-                  onValueChange={(value) =>
-                    setValue("status", value as DatasetStatus)
-                  }
-                  disabled={isDisabled}
-                >
-                  <SelectTrigger id="edit-status">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="published">Published</SelectItem>
-                    <SelectItem value="archived">Archived</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="grid grid-cols-1 gap-4">
+              {/*<div className="space-y-1">*/}
+              {/*  <Label htmlFor="edit-status">Status</Label>*/}
+              {/*  <Select*/}
+              {/*    value={watch("status")}*/}
+              {/*    onValueChange={(value) =>*/}
+              {/*      setValue("status", value as DatasetStatus)*/}
+              {/*    }*/}
+              {/*    disabled={isDisabled}*/}
+              {/*  >*/}
+              {/*    <SelectTrigger id="edit-status">*/}
+              {/*      <SelectValue />*/}
+              {/*    </SelectTrigger>*/}
+              {/*    <SelectContent>*/}
+              {/*      <SelectItem value="draft">Draft</SelectItem>*/}
+              {/*      <SelectItem value="published">Published</SelectItem>*/}
+              {/*      <SelectItem value="archived">Archived</SelectItem>*/}
+              {/*    </SelectContent>*/}
+              {/*  </Select>*/}
+              {/*</div>*/}
 
               <div className="space-y-1">
                 <Label>Data Schema</Label>

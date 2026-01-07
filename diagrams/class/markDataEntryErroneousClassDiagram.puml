@@ -1,0 +1,63 @@
+@startuml
+title Set quality tag class diagram
+
+skinparam packageStyle rectangle
+
+package "Views" {
+  class EntriesListView{
+    +render(dataset)
+    +onSetErroneous()
+    +onSetSuspicious()
+  }
+
+
+}
+
+package "Presenters" {
+  class dataQualityPresenter {
+    +renderView(dataset)
+  }
+
+}
+
+package "Controllers" {
+
+  class dataQualityController {
+    +renderView(dataset)
+    +SetErroneous
+    +SetSuspicious()
+  }
+}
+
+package "Use-case Layer" {
+ interface QualityUseCases {
+    +addDatasetComment(datasetId, input)
+    +listDatasetComments(datasetId)
+    +submitDataRelatedRequest()
+    +listDataRelatedRequests()
+    +markDataEntryErroneous(entryId)
+    +markDataEntrySuspicious(entryId)
+  }
+}
+
+package "DI Container" {
+  class UCContainer {
+    +dataset: DatasetQualityUseCases
+  }
+}
+
+UCContainer --> dataQualityPresenter
+
+
+
+dataQualityPresenter --> EntriesListView
+EntriesListView --> dataQualityController
+UCContainer --> QualityUseCases : provides implementation
+dataQualityController --> UCContainer
+
+
+
+
+
+
+@enduml
