@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +9,7 @@ import {
 import { Button } from "@/ui/lib/components/ui/button";
 import { Input } from "@/ui/lib/components/ui/input";
 import { Label } from "@/ui/lib/components/ui/label";
-
+import { useState, useEffect } from "react";
 interface AddQualityTagModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -28,6 +27,12 @@ export function AddQualityTagModal({
 }: AddQualityTagModalProps) {
   const [tag, setTag] = useState(currentTag || "");
 
+  useEffect(() => {
+    if (open) {
+      setTag(currentTag || "");
+    }
+  }, [open, currentTag]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedTag = tag?.trim() || "";
@@ -44,10 +49,6 @@ export function AddQualityTagModal({
   };
 
   const handleOpenChange = (newOpen: boolean) => {
-    if (newOpen) {
-      // Reset tag when opening modal
-      setTag(currentTag || "");
-    }
     onOpenChange(newOpen);
   };
 
