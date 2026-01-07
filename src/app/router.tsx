@@ -12,6 +12,7 @@ import DatasetDescriptionPage from "@/ui/dataset/pages/DatasetDescriptionPage.ts
 import { DatasetsPage } from "@/ui/dataset/pages/DatasetsPage.tsx";
 import EntriesListPage from "@/ui/dataset/pages/EntriesListPage.tsx";
 import DatasetAlertsPage from "@/ui/quality/pages/DatasetAlertsPage.tsx";
+import AgentPage from "@/ui/agent/pages/Agent.page";
 
 const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
       //   element: <QualityControllableDatasetsPresenter />,
       // },
       // { path: "datasets/:id/edit", element: <DatasetEditPresenter /> },
+      {
+        path: "agents",
+        element: <AgentPage />,
+      },
     ],
   },
   { path: "*", element: <LoginPage /> },

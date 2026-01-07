@@ -1,0 +1,33 @@
+@startuml
+title addAgent use case
+autonumber
+
+actor User
+
+participant "AgentPage" as View
+participant "AddAgentForm" as FormView
+participant "AgentPresenter" as Presenter
+participant "agent.controller.ts" as Controller
+participant "uc.agent" as UseCase
+participant "CombinedClient" as Client
+participant "Agent API\nPOST /agents" as Http
+
+User ->> View : click "Add Agent"
+View ->> Controller : showAddAgentForm()
+Controller ->> UseCase : showAddAgentForm()
+UseCase ->> Presenter : showAddAgentForm()
+Presenter ->> FormView : showAddAgentForm()
+FormView ->> User : show form
+
+User ->> FormView : click "Add"
+FormView ->> Controller : addAgent(input)
+Controller ->> UseCase : addAgent(input)
+UseCase ->> Client : addAgent(input)
+Client -> Http : POST /agents
+Http --> Client : 201 Created + {id}
+Client --> UseCase : {id}
+UseCase ->>  Presenter : present{success}
+Presenter ->> View : handle success
+View ->> User : Show result message
+
+@enduml
