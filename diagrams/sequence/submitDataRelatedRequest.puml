@@ -3,22 +3,32 @@ title submitDataRelatedRequest use case
 autonumber
 
 actor User
-participant "Submit button" as Button
-participant "Request form view" as View
-participant "quality.controller.ts" as Controller
-participant "uc.quality" as UseCase
-participant "CombinedClient" as Client
-participant "Quality API\nPOST /data-related-requests" as Http
-participant "Presenter" as Presenter
+participant "Sidebar (Data Related Requests dropdown)" as Sidebar
+participant "SubmitDataRelatedRequestModal" as View
+participant "DatasetUseCase" as DatasetUC
+participant "dataset.uc.ts\nsubmitDataRelatedRequest" as ApiFn
+participant "FetchAPI" as Fetch
+participant "Dataset API\nPOST /api/datasets/{datasetId}/requests" as Http
 
-User ->> Button : Clicks 'Submit'
-Button ->> Controller : submitDataRelatedRequest(req)
-Controller ->> UseCase : submitDataRelatedRequest(req)
-UseCase -> Client : submitDataRelatedRequest(req)
-Client -> Http : POST /data-related-requests
-Http --> Client : { id }
-Client --> UseCase : { id }
-Controller -> Presenter : presentSubmitResult({ id })
-Presenter ->> View : render success ({ id })
-View ->> User : Confirmation
+User ->> Sidebar : Selects "Submit"
+Sidebar ->> View : opens modal
+
+opt Dataset selection (dropdown/search/manual ID)
+	View ->> DatasetUC : listDatasets(filter?, page=0, pageSize=200)
+	DatasetUC ->> Fetch : GET /api/datasets?... 
+	Fetch ->> Http : GET /api/datasets?... 
+	Http --> Fetch : DatasetSummary[]
+	Fetch --> DatasetUC : DatasetSummary[]
+	DatasetUC --> View : DatasetSummary[]
+end
+
+User ->> View : fills Subject + Description + selects dataset
+User ->> View : Clicks "Submit Request"
+View ->> ApiFn : submitDataRelatedRequest(datasetId, payload)
+ApiFn ->> Fetch : POST /api/datasets/{datasetId}/requests
+Fetch ->> Http : POST /api/datasets/{datasetId}/requests\n{ subject, description }
+Http --> Fetch : DataRelatedRequestDto
+Fetch --> ApiFn : DataRelatedRequestDto
+ApiFn --> View : success
+View ->> User : Toast confirmation
 @enduml

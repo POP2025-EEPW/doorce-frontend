@@ -207,49 +207,67 @@ export interface DataRelatedRequestPayload {
   subject: string;
   description: string;
 }
-
+export interface DataRelatedRequestDto {
+  id: string;
+  datasetId: string;
+  requesterId: string;
+  requesterUsername: string;
+  subject: string;
+  description: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+function buildAuthHeaders(): Record<string, string> {
+  const token = localStorage.getItem("token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 export async function submitDataRelatedRequest(
   datasetId: string,
   payload: DataRelatedRequestPayload,
-) {
+): Promise<DataRelatedRequestDto> {
   const url = `/api/datasets/${encodeURIComponent(datasetId)}/requests`;
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-  const token = localStorage.getItem("token");
-  if (token) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(url, {
     method: "POST",
-    headers,
+    headers: {
+      "Content-Type": "application/json",
+      ...buildAuthHeaders(),
+    },
     body: JSON.stringify(payload),
   });
 
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
-    throw new Error(text ?? `HTTP ${res.status}`);
+    throw new Error(text || `HTTP ${res.status}`);
   }
-  return res.json();
+
+  return (await res.json()) as DataRelatedRequestDto;
 }
 
 export async function listDataRelatedRequests(
   datasetId: string,
   page = 0,
   pageSize = 20,
-) {
+): Promise<DataRelatedRequestDto[]> {
   const params = new URLSearchParams({
     page: String(page),
     pageSize: String(pageSize),
   });
-  const url = `/api/datasets/${encodeURIComponent(datasetId)}/requests?${params.toString()}`;
-  const headers: Record<string, string> = {};
-  const token = localStorage.getItem("token");
-  if (token) headers.Authorization = `Bearer ${token}`;
 
-  const res = await fetch(url, { headers });
+  const url = `/api/datasets/${encodeURIComponent(datasetId)}/requests?${params.toString()}`;
+
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      ...buildAuthHeaders(),
+    },
+  });
+
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
-    throw new Error(text ?? `HTTP ${res.status}`);
+    throw new Error(text || `HTTP ${res.status}`);
   }
-  return res.json();
+
+  return (await res.json()) as DataRelatedRequestDto[];
 }
