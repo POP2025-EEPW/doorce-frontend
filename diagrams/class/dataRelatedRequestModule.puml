@@ -1,31 +1,39 @@
 @startuml
-title DataRelatedRequest - PVCUC component view (frontend)
+title DataRelatedRequest - component view (frontend)
 
 skinparam packageStyle rectangle
 
 package "Views" {
-  class AddDataRelatedRequestModal {
+  class SidebarView {
     +render()
-    +handleSubmit(e?)
+    +openBrowse()
+    +openSubmit()
+  }
+
+  class BrowseDataRelatedRequestsModal {
+    +render()
+    +loadDatasets()
     +loadRequests(pageNum)
+    +onGoToDataset()
   }
-}
 
-package "Presenters" {
-  class DatasetDetailPresenter {
+  class SubmitDataRelatedRequestModal {
     +render()
-    +loadDataset(id)
-  }
-}
-
-package "Controllers" {
-  class DatasetsController {
-    +submitDataRelatedRequest(datasetId, payload)
-    +listDataRelatedRequests(datasetId, page, pageSize)
+    +loadDatasets()
+    +handleSubmit(e?)
   }
 }
 
 package "Use-case Layer" {
+  class DatasetUseCase {
+    +listDatasets(filter?, page, pageSize): Promise<DatasetSummary[]>
+  }
+
+  class DatasetSummary {
+    +id: string
+    +title: string
+  }
+
   class "dataset.uc.ts (DataRelatedRequest exports)" as DataRelatedRequestApiFns {
     +submitDataRelatedRequest(datasetId, payload): Promise<DataRelatedRequestDto>
     +listDataRelatedRequests(datasetId, page, pageSize): Promise<DataRelatedRequestDto[]>
@@ -49,25 +57,25 @@ package "Use-case Layer" {
   }
 }
 
-package "DI Container" {
-  class UCContainer {
-    +dataRelatedRequest: DataRelatedRequestApiFns
-  }
-}
-
 package "API (frontend client)" {
   class FetchAPI {
     +fetch(url, init)
   }
 }
 
-DatasetDetailPresenter --> AddDataRelatedRequestModal : opens modal
-AddDataRelatedRequestModal --> DatasetsController : submit/list
-DatasetsController --> UCContainer : reads dataRelatedRequest
-DatasetsController --> DataRelatedRequestApiFns : delegates
+SidebarView --> BrowseDataRelatedRequestsModal : opens
+SidebarView --> SubmitDataRelatedRequestModal : opens
+
+BrowseDataRelatedRequestsModal --> DatasetUseCase : listDatasets()
+SubmitDataRelatedRequestModal --> DatasetUseCase : listDatasets()
+
+BrowseDataRelatedRequestsModal --> DataRelatedRequestApiFns : listDataRelatedRequests()
+SubmitDataRelatedRequestModal --> DataRelatedRequestApiFns : submitDataRelatedRequest()
+
 DataRelatedRequestApiFns ..> FetchAPI : fetch()
+DatasetUseCase ..> FetchAPI : fetch()/client
 
 DataRelatedRequestApiFns ..> DataRelatedRequestPayload
 DataRelatedRequestApiFns ..> DataRelatedRequestDto
-DataRelatedRequestApiFns --> DatasetDetailPresenter : present(DataRelatedRequestDto[])
+DatasetUseCase ..> DatasetSummary
 @enduml
