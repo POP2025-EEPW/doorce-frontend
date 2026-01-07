@@ -1,0 +1,66 @@
+@startuml
+title Set quality tag class diagram
+
+skinparam packageStyle rectangle
+
+package "Views" {
+  class AddQualityTagModal{
+    +render(dataset)
+    +handleSubmit()
+  }
+
+  class SelectDataSchemaModal {
+    +render(Schemas[])
+    +onConfirm()
+  }
+  class AddDatasetCommentForm {
+    +render()
+    +handleSubmit()
+  }
+}
+
+package "Presenters" {
+  class dataQualityPresenter {
+    +renderView(dataset)
+  }
+
+}
+
+package "Controllers" {
+
+  class dataQualityController {
+    +renderView(dataset)
+  }
+}
+
+package "Use-case Layer" {
+ interface QualityUseCases {
+    +addDatasetComment(datasetId, input)
+    +listDatasetComments(datasetId)
+    +submitDataRelatedRequest()
+    +listDataRelatedRequests()
+  }
+}
+
+package "DI Container" {
+  class UCContainer {
+    +dataset: DatasetQualityUseCases
+  }
+}
+
+UCContainer --> dataQualityPresenter
+dataQualityPresenter --> SelectDataSchemaModal
+dataQualityPresenter --> AddQualityTagModal
+dataQualityPresenter --> AddDatasetCommentForm
+SelectDataSchemaModal --> dataQualityController
+AddQualityTagModal --> dataQualityController
+AddDatasetCommentForm --> dataQualityController
+UCContainer --> QualityUseCases : provides implementation
+dataQualityController --> UCContainer
+
+
+
+
+
+
+@enduml
