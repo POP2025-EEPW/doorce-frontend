@@ -4,1814 +4,1822 @@
  */
 
 export interface paths {
-    "/api/schemas/{schemaId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["updateSchema"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  "/api/schemas/{schemaId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/quality/datasets/{datasetId}/quality-tag": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Set quality tag for dataset */
-        put: operations["setQualityTag"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put: operations["updateSchema"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quality/datasets/{datasetId}/quality-tag": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getDataset"];
-        put: operations["editDataset"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    /** Set quality tag for dataset */
+    put: operations["setQualityTag"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets/{id}/schema": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["setDataSchema"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["getDataset"];
+    put: operations["editDataset"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{id}/schema": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets/{datasetId}/entries/{entryId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["editDataEntry"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put: operations["setDataSchema"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{datasetId}/entries/{entryId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/users": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["registerUser"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put: operations["editDataEntry"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/types/primitives": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["addPrimitive"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["registerUser"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/types/primitives": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/schemas": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getSchemas"];
-        put?: never;
-        post: operations["addSchema"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["addPrimitive"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/schemas": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/quality/entries/{entryId}/mark-suspicious": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Mark data entry as suspicious */
-        post: operations["markDataEntrySuspicious"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["getSchemas"];
+    put?: never;
+    post: operations["addSchema"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quality/entries/{entryId}/mark-suspicious": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/quality/entries/{entryId}/mark-erroneous": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Mark data entry as erroneous */
-        post: operations["markDataEntryErroneous"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Mark data entry as suspicious */
+    post: operations["markDataEntrySuspicious"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quality/entries/{entryId}/mark-erroneous": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listDatasets"];
-        put?: never;
-        post: operations["addDataset"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Mark data entry as erroneous */
+    post: operations["markDataEntryErroneous"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets/{id}/submit": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["submitDataset"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["listDatasets"];
+    put?: never;
+    post: operations["addDataset"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{id}/submit": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets/{id}/publish": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["publishDataset"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["submitDataset"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{id}/publish": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets/{id}/archive": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["archiveDataset"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["publishDataset"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{id}/archive": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets/{datasetId}/requests": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listDataRelatedRequests"];
-        put?: never;
-        post: operations["submitDataRelatedRequest"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["archiveDataset"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{datasetId}/requests": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets/{datasetId}/raw": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getRawDataset"];
-        put?: never;
-        post: operations["registerRawDataset"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["listDataRelatedRequests"];
+    put?: never;
+    post: operations["submitDataRelatedRequest"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{datasetId}/raw": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets/{datasetId}/raw/batches": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listRawBatches"];
-        put?: never;
-        post: operations["appendRawBatch"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["getRawDataset"];
+    put?: never;
+    post: operations["registerRawDataset"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{datasetId}/raw/batches": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets/{datasetId}/entries": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getAllDataEntries"];
-        put?: never;
-        post: operations["addDataEntry"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["listRawBatches"];
+    put?: never;
+    post: operations["appendRawBatch"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{datasetId}/entries": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets/{datasetId}/comments": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listDatasetComments"];
-        put?: never;
-        post: operations["addDatasetComment"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["getAllDataEntries"];
+    put?: never;
+    post: operations["addDataEntry"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/{datasetId}/comments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/catalogs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listCatalogs"];
-        put?: never;
-        post: operations["addCatalog"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["listDatasetComments"];
+    put?: never;
+    post: operations["addDatasetComment"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/catalogs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/auth/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["authUser"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["listCatalogs"];
+    put?: never;
+    post: operations["addCatalog"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/auth/login": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/agents": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Show data agent list
-         * @description Retrieves paginated list of agents including their boolean status (isDataOwner, isDataSupplier).
-         */
-        get: operations["listAgents"];
-        put?: never;
-        /**
-         * Add a new Agent
-         * @description Creates a new Agent. Use flags 'createAsDataOwner' / 'createAsDataSupplier' to assign roles.
-         */
-        post: operations["addAgent"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["authUser"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/agents": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/types": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getAllTypes"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Show data agent list
+     * @description Retrieves paginated list of agents including their boolean status (isDataOwner, isDataSupplier).
+     */
+    get: operations["listAgents"];
+    put?: never;
+    /**
+     * Add a new Agent
+     * @description Creates a new Agent. Use flags 'createAsDataOwner' / 'createAsDataSupplier' to assign roles.
+     */
+    post: operations["addAgent"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/types": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/quality/datasets/{datasetId}/raw-download-link": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get raw data download link */
-        get: operations["getRawDownloadLink"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["getAllTypes"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quality/datasets/{datasetId}/raw-download-link": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/quality/datasets/{datasetId}/raw-batches": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List raw data batches */
-        get: operations["listRawBatches_1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get raw data download link */
+    get: operations["getRawDownloadLink"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quality/datasets/{datasetId}/raw-batches": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/quality/datasets/{datasetId}/raw-availability": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Check raw data availability */
-        get: operations["checkRawAvailability"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** List raw data batches */
+    get: operations["listRawBatches_1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quality/datasets/{datasetId}/raw-availability": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/quality/alerts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List quality validity alerts */
-        get: operations["listQualityValidityAlerts"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Check raw data availability */
+    get: operations["checkRawAvailability"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quality/alerts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets/qualityControllable": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getQualityControllableDatasets"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** List quality validity alerts */
+    get: operations["listQualityValidityAlerts"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/qualityControllable": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/datasets/ownedby": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listOwnedDatasets"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["getQualityControllableDatasets"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/datasets/ownedby": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/catalogs/{catalogId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getCatalog"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["listOwnedDatasets"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/catalogs/{catalogId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/catalogs/{catalogId}/datasets": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getCatalogDatasets"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["getCatalog"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/catalogs/{catalogId}/datasets": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["home"];
-        put: operations["home_2"];
-        post: operations["home_1"];
-        delete: operations["home_3"];
-        options: operations["home_6"];
-        head: operations["home_5"];
-        patch: operations["home_4"];
-        trace?: never;
+    get: operations["getCatalogDatasets"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    get: operations["home"];
+    put: operations["home_2"];
+    post: operations["home_1"];
+    delete: operations["home_3"];
+    options: operations["home_6"];
+    head: operations["home_5"];
+    patch: operations["home_4"];
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        ConceptDto: {
-            name?: string;
-            properties?: components["schemas"]["PropertyDto"][];
-        };
-        ConstraintDto: {
-            rule?: string;
-        };
-        PropertyDto: {
-            name?: string;
-            /** Format: uuid */
-            typeId?: string;
-        };
-        SchemaDto: {
-            /** Format: uuid */
-            id?: string;
-            title?: string;
-            description?: string;
-            concepts?: components["schemas"]["ConceptDto"][];
-            constraints?: components["schemas"]["ConstraintDto"][];
-        };
-        SetQualityTagRequest: {
-            qualityTag: string;
-        };
-        DatasetEditionRequest: {
-            title: string;
-            description: string;
-        };
-        Concept: {
-            /** Format: uuid */
-            id?: string;
-            name?: string;
-            properties?: components["schemas"]["Property"][];
-        };
-        Constraint: {
-            /** Format: uuid */
-            id?: string;
-            rule?: string;
-        };
-        Property: {
-            /** Format: uuid */
-            id?: string;
-            name?: string;
-            type?: components["schemas"]["Type"];
-        };
-        Schema: {
-            /** Format: uuid */
-            id?: string;
-            title?: string;
-            description?: string;
-            concepts?: components["schemas"]["Concept"][];
-            constraints?: components["schemas"]["Constraint"][];
-        };
-        Type: {
-            /** Format: uuid */
-            id?: string;
-            name?: string;
-        };
-        DataEntryRequest: {
-            content: components["schemas"]["JsonNode"];
-        };
-        JsonNode: Record<string, never>;
-        UserRegistrationRequest: {
-            username: string;
-            password: string;
-            roles?: ("MetadataManager" | "AcquisitionAppManager" | "DataQualityManager" | "DataSupplier" | "DataUser" | "AccessAppDeveloper" | "Admin")[];
-        };
-        PrimitiveTypeDto: {
-            /** Format: uuid */
-            id?: string;
-            name?: string;
-        };
-        DatasetCreationRequest: {
-            title: string;
-            description: string;
-            qualityControllable?: boolean;
-            /** Format: uuid */
-            schemaId: string;
-        };
-        SubmitDataRelatedRequest: {
-            subject: string;
-            description: string;
-        };
-        RegisterRawDatasetRequest: {
-            dataUrl?: string;
-        };
-        AppendBatchRequest: {
-            storageReference?: string;
-            batchName?: string;
-            dataUrl?: string;
-            /** Format: int64 */
-            sizeInBytes?: number;
-            /** Format: int32 */
-            entryCount?: number;
-        };
-        AddDatasetCommentRequest: {
-            content: string;
-        };
-        AddCatalogRequest: {
-            /** Format: uuid */
-            parentCatalogId?: string;
-            catalog: components["schemas"]["CatalogDto"];
-        };
-        CatalogDto: {
-            description: string;
-            title: string;
-            datasets: string[];
-        };
-        AuthRequest: {
-            username: string;
-            password: string;
-        };
-        AddAgentRequest: {
-            name: string;
-            typeName: string;
-            email: string;
-            createAsDataOwner?: boolean;
-            createAsDataSupplier?: boolean;
-        };
-        AgentDto: {
-            /** Format: uuid */
-            id?: string;
-            name?: string;
-            typeName?: string;
-            email?: string;
-            dataSupplier?: boolean;
-            dataOwner?: boolean;
-        };
-        PageAgentDto: {
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-            /** Format: int32 */
-            size?: number;
-            content?: components["schemas"]["AgentDto"][];
-            /** Format: int32 */
-            number?: number;
-            sort?: components["schemas"]["SortObject"];
-            pageable?: components["schemas"]["PageableObject"];
-            first?: boolean;
-            last?: boolean;
-            /** Format: int32 */
-            numberOfElements?: number;
-            empty?: boolean;
-        };
-        PageableObject: {
-            /** Format: int64 */
-            offset?: number;
-            sort?: components["schemas"]["SortObject"];
-            paged?: boolean;
-            /** Format: int32 */
-            pageNumber?: number;
-            /** Format: int32 */
-            pageSize?: number;
-            unpaged?: boolean;
-        };
-        SortObject: {
-            empty?: boolean;
-            sorted?: boolean;
-            unsorted?: boolean;
-        };
+  schemas: {
+    ConceptDto: {
+      name?: string;
+      properties?: components["schemas"]["PropertyDto"][];
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    ConstraintDto: {
+      rule?: string;
+    };
+    PropertyDto: {
+      name?: string;
+      /** Format: uuid */
+      typeId?: string;
+    };
+    SchemaDto: {
+      /** Format: uuid */
+      id?: string;
+      title?: string;
+      description?: string;
+      concepts?: components["schemas"]["ConceptDto"][];
+      constraints?: components["schemas"]["ConstraintDto"][];
+    };
+    SetQualityTagRequest: {
+      qualityTag: string;
+    };
+    DatasetEditionRequest: {
+      title: string;
+      description: string;
+    };
+    Concept: {
+      /** Format: uuid */
+      id?: string;
+      name?: string;
+      properties?: components["schemas"]["Property"][];
+    };
+    Constraint: {
+      /** Format: uuid */
+      id?: string;
+      rule?: string;
+    };
+    Property: {
+      /** Format: uuid */
+      id?: string;
+      name?: string;
+      type?: components["schemas"]["Type"];
+    };
+    Schema: {
+      /** Format: uuid */
+      id?: string;
+      title?: string;
+      description?: string;
+      concepts?: components["schemas"]["Concept"][];
+      constraints?: components["schemas"]["Constraint"][];
+    };
+    Type: {
+      /** Format: uuid */
+      id?: string;
+      name?: string;
+    };
+    DataEntryRequest: {
+      content: components["schemas"]["JsonNode"];
+    };
+    JsonNode: Record<string, never>;
+    UserRegistrationRequest: {
+      username: string;
+      password: string;
+      roles?: (
+        | "MetadataManager"
+        | "AcquisitionAppManager"
+        | "DataQualityManager"
+        | "DataSupplier"
+        | "DataUser"
+        | "AccessAppDeveloper"
+        | "Admin"
+      )[];
+    };
+    PrimitiveTypeDto: {
+      /** Format: uuid */
+      id?: string;
+      name?: string;
+    };
+    DatasetCreationRequest: {
+      title: string;
+      description: string;
+      qualityControllable?: boolean;
+      /** Format: uuid */
+      schemaId: string;
+    };
+    SubmitDataRelatedRequest: {
+      subject: string;
+      description: string;
+    };
+    RegisterRawDatasetRequest: {
+      dataUrl?: string;
+    };
+    AppendBatchRequest: {
+      storageReference?: string;
+      batchName?: string;
+      dataUrl?: string;
+      /** Format: int64 */
+      sizeInBytes?: number;
+      /** Format: int32 */
+      entryCount?: number;
+    };
+    AddDatasetCommentRequest: {
+      content: string;
+    };
+    AddCatalogRequest: {
+      /** Format: uuid */
+      parentCatalogId?: string;
+      catalog: components["schemas"]["CatalogDto"];
+    };
+    CatalogDto: {
+      description: string;
+      title: string;
+      datasets: string[];
+    };
+    AuthRequest: {
+      username: string;
+      password: string;
+    };
+    AddAgentRequest: {
+      name: string;
+      typeName: string;
+      email: string;
+      createAsDataOwner?: boolean;
+      createAsDataSupplier?: boolean;
+    };
+    AgentDto: {
+      /** Format: uuid */
+      id?: string;
+      name?: string;
+      typeName?: string;
+      email?: string;
+      dataSupplier?: boolean;
+      dataOwner?: boolean;
+    };
+    PageAgentDto: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components["schemas"]["AgentDto"][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components["schemas"]["SortObject"];
+      pageable?: components["schemas"]["PageableObject"];
+      /** Format: int32 */
+      numberOfElements?: number;
+      first?: boolean;
+      last?: boolean;
+      empty?: boolean;
+    };
+    PageableObject: {
+      /** Format: int64 */
+      offset?: number;
+      sort?: components["schemas"]["SortObject"];
+      paged?: boolean;
+      /** Format: int32 */
+      pageNumber?: number;
+      /** Format: int32 */
+      pageSize?: number;
+      unpaged?: boolean;
+    };
+    SortObject: {
+      empty?: boolean;
+      sorted?: boolean;
+      unsorted?: boolean;
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    updateSchema: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                schemaId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SchemaDto"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  updateSchema: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        schemaId: string;
+      };
+      cookie?: never;
     };
-    setQualityTag: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SetQualityTagRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SchemaDto"];
+      };
     };
-    getDataset: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
+      };
     };
-    editDataset: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DatasetEditionRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  };
+  setQualityTag: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
     };
-    setDataSchema: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Schema"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SetQualityTagRequest"];
+      };
     };
-    editDataEntry: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                datasetId: string;
-                entryId: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DataEntryRequest"];
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+      };
     };
-    registerUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserRegistrationRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  };
+  getDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    addPrimitive: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PrimitiveTypeDto"];
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+      };
     };
-    getSchemas: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  };
+  editDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    addSchema: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SchemaDto"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DatasetEditionRequest"];
+      };
     };
-    markDataEntrySuspicious: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                entryId: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
+      };
     };
-    markDataEntryErroneous: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                entryId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  };
+  setDataSchema: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    listDatasets: {
-        parameters: {
-            query?: {
-                title?: string;
-                page?: number;
-                pageSize?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["Schema"];
+      };
     };
-    addDataset: {
-        parameters: {
-            query?: never;
-            header?: {
-                Authorization?: string;
-            };
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DatasetCreationRequest"];
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+      };
     };
-    submitDataset: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  };
+  editDataEntry: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+        entryId: string;
+      };
+      cookie?: never;
     };
-    publishDataset: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DataEntryRequest"];
+      };
     };
-    archiveDataset: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
+      };
     };
-    listDataRelatedRequests: {
-        parameters: {
-            query?: {
-                page?: number;
-                pageSize?: number;
-            };
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  };
+  registerUser: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    submitDataRelatedRequest: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SubmitDataRelatedRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UserRegistrationRequest"];
+      };
     };
-    getRawDataset: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
+      };
     };
-    registerRawDataset: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RegisterRawDatasetRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  };
+  addPrimitive: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    listRawBatches: {
-        parameters: {
-            query?: {
-                page?: number;
-                pageSize?: number;
-            };
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PrimitiveTypeDto"];
+      };
     };
-    appendRawBatch: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AppendBatchRequest"];
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+      };
     };
-    getAllDataEntries: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  };
+  getSchemas: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    addDataEntry: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DataEntryRequest"];
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+      };
     };
-    listDatasetComments: {
-        parameters: {
-            query?: {
-                page?: number;
-                pageSize?: number;
-            };
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  };
+  addSchema: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    addDatasetComment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AddDatasetCommentRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SchemaDto"];
+      };
     };
-    listCatalogs: {
-        parameters: {
-            query?: {
-                parentCatalogId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
+      };
     };
-    addCatalog: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AddCatalogRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  };
+  markDataEntrySuspicious: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        entryId: string;
+      };
+      cookie?: never;
     };
-    authUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AuthRequest"];
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+      };
     };
-    listAgents: {
-        parameters: {
-            query?: {
-                page?: number;
-                pageSize?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageAgentDto"];
-                };
-            };
-        };
+  };
+  markDataEntryErroneous: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        entryId: string;
+      };
+      cookie?: never;
     };
-    addAgent: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AddAgentRequest"];
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["AgentDto"];
-                };
-            };
-        };
+      };
     };
-    getAllTypes: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["Type"][];
-                };
-            };
-        };
+  };
+  listDatasets: {
+    parameters: {
+      query?: {
+        title?: string;
+        page?: number;
+        pageSize?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    getRawDownloadLink: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
+      };
     };
-    listRawBatches_1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  };
+  addDataset: {
+    parameters: {
+      query?: never;
+      header?: {
+        Authorization?: string;
+      };
+      path?: never;
+      cookie?: never;
     };
-    checkRawAvailability: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                datasetId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DatasetCreationRequest"];
+      };
     };
-    listQualityValidityAlerts: {
-        parameters: {
-            query?: {
-                datasetId?: string;
-                unresolvedOnly?: boolean;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
+      };
     };
-    getQualityControllableDatasets: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  };
+  submitDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    listOwnedDatasets: {
-        parameters: {
-            query: {
-                userId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
+      };
     };
-    getCatalog: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                catalogId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
-        };
+  };
+  publishDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    getCatalogDatasets: {
-        parameters: {
-            query?: {
-                page?: number;
-                pageSize?: number;
-            };
-            header?: never;
-            path: {
-                catalogId: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": Record<string, never>;
-                };
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
+      };
     };
-    home: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": string;
-                };
-            };
-        };
+  };
+  archiveDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    home_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": string;
-                };
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
+      };
     };
-    home_1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": string;
-                };
-            };
-        };
+  };
+  listDataRelatedRequests: {
+    parameters: {
+      query?: {
+        page?: number;
+        pageSize?: number;
+      };
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
     };
-    home_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": string;
-                };
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
+      };
     };
-    home_6: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": string;
-                };
-            };
-        };
+  };
+  submitDataRelatedRequest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
     };
-    home_5: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": string;
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SubmitDataRelatedRequest"];
+      };
     };
-    home_4: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": string;
-                };
-            };
+        content: {
+          "*/*": Record<string, never>;
         };
+      };
     };
+  };
+  getRawDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  registerRawDataset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RegisterRawDatasetRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listRawBatches: {
+    parameters: {
+      query?: {
+        page?: number;
+        pageSize?: number;
+      };
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  appendRawBatch: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AppendBatchRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  getAllDataEntries: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  addDataEntry: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DataEntryRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listDatasetComments: {
+    parameters: {
+      query?: {
+        page?: number;
+        pageSize?: number;
+      };
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  addDatasetComment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AddDatasetCommentRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listCatalogs: {
+    parameters: {
+      query?: {
+        parentCatalogId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  addCatalog: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AddCatalogRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  authUser: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AuthRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listAgents: {
+    parameters: {
+      query?: {
+        page?: number;
+        pageSize?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["PageAgentDto"];
+        };
+      };
+    };
+  };
+  addAgent: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AddAgentRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["AgentDto"];
+        };
+      };
+    };
+  };
+  getAllTypes: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["Type"][];
+        };
+      };
+    };
+  };
+  getRawDownloadLink: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listRawBatches_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  checkRawAvailability: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        datasetId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listQualityValidityAlerts: {
+    parameters: {
+      query?: {
+        datasetId?: string;
+        unresolvedOnly?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  getQualityControllableDatasets: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listOwnedDatasets: {
+    parameters: {
+      query: {
+        userId: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  getCatalog: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        catalogId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  getCatalogDatasets: {
+    parameters: {
+      query?: {
+        page?: number;
+        pageSize?: number;
+      };
+      header?: never;
+      path: {
+        catalogId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  home: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  home_2: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  home_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  home_3: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  home_6: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  home_5: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  home_4: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
 }

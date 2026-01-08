@@ -1,5 +1,5 @@
 // application/dataset/editDataset.controller.ts
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import EditDatasetUseCase from "@/domain/dataset/editDataset.uc";
@@ -9,20 +9,20 @@ import EditDatasetPresenter, {
 import { apiClient } from "@/api/client";
 
 import type {
-  Dataset,
   DatasetSummary,
   UpdateDatasetDto,
 } from "@/domain/dataset/dataset.types";
-import type { EditDatasetModalViewProps } from "@/ui/dataset/components/EditDatasetForm.view";
+import type { EditDatasetModalViewProps } from "@/ui/dataset/components/EditDatasetForm.view.tsx";
 
 const initialState: EditDatasetViewState = {
   dataset: null,
+  schemaName: null,
   isModalOpen: false,
   notification: null,
 };
 
 interface UseEditDatasetControllerInput {
-  onDatasetUpdated?: (dataset: Dataset) => void;
+  onDatasetUpdated?: () => void;
 }
 
 export function useEditDatasetController(
@@ -34,7 +34,6 @@ export function useEditDatasetController(
   const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(
     null,
   );
-  const [schemaName, setSchemaName] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -58,62 +57,62 @@ export function useEditDatasetController(
   }, []);
 
   // Load dataset query
-  const { isLoading: isLoadingDataset } = useQuery({
-    queryKey: ["getDataset", selectedDatasetId],
+  const { isLoading: isLoadingDataset, refetch: refetchDataset } = useQuery({
+    queryKey: ["getDatasetForEdit", selectedDatasetId],
     queryFn: () => useCase.loadDataset(selectedDatasetId!),
     enabled: !!selectedDatasetId && state.isModalOpen,
+    staleTime: 0,
     retry: false,
   });
+
+  // Refetch when modal opens
+  useEffect(() => {
+    if (state.isModalOpen && selectedDatasetId) {
+      refetchDataset();
+    }
+  }, [state.isModalOpen, selectedDatasetId, refetchDataset]);
 
   // Edit dataset mutation
   const editDatasetMutation = useMutation({
     mutationFn: (dto: UpdateDatasetDto) =>
       useCase.editDataset(selectedDatasetId!, dto),
     onSuccess: () => {
-      // Only cache invalidation here - notification handled by use case -> presenter
       queryClient.invalidateQueries({ queryKey: ["listDatasets"] });
       queryClient.invalidateQueries({
         queryKey: ["getDataset", selectedDatasetId],
       });
       queryClient.invalidateQueries({ queryKey: ["listCatalogDatasets"] });
 
-      if (state.dataset && onDatasetUpdated) {
-        onDatasetUpdated(state.dataset);
+      if (onDatasetUpdated) {
+        onDatasetUpdated();
       }
     },
-    // No onError - handled by use case -> presenter
   });
 
   // Action handlers
-  const openEditModal = useCallback(
-    (datasetSummary: DatasetSummary) => {
-      queryClient.invalidateQueries({
-        queryKey: ["getDataset", datasetSummary.id],
-      });
-
-      setSelectedDatasetId(datasetSummary.id);
-      setState((prev) => ({
-        ...prev,
-        isModalOpen: true,
-        notification: null,
-        dataset: null,
-      }));
-    },
-    [queryClient],
-  );
+  const openEditModal = useCallback((dataset: DatasetSummary) => {
+    setSelectedDatasetId(dataset.id);
+    setState((prev) => ({
+      ...prev,
+      isModalOpen: true,
+      notification: null,
+      dataset: null,
+      schemaName: null,
+    }));
+  }, []);
 
   const closeEditModal = useCallback(() => {
     setSelectedDatasetId(null);
-    setSchemaName(null);
     setState((prev) => ({
       ...prev,
       isModalOpen: false,
       dataset: null,
+      schemaName: null,
     }));
   }, []);
 
-  const submitEdit = useCallback(
-    async (data: UpdateDatasetDto): Promise<void> => {
+  const handleSubmit = useCallback(
+    async (data: UpdateDatasetDto) => {
       if (!selectedDatasetId) return;
       await editDatasetMutation.mutateAsync(data);
     },
@@ -125,25 +124,22 @@ export function useEditDatasetController(
     isOpen: state.isModalOpen,
     isPending: editDatasetMutation.isPending,
     isLoadingDataset,
+
     initialTitle: state.dataset?.title ?? "",
     initialDescription: state.dataset?.description ?? "",
     initialStatus: state.dataset?.status ?? "draft",
     initialCatalogId: state.dataset?.catalogId ?? "",
     initialSchemaId: state.dataset?.schemaId ?? null,
-    currentSchemaName: schemaName,
+    currentSchemaName: state.schemaName, // <-- z use case
+
     onClose: closeEditModal,
-    onSubmit: submitEdit,
+    onSubmit: handleSubmit,
   };
 
   return {
-    // View props for modal
     viewProps,
-
-    // Notification from presenter state
     notification: state.notification,
     clearNotification,
-
-    // Actions
     openEditModal,
   };
 }

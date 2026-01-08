@@ -1,6 +1,9 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { apiClient } from "@/api/client";
-import type { CreateDataSchemaDto, DataSchema } from "@/domain/schema/schema.type";
+import type {
+  CreateDataSchemaDto,
+  DataSchema,
+} from "@/domain/schema/schema.type";
 import SchemaPresenter, { type SchemaViewState } from "./schema.presenter";
 import SchemaUseCase from "@/domain/schema/schema.uc";
 
@@ -59,9 +62,12 @@ export function useSchemaController() {
     presenter.showAddSchemaForm();
   }, [presenter]);
 
-  const openEditModal = useCallback((schema: DataSchema) => {
-    presenter.showEditSchemaForm(schema);
-  }, [presenter]);
+  const openEditModal = useCallback(
+    (schema: DataSchema) => {
+      presenter.showEditSchemaForm(schema);
+    },
+    [presenter],
+  );
 
   const closeModal = useCallback(() => {
     presenter.presentCloseModal();
@@ -75,19 +81,18 @@ export function useSchemaController() {
     async (dto: CreateDataSchemaDto) => {
       setIsLoading(true);
       try {
-        if (state.selectedSchema) {
+        if (dto.id) {
           await useCase.editSchema(dto);
         } else {
-          // Add mode
           await useCase.addSchema(dto);
         }
-        
+
         await loadSchemas();
       } finally {
         setIsLoading(false);
       }
     },
-    [useCase, state.selectedSchema, loadSchemas],
+    [useCase, loadSchemas],
   );
 
   return {

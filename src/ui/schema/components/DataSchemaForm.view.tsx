@@ -1,6 +1,7 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import type {
-  CreateDataSchemaDto, DataSchema,
+  CreateDataSchemaDto,
+  DataSchema,
   SchemaConcept,
   SchemaDataType,
   SchemaProperty,
@@ -24,23 +25,46 @@ interface Props {
   schema: DataSchema | null;
 }
 
-export default function DataSchemaForm({ onSubmit, onCancel, dataTypes, schema }: Props) {
+export default function DataSchemaForm({
+  onSubmit,
+  onCancel,
+  dataTypes,
+  schema,
+}: Props) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  // Inicjalizujemy z jednym pustym konceptem, żeby użytkownik widział strukturę
   const [concepts, setConcepts] = useState<Partial<SchemaConcept>[]>([
     { name: "", properties: [] },
   ]);
 
   useEffect(() => {
-    if(schema !== null){
+    if (schema) {
       setName(schema.name);
-      setDescription(schema.description??"");
-      setConcepts(schema.concepts);
-    }
-  },[]);
+      setDescription(schema.description ?? "");
 
-  // --- Handlers for Concepts ---
+      const conceptsWithResolvedTypes = schema.concepts.map((concept) => ({
+        ...concept,
+        properties: concept.properties.map((prop) => {
+          console.log("🔍 Resolving type for property:", prop);
+          const resolvedType = dataTypes.find((dt) => dt.id === prop.typeId);
+          console.log("✅ Resolved type:", resolvedType);
+          return {
+            ...prop,
+            type: resolvedType ?? dataTypes[0],
+            typeId: prop.typeId,
+          };
+        }),
+      }));
+
+      setConcepts(conceptsWithResolvedTypes);
+    } else {
+      console.log("➕ ADD MODE - Resetting form");
+      setName("");
+      setDescription("");
+      setConcepts([{ name: "", properties: [] }]);
+    }
+  }, [schema, dataTypes]);
+
   const addConcept = () => {
     setConcepts([...concepts, { name: "", properties: [] }]);
   };
@@ -57,14 +81,18 @@ export default function DataSchemaForm({ onSubmit, onCancel, dataTypes, schema }
     setConcepts(newConcepts);
   };
 
-  // --- Handlers for Properties ---
   const addProperty = (conceptIndex: number) => {
     const newConcepts = [...concepts];
-    const currentProps = newConcepts[conceptIndex].properties || [];
-    
+    const currentProps = newConcepts[conceptIndex].properties ?? [];
+
     newConcepts[conceptIndex].properties = [
       ...currentProps,
-      { name: "", type: dataTypes[0], isMandatory: false } as SchemaProperty
+      {
+        name: "",
+        type: dataTypes[0],
+        typeId: dataTypes[0]?.id,
+        isMandatory: false,
+      } as SchemaProperty,
     ];
     setConcepts(newConcepts);
   };
@@ -76,56 +104,88 @@ export default function DataSchemaForm({ onSubmit, onCancel, dataTypes, schema }
   };
 
   const updateProperty = (
-    conceptIndex: number, 
-    propIndex: number, 
-    field: keyof SchemaProperty, 
-    value: any
+    conceptIndex: number,
+    propIndex: number,
+    field: keyof SchemaProperty,
+    value: string | boolean | SchemaDataType,
   ) => {
     const newConcepts = [...concepts];
-    const props = newConcepts[conceptIndex].properties;
-    if (props && props[propIndex]) {
-      (props[propIndex] as any)[field] = value;
+    const prop = newConcepts[conceptIndex].properties?.[propIndex];
+
+    if (!prop) return;
+
+    if (field === "type" && typeof value === "object") {
+      prop.type = value;
+      prop.typeId = value.id;
+    } else {
+      prop[field] = value as SchemaProperty[typeof field];
     }
+
     setConcepts(newConcepts);
   };
 
   const handleSubmit = () => {
-    if (!name.trim()) return;
+    if (!name.trim()) {
+      return;
+    }
 
-    // Filtrujemy puste wpisy przed wysłaniem
     const validConcepts = concepts
-      .filter(c => c.name?.trim())
-      .map(c => ({
+      .filter((c) => c.name?.trim())
+      .map((c) => ({
         id: c.id,
         name: c.name!,
         description: c.description,
-        properties: c.properties?.filter(p => p.name.trim()).map(p => ({
-          name: p.name,
-          type: p.type,
-          isMandatory: p.isMandatory,
-          unit: p.unit
-        })) || []
+        properties:
+          c.properties
+            ?.filter((p) => p.name.trim())
+            .map((p) => {
+              const typeId = p.typeId ?? p.type?.id;
+              return {
+                name: p.name,
+                typeId,
+                isMandatory: p.isMandatory ?? false,
+                unit: p.unit,
+              };
+            })
+            .filter((p) => {
+              const hasTypeId = !!p.typeId;
+
+              return hasTypeId;
+            }) ?? [],
       }));
 
-    if (validConcepts.length === 0) return;
+    if (validConcepts.length === 0) {
+      return;
+    }
 
-    onSubmit({
-      id: schema? schema.id : undefined,
+    const dto = {
+      id: schema?.id,
       name: name.trim(),
       description,
-      concepts: validConcepts
-    });
+      concepts: validConcepts,
+    };
+
+    onSubmit(dto);
   };
 
   return (
-    <Dialog open onOpenChange={(open) => { if (!open) onCancel(); }}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-0" aria-describedby={undefined}>
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onCancel();
+      }}
+    >
+      <DialogContent
+        className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-0"
+        aria-describedby={undefined}
+      >
         <DialogHeader className="px-6 py-4 border-b">
-          <DialogTitle>{ schema!==null ? "Edit" : "Create" } Data Schema</DialogTitle>
+          <DialogTitle>
+            {schema !== null ? "Edit" : "Create"} Data Schema
+          </DialogTitle>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* Main Info */}
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Schema Name</Label>
@@ -149,21 +209,32 @@ export default function DataSchemaForm({ onSubmit, onCancel, dataTypes, schema }
           <div className="border-t pt-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium">Concepts</h3>
-              <Button type="button" variant="outline" size="sm" onClick={addConcept}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addConcept}
+              >
                 <Plus className="mr-2 h-4 w-4" /> Add Concept
               </Button>
             </div>
 
-            {/* Concepts List */}
             <div className="space-y-4">
               {concepts.map((concept, cIndex) => (
-                <div key={cIndex} className="p-4 border rounded-lg bg-muted/20 space-y-4">
+                <div
+                  key={`item-${cIndex}`}
+                  className="p-4 border rounded-lg bg-muted/20 space-y-4"
+                >
                   <div className="flex items-center gap-3">
                     <div className="flex-1">
-                      <Label className="text-xs text-muted-foreground uppercase mb-1 block">Concept Name</Label>
+                      <Label className="text-xs text-muted-foreground uppercase mb-1 block">
+                        Concept Name
+                      </Label>
                       <Input
                         value={concept.name}
-                        onChange={(e) => updateConceptName(cIndex, e.target.value)}
+                        onChange={(e) =>
+                          updateConceptName(cIndex, e.target.value)
+                        }
                         placeholder="e.g. Engine"
                         className="bg-background"
                       />
@@ -184,26 +255,59 @@ export default function DataSchemaForm({ onSubmit, onCancel, dataTypes, schema }
 
                   <div className="pl-4 border-l-2 ml-1 space-y-2">
                     {concept.properties?.map((prop, pIndex) => (
-                      <div key={pIndex} className="flex gap-2 items-center">
+                      <div
+                        key={`item-${pIndex}`}
+                        className="flex gap-2 items-center"
+                      >
                         <Input
                           value={prop.name}
-                          onChange={(e) => updateProperty(cIndex, pIndex, 'name', e.target.value)}
+                          onChange={(e) =>
+                            updateProperty(
+                              cIndex,
+                              pIndex,
+                              "name",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Property name"
                           className="h-8 flex-[2] text-sm"
                         />
                         <select
-                          className="h-8 flex-1 rounded-md border border-input bg-background px-2 py-1 text-xs"
-                          value={prop.type.id}
-                          onChange={(e) => updateProperty(cIndex, pIndex, 'type', e.target.value)}
+                          className="h-8 flex-1 text-sm rounded-md border border-input bg-background px-3 py-1"
+                          value={prop.type?.id}
+                          onChange={(e) => {
+                            const selectedType = dataTypes.find(
+                              (t) => t.id === e.target.value,
+                            );
+                            if (selectedType) {
+                              updateProperty(
+                                cIndex,
+                                pIndex,
+                                "type",
+                                selectedType,
+                              );
+                            }
+                          }}
                         >
-                          {dataTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                          {dataTypes.map((t) => (
+                            <option key={t.id} value={t.id}>
+                              {t.name}
+                            </option>
+                          ))}
                         </select>
                         <Label className="flex items-center space-x-2 text-sm cursor-pointer px-2">
                           <input
                             type="checkbox"
                             className="rounded border-gray-300 accent-primary"
                             checked={prop.isMandatory}
-                            onChange={(e) => updateProperty(cIndex, pIndex, 'isMandatory', e.target.checked)}
+                            onChange={(e) =>
+                              updateProperty(
+                                cIndex,
+                                pIndex,
+                                "isMandatory",
+                                e.target.checked,
+                              )
+                            }
                           />
                           <span className="text-xs">Req.</span>
                         </Label>
@@ -218,10 +322,10 @@ export default function DataSchemaForm({ onSubmit, onCancel, dataTypes, schema }
                         </Button>
                       </div>
                     ))}
-                    <Button 
-                      type="button" 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
                       className="h-7 text-xs mt-1"
                       onClick={() => addProperty(cIndex)}
                     >

@@ -1,12 +1,12 @@
 import { createApiClient } from "@/api/client";
 import type {
   CreateDataSchemaDto,
-  DataSchema, SchemaDataType,
-  SchemaOutputPort
-} from "./schema.type"; // Upewnij się, że nazwa pliku to .type lub .types zgodnie z Twoim projektem
+  DataSchema,
+  SchemaDataType,
+  SchemaOutputPort,
+} from "./schema.type";
 
 export default class SchemaUseCase {
-
   constructor(
     private readonly client: ReturnType<typeof createApiClient>,
     private readonly outputPort?: SchemaOutputPort,
@@ -31,12 +31,29 @@ export default class SchemaUseCase {
         schemas.push({
           ...schema,
           name: schema.title,
-          version: "1.0.0"
+          version: "1.0.0",
+          concepts: Array.isArray(schema.concepts)
+            ? // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+              schema.concepts.map((concept: Record<string, unknown>) => ({
+                id: concept.id as string,
+                name: concept.name as string,
+                properties: Array.isArray(concept.properties)
+                  ? concept.properties.map((prop) => ({
+                      id: prop.id as string,
+                      name: prop.name as string,
+                      type: prop.type as SchemaDataType,
+                      typeId: (prop.type as SchemaDataType)?.id,
+                      isMandatory: prop.isMandatory as boolean,
+                      unit: prop.unit as string | undefined,
+                    }))
+                  : [],
+              }))
+            : [],
         });
       }
 
       this.outputPort?.presentSchemas(schemas);
-      
+
       return schemas;
     } catch (error) {
       this.outputPort?.presentListSchemasError(error);
@@ -73,44 +90,28 @@ export default class SchemaUseCase {
         throw new Error("validation/schema/no-concepts");
       }
 
+      const requestBody = {
+        title: dto.name,
+        description: dto.description ?? "",
+        concepts: dto.concepts.map((concept) => {
+          return {
+            name: concept.name,
+            properties: concept.properties.map((property) => {
+              return {
+                name: property.name,
+                typeId: property.typeId,
+              };
+            }),
+          };
+        }),
+        constraints: [],
+      };
+
       const response = await this.client.POST("/api/schemas", {
-        body: {
-          title: dto.name,
-          description: dto.description??"",
-          concepts: [
-              ...dto.concepts.map((concept) => ({
-                name: concept.name,
-                properties:[
-                    ...concept.properties.map((property) => ({
-                      name: property.name,
-                      typeId: property.type.id
-                    }))
-                ]
-              }))
-          ],
-          constraints: []
-        },
+        body: requestBody,
       });
 
-      // const newSchema: DataSchema = {
-      //   id: `schema-${Date.now()}`,
-      //   name: dto.name,
-      //   description: dto.description,
-      //   version: "1.0.0",
-      //   concepts: dto.concepts.map((c, cIdx) => ({
-      //     id: `con-${Date.now()}-${cIdx}`,
-      //     name: c.name,
-      //     description: c.description,
-      //     properties: c.properties.map((p, pIdx) => ({
-      //       id: `prop-${Date.now()}-${cIdx}-${pIdx}`,
-      //       name: p.name,
-      //       type: p.type,
-      //       isMandatory: p.isMandatory,
-      //       unit: p.unit
-      //     }))
-      //   }))
-      // };
-      // this.mockData.unshift(newSchema);
+      console.log("📥 Response:", response);
 
       if (response.error) {
         throw new Error("error/add/schema");
@@ -125,30 +126,37 @@ export default class SchemaUseCase {
 
   async editSchema(dto: CreateDataSchemaDto): Promise<void> {
     try {
+      if (!dto.id) {
+        throw new Error("validation/schema/no-id");
+      }
+
       if (!dto.concepts || dto.concepts.length === 0) {
         throw new Error("validation/schema/no-concepts");
       }
 
+      const requestBody = {
+        title: dto.name,
+        description: dto.description ?? "",
+        concepts: dto.concepts.map((concept) => {
+          return {
+            id: concept.id,
+            name: concept.name,
+            properties: concept.properties.map((property) => {
+              return {
+                name: property.name,
+                typeId: property.typeId,
+              };
+            }),
+          };
+        }),
+        constraints: [],
+      };
+
       const response = await this.client.PUT("/api/schemas/{schemaId}", {
-        params:{
-          path:{schemaId: dto.id??""}
+        params: {
+          path: { schemaId: dto.id },
         },
-        body: {
-          title: dto.name,
-          description: dto.description??"",
-          concepts: [
-            ...dto.concepts.map((concept) => ({
-              name: concept.name,
-              properties:[
-                ...concept.properties.map((property) => ({
-                  name: property.name,
-                  typeId: property.type.id
-                }))
-              ]
-            }))
-          ],
-          constraints: []
-        },
+        body: requestBody,
       });
 
       if (response.error) {

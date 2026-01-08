@@ -1,23 +1,23 @@
 // domain/schema/setDatasetSchema.uc.ts
-import { createApiClient } from "@/api/client";
+import type { createApiClient } from "@/api/client";
+import type {
+  SetDatasetSchemaOutputPort,
+  SchemaDto,
+  DataSchema,
+} from "./schema.type";
+import { mapSchemaDtoToDomain } from "./schema.type";
 import type { Dataset } from "@/domain/dataset/dataset.types";
-import type { DataSchema } from "./schema.type";
-import type { SetDatasetSchemaOutputPort } from "./schema.type.ts";
-import mockSchemas from "@/mocks/schemas.json";
 
 export default class SetDatasetSchemaUseCase {
-  // Temporary mock data - remove when backend is ready
-  private mockSchemas: DataSchema[] = mockSchemas;
-
   constructor(
     private readonly client: ReturnType<typeof createApiClient>,
-    private readonly outputPort: SetDatasetSchemaOutputPort,
+    private readonly presenter: SetDatasetSchemaOutputPort,
   ) {}
 
-  async loadDataset(id: string): Promise<Dataset> {
+  async loadDataset(datasetId: string): Promise<Dataset> {
     try {
       const response = await this.client.GET("/api/datasets/{id}", {
-        params: { path: { id } },
+        params: { path: { id: datasetId } },
       });
 
       if (response.error) {
@@ -29,47 +29,43 @@ export default class SetDatasetSchemaUseCase {
       }
 
       const dataset = response.data as unknown as Dataset;
-
-      this.outputPort.presentDataset(dataset);
-
+      this.presenter.presentDataset(dataset);
       return dataset;
     } catch (error) {
-      this.outputPort.presentLoadDatasetError(error);
+      this.presenter.presentLoadDatasetError(error);
       throw error;
     }
   }
 
   async loadSchemas(): Promise<DataSchema[]> {
     try {
-      // TODO: Replace with real API call when backend is ready
-      // const response = await this.client.GET("/api/v1/schemas");
-      // if (!response.data) {
-      //   throw new Error("error/load/schemas");
-      // }
-      // const schemas = response.data;
+      const response = await this.client.GET("/api/schemas");
 
-      // Mock implementation with artificial delay
-      const schemas = await new Promise<DataSchema[]>((resolve) => {
-        setTimeout(() => {
-          resolve([...this.mockSchemas]);
-        }, 500);
-      });
+      if (response.error) {
+        throw new Error("error/load/schemas");
+      }
 
-      this.outputPort.presentSchemas(schemas);
+      if (!response.data) {
+        throw new Error("error/load/schemas");
+      }
 
+      const dtos = response.data as unknown as SchemaDto[];
+      const schemas = dtos.map(mapSchemaDtoToDomain);
+
+      this.presenter.presentSchemas(schemas);
       return schemas;
     } catch (error) {
-      this.outputPort.presentLoadSchemasError(error);
+      this.presenter.presentLoadSchemasError(error);
       throw error;
     }
   }
 
   async setSchema(datasetId: string, schemaId: string | null): Promise<void> {
     try {
+      // Based on the OpenAPI spec, the endpoint expects a Schema object in the body
+      // but for setting schema reference, we send just the id
       const response = await this.client.PUT("/api/datasets/{id}/schema", {
-        params: {
-          path: { id: datasetId },
-        },
+        params: { path: { id: datasetId } },
         body: {
           id: schemaId ?? undefined,
         },
@@ -79,10 +75,14 @@ export default class SetDatasetSchemaUseCase {
         throw new Error("error/set/schema");
       }
 
-      this.outputPort.presentSetSchemaSuccess();
+      this.presenter.presentSetSchemaSuccess();
     } catch (error) {
-      this.outputPort.presentSetSchemaError(error);
+      this.presenter.presentSetSchemaError(error);
       throw error;
     }
+  }
+
+  async removeSchema(datasetId: string): Promise<void> {
+    return this.setSchema(datasetId, null);
   }
 }

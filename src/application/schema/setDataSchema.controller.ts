@@ -1,5 +1,5 @@
 // application/schema/setDatasetSchema.controller.ts
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import SetDatasetSchemaUseCase from "@/domain/schema/setDatasetSchema.uc";
@@ -55,32 +55,45 @@ export function useSetDatasetSchemaController(
   }, []);
 
   // Load dataset query
-  const { isLoading: isLoadingDataset } = useQuery({
+  const { isLoading: isLoadingDataset, refetch: refetchDataset } = useQuery({
     queryKey: ["getDataset", selectedDatasetId],
     queryFn: () => useCase.loadDataset(selectedDatasetId!),
     enabled: !!selectedDatasetId && state.isModalOpen,
+    staleTime: 0,
     retry: false,
   });
 
   // Load schemas query
-  const { isLoading: isLoadingSchemas } = useQuery({
+  const { isLoading: isLoadingSchemas, refetch: refetchSchemas } = useQuery({
     queryKey: ["listDataSchemas"],
     queryFn: () => useCase.loadSchemas(),
     enabled: state.isModalOpen,
+    staleTime: 0,
     retry: false,
   });
 
+  // Refetch when modal opens
+  useEffect(() => {
+    if (state.isModalOpen) {
+      refetchSchemas();
+      if (selectedDatasetId) {
+        refetchDataset();
+      }
+    }
+  }, [state.isModalOpen, selectedDatasetId, refetchSchemas, refetchDataset]);
+
   // Sync selectedSchemaId when dataset loads
-  if (state.dataset && selectedSchemaId === null && state.dataset.schemaId) {
-    setSelectedSchemaId(state.dataset.schemaId);
-  }
+  useEffect(() => {
+    if (state.dataset?.schemaId && selectedSchemaId === null) {
+      setSelectedSchemaId(state.dataset.schemaId);
+    }
+  }, [state.dataset, selectedSchemaId]);
 
   // Set schema mutation
   const setSchemaMutation = useMutation({
     mutationFn: (schemaId: string | null) =>
       useCase.setSchema(selectedDatasetId!, schemaId),
     onSuccess: () => {
-      // Only cache invalidation here - notification handled by use case -> presenter
       queryClient.invalidateQueries({ queryKey: ["listDatasets"] });
       queryClient.invalidateQueries({
         queryKey: ["getDataset", selectedDatasetId],
@@ -91,7 +104,6 @@ export function useSetDatasetSchemaController(
         onSchemaUpdated();
       }
     },
-    // No onError - handled by use case -> presenter
   });
 
   // Action handlers
@@ -142,14 +154,9 @@ export function useSetDatasetSchemaController(
   };
 
   return {
-    // View props for modal
     viewProps,
-
-    // Notification from presenter state
     notification: state.notification,
     clearNotification,
-
-    // Actions
     openSchemaModal,
   };
 }

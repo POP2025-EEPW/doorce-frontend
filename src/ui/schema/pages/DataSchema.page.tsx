@@ -23,8 +23,8 @@ export default function DataSchemaPage() {
   } = useSchemaController();
 
   return (
-    <div className="p-6 max-w-7xl mx-auto min-h-screen bg-gray-50/30">
-      <div className="mb-8 space-y-4">
+    <div className="p-6 w-full mx-auto min-h-screen bg-gray-50/30">
+      <div className="mb-4 flex w-full items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">
             Data Schemas
@@ -33,7 +33,7 @@ export default function DataSchemaPage() {
             Manage your data structures and validation rules.
           </p>
         </div>
-        
+
         <Button onClick={showAddSchemaForm} disabled={isLoading}>
           <Plus className="mr-2 h-4 w-4" />
           Add Schema
@@ -47,14 +47,16 @@ export default function DataSchemaPage() {
           <Skeleton className="h-32 w-full rounded-xl" />
         </div>
       ) : (
-        <DataSchemaListView 
-          schemas={schemas} 
-          onEdit={(dataschema) => {showEditSchemaForm(dataschema)}}
+        <DataSchemaListView
+          schemas={schemas}
+          onEdit={(dataschema) => {
+            showEditSchemaForm(dataschema);
+          }}
         />
       )}
 
       {notification && (
-        <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300">
+        <div className="fixed bottom-6 right-6 z-[100] animate-in slide-in-from-bottom-5 fade-in duration-300">
           <div
             className={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border text-sm font-medium ${
               notification.type === "success"
@@ -62,16 +64,21 @@ export default function DataSchemaPage() {
                 : "bg-white border-red-200 text-red-700"
             }`}
           >
-            <span className={`h-2 w-2 rounded-full ${
-               notification.type === "success" ? "bg-green-500" : "bg-red-500"
-            }`} />
-            
+            <span
+              className={`h-2 w-2 rounded-full ${
+                notification.type === "success" ? "bg-green-500" : "bg-red-500"
+              }`}
+            />
+
             {notification.message}
 
             {clearNotification && (
-                <button onClick={clearNotification} className="ml-2 hover:opacity-70">
-                    <X className="h-4 w-4" />
-                </button>
+              <button
+                onClick={clearNotification}
+                className="ml-2 hover:opacity-70"
+              >
+                <X className="h-4 w-4" />
+              </button>
             )}
           </div>
         </div>
@@ -79,8 +86,8 @@ export default function DataSchemaPage() {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-          <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" 
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
             onClick={onCloseModal}
           />
           <div className="relative bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">

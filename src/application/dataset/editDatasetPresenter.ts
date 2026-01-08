@@ -1,4 +1,3 @@
-// application/dataset/editDataset.presenter.ts
 import type {
   EditDatasetOutputPort,
   Dataset,
@@ -11,6 +10,7 @@ export interface EditDatasetNotification {
 
 export interface EditDatasetViewState {
   dataset: Dataset | null;
+  schemaName: string | null; // <-- dodaj to
   isModalOpen: boolean;
   notification: EditDatasetNotification | null;
 }
@@ -19,14 +19,15 @@ type StateUpdater = (
   updater: (prev: EditDatasetViewState) => EditDatasetViewState,
 ) => void;
 
-export default class EditDatasetPresenter implements EditDatasetOutputPort {
+class EditDatasetPresenter implements EditDatasetOutputPort {
   constructor(private readonly updateState: StateUpdater) {}
 
   // --- Load Dataset ---
-  presentDataset(dataset: Dataset): void {
+  presentDataset(dataset: Dataset, schemaName: string | null): void {
     this.updateState((prev) => ({
       ...prev,
       dataset,
+      schemaName,
     }));
   }
 
@@ -34,6 +35,7 @@ export default class EditDatasetPresenter implements EditDatasetOutputPort {
     this.updateState((prev) => ({
       ...prev,
       dataset: null,
+      schemaName: null,
       notification: { type: "error", message: this.getErrorMessage(error) },
     }));
   }
@@ -86,3 +88,5 @@ export default class EditDatasetPresenter implements EditDatasetOutputPort {
     return undefined;
   }
 }
+
+export default EditDatasetPresenter;

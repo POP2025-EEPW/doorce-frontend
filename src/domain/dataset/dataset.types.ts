@@ -61,7 +61,7 @@ export interface DatasetPreview {
 }
 
 export interface EditDatasetOutputPort {
-  presentDataset(dataset: Dataset): void;
+  presentDataset(dataset: Dataset, schemaName: string | null): void;
   presentLoadDatasetError(error: unknown): void;
   presentEditDatasetSuccess(): void;
   presentEditDatasetError(error: unknown): void;

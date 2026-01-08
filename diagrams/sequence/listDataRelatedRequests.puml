@@ -3,22 +3,32 @@ title listDataRelatedRequests use case
 autonumber
 
 actor User
-participant "Menu/Button" as Button
-participant "Requests list view" as View
-participant "quality.controller.ts" as Controller
-participant "uc.quality" as UseCase
-participant "CombinedClient" as Client
-participant "Quality API\nGET /data-related-requests" as Http
-participant "Presenter" as Presenter
+participant "Sidebar (Data Related Requests dropdown)" as Sidebar
+participant "BrowseDataRelatedRequestsModal" as View
+participant "DatasetUseCase" as DatasetUC
+participant "dataset.uc.ts\nlistDataRelatedRequests" as ApiFn
+participant "FetchAPI" as Fetch
+participant "Dataset API\nGET /api/datasets/{datasetId}/requests" as Http
 
-User ->> Button : User clicks 'Show Requests'
-Button ->> Controller : listDataRelatedRequests(filter?)
-Controller ->> UseCase : listDataRelatedRequests(filter?)
-UseCase -> Client : listDataRelatedRequests(filter?)
-Client -> Http : GET /data-related-requests
-Http --> Client : DataRelatedRequest[]
-Client --> UseCase : DataRelatedRequest[]
-Controller -> Presenter : presentRequests(DataRelatedRequest[])
-Presenter ->> View : render list
-View -->> User : Show requests
+User ->> Sidebar : Selects "Browse"
+Sidebar ->> View : opens modal
+
+opt Dataset selection (dropdown/search/manual ID)
+	View ->> DatasetUC : listDatasets(filter?, page=0, pageSize=200)
+	DatasetUC ->> Fetch : GET /api/datasets?... 
+	Fetch ->> Http : GET /api/datasets?... 
+	Http --> Fetch : DatasetSummary[]
+	Fetch --> DatasetUC : DatasetSummary[]
+	DatasetUC --> View : DatasetSummary[]
+end
+
+User ->> View : selects dataset
+User ->> View : Clicks "Load"
+View ->> ApiFn : listDataRelatedRequests(datasetId, page, pageSize)
+ApiFn ->> Fetch : GET /api/datasets/{datasetId}/requests?page=&pageSize=
+Fetch ->> Http : GET /api/datasets/{datasetId}/requests?page=&pageSize=
+Http --> Fetch : DataRelatedRequestDto[]
+Fetch --> ApiFn : DataRelatedRequestDto[]
+ApiFn --> View : DataRelatedRequestDto[]
+View -->> User : Renders requests list
 @enduml
