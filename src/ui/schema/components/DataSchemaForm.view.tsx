@@ -117,8 +117,14 @@ export default function DataSchemaForm({
     if (field === "type" && typeof value === "object") {
       prop.type = value;
       prop.typeId = value.id;
-    } else {
-      prop[field] = value as SchemaProperty[typeof field];
+    } else if (field === "name" && typeof value === "string") {
+      prop.name = value;
+    } else if (field === "isMandatory" && typeof value === "boolean") {
+      prop.isMandatory = value;
+    } else if (field === "unit" && typeof value === "string") {
+      prop.unit = value;
+    } else if (field === "typeId" && typeof value === "string") {
+      prop.typeId = value;
     }
 
     setConcepts(newConcepts);
