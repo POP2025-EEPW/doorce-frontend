@@ -6,6 +6,22 @@ import type {
   EditDatasetOutputPort,
 } from "./dataset.types";
 
+// Typ dla pełnej odpowiedzi z API
+interface DatasetApiResponse {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  catalogId?: string;
+  ownerId?: string;
+  schema?: {
+    id: string;
+    title: string;
+    description?: string;
+  } | null;
+  // ... inne pola
+}
+
 export default class EditDatasetUseCase {
   constructor(
     private readonly client: ReturnType<typeof createApiClient>,
@@ -26,9 +42,23 @@ export default class EditDatasetUseCase {
         throw new Error("no-data/get/dataset");
       }
 
-      const dataset = response.data as unknown as Dataset;
+      const apiResponse = response.data as unknown as DatasetApiResponse;
 
-      this.outputPort.presentDataset(dataset);
+      // Wyciągnij nazwę schemy z odpowiedzi
+      const schemaName = apiResponse.schema?.title ?? null;
+
+      // Mapuj na typ Dataset
+      const dataset: Dataset = {
+        id: apiResponse.id,
+        title: apiResponse.title,
+        description: apiResponse.description,
+        status: apiResponse.status as Dataset["status"],
+        catalogId: apiResponse.catalogId ?? "",
+        ownerId: apiResponse.ownerId ?? "",
+        schemaId: apiResponse.schema?.id ?? null,
+      };
+
+      this.outputPort.presentDataset(dataset, schemaName);
 
       return dataset;
     } catch (error) {

@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+  "/api/schemas/{schemaId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["updateSchema"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/quality/datasets/{datasetId}/quality-tag": {
     parameters: {
       query?: never;
@@ -79,6 +95,38 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations["registerUser"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/types/primitives": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["addPrimitive"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/schemas": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["getSchemas"];
+    put?: never;
+    post: operations["addSchema"];
     delete?: never;
     options?: never;
     head?: never;
@@ -295,6 +343,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/agents": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Show data agent list
+     * @description Retrieves paginated list of agents including their boolean status (isDataOwner, isDataSupplier).
+     */
+    get: operations["listAgents"];
+    put?: never;
+    /**
+     * Add a new Agent
+     * @description Creates a new Agent. Use flags 'createAsDataOwner' / 'createAsDataSupplier' to assign roles.
+     */
+    post: operations["addAgent"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/types": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["getAllTypes"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/quality/datasets/{datasetId}/raw-download-link": {
     parameters: {
       query?: never;
@@ -447,6 +535,26 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    ConceptDto: {
+      name?: string;
+      properties?: components["schemas"]["PropertyDto"][];
+    };
+    ConstraintDto: {
+      rule?: string;
+    };
+    PropertyDto: {
+      name?: string;
+      /** Format: uuid */
+      typeId?: string;
+    };
+    SchemaDto: {
+      /** Format: uuid */
+      id?: string;
+      title?: string;
+      description?: string;
+      concepts?: components["schemas"]["ConceptDto"][];
+      constraints?: components["schemas"]["ConstraintDto"][];
+    };
     SetQualityTagRequest: {
       qualityTag: string;
     };
@@ -454,9 +562,35 @@ export interface components {
       title: string;
       description: string;
     };
+    Concept: {
+      /** Format: uuid */
+      id?: string;
+      name?: string;
+      properties?: components["schemas"]["Property"][];
+    };
+    Constraint: {
+      /** Format: uuid */
+      id?: string;
+      rule?: string;
+    };
+    Property: {
+      /** Format: uuid */
+      id?: string;
+      name?: string;
+      type?: components["schemas"]["Type"];
+    };
     Schema: {
       /** Format: uuid */
       id?: string;
+      title?: string;
+      description?: string;
+      concepts?: components["schemas"]["Concept"][];
+      constraints?: components["schemas"]["Constraint"][];
+    };
+    Type: {
+      /** Format: uuid */
+      id?: string;
+      name?: string;
     };
     DataEntryRequest: {
       content: components["schemas"]["JsonNode"];
@@ -474,6 +608,11 @@ export interface components {
         | "AccessAppDeveloper"
         | "Admin"
       )[];
+    };
+    PrimitiveTypeDto: {
+      /** Format: uuid */
+      id?: string;
+      name?: string;
     };
     DatasetCreationRequest: {
       title: string;
@@ -515,6 +654,56 @@ export interface components {
       username: string;
       password: string;
     };
+    AddAgentRequest: {
+      name: string;
+      typeName: string;
+      email: string;
+      createAsDataOwner?: boolean;
+      createAsDataSupplier?: boolean;
+    };
+    AgentDto: {
+      /** Format: uuid */
+      id?: string;
+      name?: string;
+      typeName?: string;
+      email?: string;
+      dataSupplier?: boolean;
+      dataOwner?: boolean;
+    };
+    PageAgentDto: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components["schemas"]["AgentDto"][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components["schemas"]["SortObject"];
+      pageable?: components["schemas"]["PageableObject"];
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      numberOfElements?: number;
+      empty?: boolean;
+    };
+    PageableObject: {
+      /** Format: int64 */
+      offset?: number;
+      sort?: components["schemas"]["SortObject"];
+      paged?: boolean;
+      /** Format: int32 */
+      pageNumber?: number;
+      /** Format: int32 */
+      pageSize?: number;
+      unpaged?: boolean;
+    };
+    SortObject: {
+      empty?: boolean;
+      sorted?: boolean;
+      unsorted?: boolean;
+    };
   };
   responses: never;
   parameters: never;
@@ -524,6 +713,32 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  updateSchema: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        schemaId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SchemaDto"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
   setQualityTag: {
     parameters: {
       query?: never;
@@ -661,6 +876,74 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["UserRegistrationRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  addPrimitive: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PrimitiveTypeDto"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  getSchemas: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  addSchema: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SchemaDto"];
       };
     };
     responses: {
@@ -1150,6 +1433,73 @@ export interface operations {
         };
         content: {
           "*/*": Record<string, never>;
+        };
+      };
+    };
+  };
+  listAgents: {
+    parameters: {
+      query?: {
+        page?: number;
+        pageSize?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["PageAgentDto"];
+        };
+      };
+    };
+  };
+  addAgent: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AddAgentRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["AgentDto"];
+        };
+      };
+    };
+  };
+  getAllTypes: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["Type"][];
         };
       };
     };
