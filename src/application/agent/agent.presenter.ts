@@ -37,6 +37,23 @@ export default class AgentPresenter {
     }));
   }
 
+  presentListError(): void {
+    this.updateState((prev) => ({
+      ...prev,
+      notification: {
+        type: "error",
+        message: "Failed to list agents.",
+      },
+    }));
+  }
+
+  presentList(agentList: Agent[]): void {
+    this.updateState((prev) => ({
+      ...prev,
+      agents: agentList
+    }));
+  }
+
   showAddAgentForm(): void {
     this.updateState((prev) => ({
       ...prev,

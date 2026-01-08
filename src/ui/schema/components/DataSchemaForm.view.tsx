@@ -1,6 +1,6 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import type {
-  CreateDataSchemaDto,
+  CreateDataSchemaDto, DataSchema,
   SchemaConcept,
   SchemaDataType,
   SchemaProperty,
@@ -20,24 +20,25 @@ import { Plus, Trash2, X } from "lucide-react";
 interface Props {
   onSubmit: (dto: CreateDataSchemaDto) => void;
   onCancel: () => void;
+  dataTypes: SchemaDataType[];
+  schema: DataSchema | null;
 }
 
-const DATA_TYPES: SchemaDataType[] = [
-  "String",
-  "Integer",
-  "Float",
-  "Boolean",
-  "Date",
-  "DateTime",
-];
-
-export default function DataSchemaForm({ onSubmit, onCancel }: Props) {
+export default function DataSchemaForm({ onSubmit, onCancel, dataTypes, schema }: Props) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   // Inicjalizujemy z jednym pustym konceptem, żeby użytkownik widział strukturę
   const [concepts, setConcepts] = useState<Partial<SchemaConcept>[]>([
     { name: "", properties: [] },
   ]);
+
+  useEffect(() => {
+    if(schema !== null){
+      setName(schema.name);
+      setDescription(schema.description??"");
+      setConcepts(schema.concepts);
+    }
+  },[]);
 
   // --- Handlers for Concepts ---
   const addConcept = () => {
@@ -63,7 +64,7 @@ export default function DataSchemaForm({ onSubmit, onCancel }: Props) {
     
     newConcepts[conceptIndex].properties = [
       ...currentProps,
-      { name: "", type: "String", isMandatory: false } as SchemaProperty
+      { name: "", type: dataTypes[0], isMandatory: false } as SchemaProperty
     ];
     setConcepts(newConcepts);
   };
@@ -95,6 +96,7 @@ export default function DataSchemaForm({ onSubmit, onCancel }: Props) {
     const validConcepts = concepts
       .filter(c => c.name?.trim())
       .map(c => ({
+        id: c.id,
         name: c.name!,
         description: c.description,
         properties: c.properties?.filter(p => p.name.trim()).map(p => ({
@@ -108,6 +110,7 @@ export default function DataSchemaForm({ onSubmit, onCancel }: Props) {
     if (validConcepts.length === 0) return;
 
     onSubmit({
+      id: schema? schema.id : undefined,
       name: name.trim(),
       description,
       concepts: validConcepts
@@ -116,9 +119,9 @@ export default function DataSchemaForm({ onSubmit, onCancel }: Props) {
 
   return (
     <Dialog open onOpenChange={(open) => { if (!open) onCancel(); }}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-0">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-0" aria-describedby={undefined}>
         <DialogHeader className="px-6 py-4 border-b">
-          <DialogTitle>Create Data Schema</DialogTitle>
+          <DialogTitle>{ schema!==null ? "Edit" : "Create" } Data Schema</DialogTitle>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
@@ -190,10 +193,10 @@ export default function DataSchemaForm({ onSubmit, onCancel }: Props) {
                         />
                         <select
                           className="h-8 flex-1 rounded-md border border-input bg-background px-2 py-1 text-xs"
-                          value={prop.type}
+                          value={prop.type.id}
                           onChange={(e) => updateProperty(cIndex, pIndex, 'type', e.target.value)}
                         >
-                          {DATA_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                          {dataTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                         </select>
                         <Label className="flex items-center space-x-2 text-sm cursor-pointer px-2">
                           <input

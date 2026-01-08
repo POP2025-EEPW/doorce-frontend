@@ -14,6 +14,8 @@ const availableRoles: AgentRole[] = ["DataOwner", "DataSupplier"];
 
 export default function AddAgentForm({ onSubmit, onCancel }: Props) {
   const [name, setName] = useState("");
+  const [typeName, setTypeName] = useState("");
+  const [email, setEmail] = useState("");
   const [roles, setRoles] = useState<AgentRole[]>([]);
 
   const toggleRole = (role: AgentRole) => {
@@ -23,10 +25,12 @@ export default function AddAgentForm({ onSubmit, onCancel }: Props) {
   };
 
   const handleSubmit = () => {
-    if (!name.trim()) return;
+    if (!name.trim() || !typeName.trim() || !email.trim()) return;
 
     onSubmit({
       name: name.trim(),
+      typeName: typeName.trim(),
+      email: email.trim(),
       roles,
     });
   };
@@ -57,6 +61,26 @@ export default function AddAgentForm({ onSubmit, onCancel }: Props) {
               onChange={(e) => setName(e.target.value)}
               placeholder="Agent's name..."
               className="w-full"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-sm font-medium">Type name</label>
+            <Input
+                value={typeName}
+                onChange={(e) => setTypeName(e.target.value)}
+                placeholder="Agent's type name..."
+                className="w-full"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-sm font-medium">E-Mail</label>
+            <Input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Agent's email..."
+                className="w-full"
             />
           </div>
 

@@ -20,18 +20,21 @@ package "Presenters" {
   class AgentListPresenter {
     +onAddSuccess(agent)
     +showAddAgentForm(result)
+    +showAgentList(agents[])
   }
 }
 
 package "Controllers" {
   class AgentController {
     +addAgent(input)
+    +listAgents()
   }
 }
 
 package "Use-case Layer" {
   interface AgentUseCases {
       +addAgent(input)
+      +listAgents()
   }
 }
 
@@ -44,6 +47,7 @@ package "DI Container" {
 package "API" {
   class AgentAPI {
     +POST /agents
+    +GET /agents
   }
 }
 

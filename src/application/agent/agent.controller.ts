@@ -1,5 +1,5 @@
-import { useRef, useState, useCallback } from "react";
-import { useMutation } from "@tanstack/react-query";
+import {useRef, useState, useCallback, useEffect} from "react";
+import {useMutation, useQuery} from "@tanstack/react-query";
 
 import { apiClient } from "@/api/client";
 import type { CreateAgentDto } from "@/domain/agent/agent.type";
@@ -28,10 +28,22 @@ export function useAgentController() {
 
   const { useCase, presenter } = deps.current;
 
+  const { data: agents = [], isLoading: isAgentsLoading, error: agentListError, refetch} = useQuery({
+    queryKey: ["listAgents"],
+    queryFn: () => useCase.listAgents()
+  });
+
+  useEffect(() => {
+    if (agentListError) {
+      presenter.presentListError();
+    }
+  }, [agentListError, presenter]);
+
   const addMutation = useMutation({
     mutationFn: (dto: CreateAgentDto) => useCase.addAgent(dto),
-    onSuccess: () => {
+    onSuccess: async () => {
       presenter.presentAddSuccess();
+      await refetch();
     },
     onError: () => {
       presenter.presentAddError();
@@ -56,7 +68,8 @@ export function useAgentController() {
   return {
     isModalOpen: state.isModalOpen,
     notification: state.notification,
-    agents: state.agents,
+    agents: agents,
+    isAgentsLoading,
 
     showAddAgentForm: openModal,
     onCloseModal: closeModal,

@@ -1,4 +1,3 @@
-import React from "react";
 import { Plus, X } from "lucide-react";
 
 import { Button } from "@/ui/lib/components/ui/button";
@@ -11,10 +10,13 @@ import { DataSchemaListView } from "../components/DataSchemaList.view";
 export default function DataSchemaPage() {
   const {
     schemas,
+    dataTypes,
     isModalOpen,
+    selectedSchema,
     notification,
     isLoading,
     showAddSchemaForm,
+    showEditSchemaForm,
     onCloseModal,
     onSubmitSchema,
     clearNotification,
@@ -47,7 +49,7 @@ export default function DataSchemaPage() {
       ) : (
         <DataSchemaListView 
           schemas={schemas} 
-          onEdit={() => {}} 
+          onEdit={(dataschema) => {showEditSchemaForm(dataschema)}}
         />
       )}
 
@@ -83,9 +85,11 @@ export default function DataSchemaPage() {
           />
           <div className="relative bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
             <div className="flex-1 overflow-y-auto">
-              <DataSchemaForm 
-                onSubmit={onSubmitSchema} 
-                onCancel={onCloseModal} 
+              <DataSchemaForm
+                onSubmit={onSubmitSchema}
+                onCancel={onCloseModal}
+                dataTypes={dataTypes}
+                schema={selectedSchema}
               />
             </div>
           </div>

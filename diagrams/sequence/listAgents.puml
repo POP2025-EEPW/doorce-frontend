@@ -1,0 +1,26 @@
+@startuml
+title listAgents use case
+autonumber
+
+actor User
+
+participant "AgentPage" as View
+participant "AddAgentForm" as FormView
+participant "AgentPresenter" as Presenter
+participant "agent.controller.ts" as Controller
+participant "uc.agent" as UseCase
+participant "CombinedClient" as Client
+participant "Agent API\nPOST /agents" as Http
+
+User -> View : Navigate to /agents
+View ->> Controller : listAgents()
+Controller ->> UseCase : listAgents()
+UseCase ->> Client : listAgents()
+Client -> Http : GET /agents
+Http --> Client : Agent[]
+Client --> UseCase : Agent[]
+UseCase ->>  Presenter : present(Agent[])
+Presenter ->> View : showAgentsList(Agent[])
+View ->> User : Show agents list
+
+@enduml

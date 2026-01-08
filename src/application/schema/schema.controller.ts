@@ -8,6 +8,7 @@ const initialState: SchemaViewState = {
   isModalOpen: false,
   notification: null,
   schemas: [],
+  dataTypes: [],
   selectedSchema: null,
 };
 
@@ -41,6 +42,19 @@ export function useSchemaController() {
     loadSchemas();
   }, [loadSchemas]);
 
+  const loadDataTypes = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      await useCase.listDataTypes();
+    } finally {
+      setIsLoading(false);
+    }
+  }, [useCase]);
+
+  useEffect(() => {
+    loadDataTypes();
+  }, [loadDataTypes]);
+
   const openAddModal = useCallback(() => {
     presenter.showAddSchemaForm();
   }, [presenter]);
@@ -62,7 +76,7 @@ export function useSchemaController() {
       setIsLoading(true);
       try {
         if (state.selectedSchema) {
-          console.warn("Edit schema functionality is not implemented in this version.");
+          await useCase.editSchema(dto);
         } else {
           // Add mode
           await useCase.addSchema(dto);
@@ -78,6 +92,7 @@ export function useSchemaController() {
 
   return {
     schemas: state.schemas,
+    dataTypes: state.dataTypes,
     isModalOpen: state.isModalOpen,
     notification: state.notification,
     selectedSchema: state.selectedSchema,
