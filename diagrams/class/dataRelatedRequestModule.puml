@@ -1,81 +1,84 @@
 @startuml
-title DataRelatedRequest - component view (frontend)
+title DataRelatedRequest - PVCUC component view (frontend)
 
 skinparam packageStyle rectangle
 
 package "Views" {
-  class SidebarView {
-    +render()
-    +openBrowse()
-    +openSubmit()
-  }
+class BrowseDataRelatedRequestsModal {
++render()
++loadDatasets()
++loadRequests(pageNum)
++onGoToDataset()
+}
 
-  class BrowseDataRelatedRequestsModal {
-    +render()
-    +loadDatasets()
-    +loadRequests(pageNum)
-    +onGoToDataset()
-  }
+class SubmitDataRelatedRequestModal {
++render()
++loadDatasets()
++handleSubmit(e?)
+}
+}
 
-  class SubmitDataRelatedRequestModal {
-    +render()
-    +loadDatasets()
-    +handleSubmit(e?)
-  }
+package "Presenters" {
+class DatasetDetailPresenter {
++render()
++loadDataset(id)
+}
+}
+
+package "Controllers" {
+class DatasetsController {
++submitDataRelatedRequest(datasetId, payload)
++listDataRelatedRequests(datasetId, page, pageSize)
+}
 }
 
 package "Use-case Layer" {
-  class DatasetUseCase {
-    +listDatasets(filter?, page, pageSize): Promise<DatasetSummary[]>
-  }
+class "dataset.uc.ts (DataRelatedRequest exports)" as DataRelatedRequestApiFns {
++submitDataRelatedRequest(datasetId, payload): Promise
++listDataRelatedRequests(datasetId, page, pageSize): Promise<DataRelatedRequestDto[]>
+}
 
-  class DatasetSummary {
-    +id: string
-    +title: string
-  }
+class DataRelatedRequestPayload {
++subject: string
++description: string
+}
 
-  class "dataset.uc.ts (DataRelatedRequest exports)" as DataRelatedRequestApiFns {
-    +submitDataRelatedRequest(datasetId, payload): Promise<DataRelatedRequestDto>
-    +listDataRelatedRequests(datasetId, page, pageSize): Promise<DataRelatedRequestDto[]>
-  }
+class DataRelatedRequestDto {
++id: string
++datasetId: string
++requesterId: string
++requesterUsername: string
++subject: string
++description: string
++status: string
++createdAt: string
++updatedAt: string
+}
+}
 
-  class DataRelatedRequestPayload {
-    +subject: string
-    +description: string
-  }
-
-  class DataRelatedRequestDto {
-    +id: string
-    +datasetId: string
-    +requesterId: string
-    +requesterUsername: string
-    +subject: string
-    +description: string
-    +status: string
-    +createdAt: string
-    +updatedAt: string
-  }
+package "DI Container" {
+class UCContainer {
++dataRelatedRequest: DataRelatedRequestApiFns
+}
 }
 
 package "API (frontend client)" {
-  class FetchAPI {
-    +fetch(url, init)
-  }
+class FetchAPI {
++fetch(url, init)
+}
 }
 
-SidebarView --> BrowseDataRelatedRequestsModal : opens
-SidebarView --> SubmitDataRelatedRequestModal : opens
+DatasetDetailPresenter --> BrowseDataRelatedRequestsModal : opens
+DatasetDetailPresenter --> SubmitDataRelatedRequestModal : opens
 
-BrowseDataRelatedRequestsModal --> DatasetUseCase : listDatasets()
-SubmitDataRelatedRequestModal --> DatasetUseCase : listDatasets()
+BrowseDataRelatedRequestsModal --> DatasetsController : list
+SubmitDataRelatedRequestModal --> DatasetsController : submit
 
-BrowseDataRelatedRequestsModal --> DataRelatedRequestApiFns : listDataRelatedRequests()
-SubmitDataRelatedRequestModal --> DataRelatedRequestApiFns : submitDataRelatedRequest()
-
+DatasetsController --> UCContainer : reads dataRelatedRequest
+DatasetsController --> DataRelatedRequestApiFns : delegates
 DataRelatedRequestApiFns ..> FetchAPI : fetch()
-DatasetUseCase ..> FetchAPI : fetch()/client
 
 DataRelatedRequestApiFns ..> DataRelatedRequestPayload
 DataRelatedRequestApiFns ..> DataRelatedRequestDto
-DatasetUseCase ..> DatasetSummary
+DataRelatedRequestApiFns --> DatasetDetailPresenter : present(DataRelatedRequestDto[])
 @enduml
