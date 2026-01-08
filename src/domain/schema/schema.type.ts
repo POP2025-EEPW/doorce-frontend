@@ -37,15 +37,10 @@ export interface TypeDto {
 // Domain Types (used by UI layer)
 // =============================================================================
 
-export type SchemaDataType =
-  | "String"
-  | "Integer"
-  | "Float"
-  | "Boolean"
-  | "Date"
-  | "DateTime"
-  | "Time"
-  | "Unknown";
+export interface SchemaDataType {
+  id: ID;
+  name: string;
+}
 
 export interface SchemaProperty {
   name: string;
@@ -92,7 +87,7 @@ export function mapPropertyDtoToDomain(dto: PropertyDto): SchemaProperty {
   return {
     name: dto.name ?? "",
     typeId: dto.typeId,
-    type: "Unknown", // Will be resolved when types are loaded
+    // Don't set type here - it will be resolved later with actual data types
   };
 }
 
@@ -129,7 +124,7 @@ export function mapDomainToSchemaDto(schema: Partial<DataSchema>): SchemaDto {
       name: concept.name,
       properties: concept.properties?.map((prop) => ({
         name: prop.name,
-        typeId: prop.typeId,
+        typeId: prop.typeId ?? prop.type?.id,
       })),
     })),
     constraints: schema.constraints?.map((constraint) => ({
@@ -143,10 +138,14 @@ export function mapDomainToSchemaDto(schema: Partial<DataSchema>): SchemaDto {
 // =============================================================================
 
 export interface CreateDataSchemaDto {
-  title: string;
+  id?: ID;
+  name: string;
   description?: string;
-  concepts?: ConceptDto[];
-  constraints?: ConstraintDto[];
+  concepts: (Omit<SchemaConcept, "id" | "properties"> & {
+    id?: ID;
+    properties: Omit<SchemaProperty, "id">[];
+  })[];
+  constraints?: Omit<SchemaConstraint, "id">[];
 }
 
 // =============================================================================
@@ -155,7 +154,9 @@ export interface CreateDataSchemaDto {
 
 export interface SchemaOutputPort {
   presentSchemas(schemas: DataSchema[]): void;
+  presentDataTypes(types: SchemaDataType[]): void;
   presentListSchemasError(error: unknown): void;
+  presentListDataTypesError(error: unknown): void;
 
   presentAddSchemaSuccess(): void;
   presentAddSchemaError(error: unknown): void;

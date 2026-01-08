@@ -1,6 +1,9 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { apiClient } from "@/api/client";
-import type { CreateDataSchemaDto, DataSchema } from "@/domain/schema/schema.type";
+import type {
+  CreateDataSchemaDto,
+  DataSchema,
+} from "@/domain/schema/schema.type";
 import SchemaPresenter, { type SchemaViewState } from "./schema.presenter";
 import SchemaUseCase from "@/domain/schema/schema.uc";
 
@@ -8,6 +11,7 @@ const initialState: SchemaViewState = {
   isModalOpen: false,
   notification: null,
   schemas: [],
+  dataTypes: [],
   selectedSchema: null,
 };
 
@@ -41,13 +45,29 @@ export function useSchemaController() {
     loadSchemas();
   }, [loadSchemas]);
 
+  const loadDataTypes = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      await useCase.listDataTypes();
+    } finally {
+      setIsLoading(false);
+    }
+  }, [useCase]);
+
+  useEffect(() => {
+    loadDataTypes();
+  }, [loadDataTypes]);
+
   const openAddModal = useCallback(() => {
     presenter.showAddSchemaForm();
   }, [presenter]);
 
-  const openEditModal = useCallback((schema: DataSchema) => {
-    presenter.showEditSchemaForm(schema);
-  }, [presenter]);
+  const openEditModal = useCallback(
+    (schema: DataSchema) => {
+      presenter.showEditSchemaForm(schema);
+    },
+    [presenter],
+  );
 
   const closeModal = useCallback(() => {
     presenter.presentCloseModal();
@@ -61,23 +81,23 @@ export function useSchemaController() {
     async (dto: CreateDataSchemaDto) => {
       setIsLoading(true);
       try {
-        if (state.selectedSchema) {
-          console.warn("Edit schema functionality is not implemented in this version.");
+        if (dto.id) {
+          await useCase.editSchema(dto);
         } else {
-          // Add mode
           await useCase.addSchema(dto);
         }
-        
+
         await loadSchemas();
       } finally {
         setIsLoading(false);
       }
     },
-    [useCase, state.selectedSchema, loadSchemas],
+    [useCase, loadSchemas],
   );
 
   return {
     schemas: state.schemas,
+    dataTypes: state.dataTypes,
     isModalOpen: state.isModalOpen,
     notification: state.notification,
     selectedSchema: state.selectedSchema,

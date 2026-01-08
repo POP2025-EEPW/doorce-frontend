@@ -1,6 +1,6 @@
-import type { 
-  DataSchema, 
-  SchemaOutputPort 
+import type {
+  DataSchema, SchemaDataType,
+  SchemaOutputPort
 } from "@/domain/schema/schema.type";
 
 export interface SchemaNotification {
@@ -12,6 +12,7 @@ export interface SchemaViewState {
   isModalOpen: boolean;
   notification: SchemaNotification | null;
   schemas: DataSchema[];
+  dataTypes: SchemaDataType[];
   selectedSchema: DataSchema | null;
 }
 
@@ -19,6 +20,23 @@ type StateUpdater = (updater: (prev: SchemaViewState) => SchemaViewState) => voi
 
 export default class SchemaPresenter implements SchemaOutputPort {
   constructor(private readonly updateState: StateUpdater) {}
+
+  presentDataTypes(types: SchemaDataType[]): void {
+    this.updateState((prev) => ({
+      ...prev,
+      dataTypes: types,
+      notification: null,
+    }));
+  }
+
+  presentListDataTypesError(error: unknown): void {
+    console.error("SchemaPresenter list error:", error);
+    this.updateState((prev) => ({
+      ...prev,
+      dataTypes: [],
+      notification: null,
+    }));
+  }
 
   clearNotification(): void {
     this.updateState((prev) => ({
@@ -72,7 +90,7 @@ export default class SchemaPresenter implements SchemaOutputPort {
     }));
   }
 
-  presentGetSchemaError(error: unknown): void {
+  presentGetSchemaError(): void {
     this.updateState((prev) => ({
       ...prev,
       notification: {
@@ -161,6 +179,8 @@ export default class SchemaPresenter implements SchemaOutputPort {
         return "Failed to update schema.";
       case "error/get/schema":
         return "Failed to load schema details.";
+      case "error/get/schema-data-type/list":
+        return "Failed to load schema data types.";
       default:
         return "Something went wrong. Please try again.";
     }

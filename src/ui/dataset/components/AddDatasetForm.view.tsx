@@ -1,82 +1,153 @@
+"use client";
+
 import { useForm } from "react-hook-form";
 import { Label } from "@/ui/lib/components/ui/label";
 import { Input } from "@/ui/lib/components/ui/input";
 import { Textarea } from "@/ui/lib/components/ui/textarea";
 import { Button } from "@/ui/lib/components/ui/button";
-import type { CreateCatalogDto } from "@/domain/catalog/catalog.type";
-
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/ui/lib/components/ui/card";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/ui/lib/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/ui/lib/components/ui/select";
+import type { CreateDatasetDto } from "@/domain/dataset/dataset.types";
 
-interface AddDatasetFormViewProps {
-  onAddDataset: (input: CreateCatalogDto) => void;
+export interface AddDatasetModalViewProps {
+  isOpen: boolean;
+  isPending: boolean;
+  onClose: () => void;
+  onSubmit: (data: CreateDatasetDto) => void;
+  schemas?: { id: string; name: string }[];
 }
 
-export function AddDatasetFormView(props: AddDatasetFormViewProps) {
-  const { onAddDataset } = props;
+export function AddDatasetModalView({
+  isOpen,
+  isPending,
+  onClose,
+  onSubmit,
+  schemas = [],
+}: AddDatasetModalViewProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<CreateCatalogDto>();
+    setValue,
+    watch,
+  } = useForm<CreateDatasetDto>({
+    defaultValues: {
+      title: "",
+      description: "",
+      qualityControllable: false, // Zawsze false
+      schemaId: "",
+    },
+  });
+
+  const handleClose = () => {
+    reset();
+    onClose();
+  };
+
+  const handleFormSubmit = handleSubmit((data) => {
+    // Upewniamy się przed wysyłką, że pole jest ustawione
+    onSubmit({ ...data, qualityControllable: false });
+  });
+
+  const schemaIdValue = watch("schemaId");
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg leading-none">Add dataset</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form
-          className="space-y-2"
-          onSubmit={handleSubmit((data) => {
-            onAddDataset(data);
-            reset();
-          })}
-        >
+    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Add New Dataset</DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleFormSubmit} className="space-y-5 py-4">
           <div className="space-y-1">
             <Label htmlFor="title">Title</Label>
             <Input
               id="title"
+              disabled={isPending}
+              {...register("title", { required: "Title is required" })}
               placeholder="Dataset title"
-              {...register("title", {
-                required: {
-                  value: true,
-                  message: "Title is required",
-                },
-              })}
             />
             {errors.title && (
-              <div className="text-sm text-destructive">
-                {errors.title.message}
-              </div>
+              <p className="text-xs text-destructive">{errors.title.message}</p>
             )}
           </div>
+
           <div className="space-y-1">
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
-              placeholder="Description (optional)"
+              disabled={isPending}
               {...register("description", {
-                required: {
-                  value: true,
-                  message: "Description is required",
-                },
+                required: "Description is required",
               })}
+              placeholder="Dataset description..."
             />
             {errors.description && (
-              <div className="text-sm text-destructive">
+              <p className="text-xs text-destructive">
                 {errors.description.message}
-              </div>
+              </p>
             )}
           </div>
-          <Button type="submit">Add Dataset</Button>
+
+          <div className="space-y-1">
+            <Label htmlFor="schema">Data Schema</Label>
+            <Select
+              disabled={isPending}
+              value={schemaIdValue}
+              onValueChange={(val) =>
+                setValue("schemaId", val, { shouldValidate: true })
+              }
+            >
+              <SelectTrigger id="schema">
+                <SelectValue placeholder="Select a schema" />
+              </SelectTrigger>
+              <SelectContent>
+                {schemas.map((s) => (
+                  <SelectItem key={s.id} value={s.id}>
+                    {s.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <input
+              type="hidden"
+              {...register("schemaId", { required: "Schema is required" })}
+            />
+            {errors.schemaId && (
+              <p className="text-xs text-destructive">
+                {errors.schemaId.message}
+              </p>
+            )}
+          </div>
+
+          <DialogFooter className="pt-4 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClose}
+              disabled={isPending}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Creating..." : "Create Dataset"}
+            </Button>
+          </DialogFooter>
         </form>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   );
 }

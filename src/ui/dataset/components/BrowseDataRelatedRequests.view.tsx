@@ -145,7 +145,7 @@ export default function BrowseDataRelatedRequestsModal(props: Props) {
         if (!open) onClose();
       }}
     >
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-full sm:max-w-[60vw] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Data Related Requests</DialogTitle>
           <DialogDescription>

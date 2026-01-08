@@ -1,7 +1,13 @@
+"use client";
+
 import { useDatasetListController } from "@/application/dataset/datasetList.controller.ts";
 import { DatasetsPageView } from "@/ui/dataset/pages/DatasetsPage.view.tsx";
 import { Skeleton } from "@/ui/lib/components/ui/skeleton.tsx";
 import { Card, CardContent, CardHeader } from "@/ui/lib/components/ui/card.tsx";
+import { Button } from "@/ui/lib/components/ui/button";
+import { Plus } from "lucide-react";
+import { AddDatasetModalView } from "../components/AddDatasetForm.view";
+import { useSchemaController } from "@/application/schema/schema.controller";
 
 export function DatasetsPage() {
   const {
@@ -10,42 +16,49 @@ export function DatasetsPage() {
     tabs,
     activeTab,
     isDatasetsLoading,
+    isCreating,
     onFilterChange,
     onTabChange,
     resetFilters,
     onDatasetSelected,
     onShowAlerts,
+    onAddDataset,
     permissions,
+    isAddModalOpen,
+    onOpenAddModal,
+    onCloseAddModal,
   } = useDatasetListController();
+  const { schemas } = useSchemaController();
 
   if (isDatasetsLoading) {
     return (
-      <main className="flex-1">
-        <div className="container mx-auto py-6 space-y-6">
-          <h1 className="text-2xl font-semibold tracking-tight">Datasets</h1>
-          <div className="space-y-3">
-            {/* Render 3-5 skeleton items to mimic a list */}
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i}>
-                <Card>
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between">
-                      {/* Title Skeleton: h-5 matches text-lg visual weight */}
-                      <Skeleton className="h-5 w-[140px]" />
-
-                      {/* Menu Button Skeleton: Exact match for h-8 w-8 */}
-                      <Skeleton className="h-8 w-8 rounded-md" />
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    {/* Description Skeleton: h-4 matches text-sm */}
-                    <Skeleton className="h-4 w-full max-w-[300px] mt-1" />
-                  </CardContent>
-                </Card>
-
-                {/* Include the separator logic if you want exact 1:1 fidelity */}
-                {i < 2 && <div className="h-[1px] bg-border my-3" />}
-              </div>
+      <main className="flex-1 w-full">
+        <div className="container mx-auto py-6 space-y-6 px-5">
+          <div className="mb-4 flex w-full items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+                Datasets
+              </h1>
+              <p className="text-sm text-gray-500 mt-1">Manage your datasets</p>
+            </div>
+            <Button disabled>
+              <Plus className="mr-2 h-4 w-4" />
+              Add dataset
+            </Button>
+          </div>
+          <div className="space-y-4">
+            {Array.from({ length: 3 }, (_, i) => `skeleton-${i}`).map((key) => (
+              <Card key={key}>
+                <CardHeader className="pb-2">
+                  <div className="flex items-start justify-between">
+                    <Skeleton className="h-5 w-[200px]" />
+                    <Skeleton className="h-8 w-8 rounded-md" />
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <Skeleton className="h-4 w-full max-w-[400px] mt-1" />
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
@@ -54,19 +67,32 @@ export function DatasetsPage() {
   }
 
   return (
-    <DatasetsPageView
-      datasets={datasets}
-      filters={filters}
-      tabs={tabs}
-      activeTab={activeTab}
-      onFilterChange={onFilterChange}
-      onTabChange={onTabChange}
-      resetFilters={resetFilters}
-      onDatasetSelected={onDatasetSelected}
-      onShowAlerts={onShowAlerts}
-      canDisplayAlerts={permissions.canDisplayAlerts}
-      canDownload={permissions.canDownload}
-      canAddRawLink={permissions.canAddRawLink}
-    />
+    <>
+      <DatasetsPageView
+        datasets={datasets}
+        filters={filters}
+        tabs={tabs}
+        activeTab={activeTab}
+        onFilterChange={onFilterChange}
+        onTabChange={onTabChange}
+        resetFilters={resetFilters}
+        onDatasetSelected={onDatasetSelected}
+        onShowAlerts={onShowAlerts}
+        canDisplayAlerts={permissions.canDisplayAlerts}
+        canDownload={permissions.canDownload}
+        canAddRawLink={permissions.canAddRawLink}
+        canCreateDataset={permissions.canCreateDataset}
+        isCreating={isCreating}
+        onAddClick={onOpenAddModal}
+      />
+
+      <AddDatasetModalView
+        isOpen={isAddModalOpen}
+        isPending={isCreating}
+        onClose={onCloseAddModal}
+        onSubmit={onAddDataset}
+        schemas={schemas}
+      />
+    </>
   );
 }

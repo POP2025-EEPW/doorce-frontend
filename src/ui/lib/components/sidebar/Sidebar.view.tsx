@@ -57,10 +57,8 @@ export function SidebarView(props: SidebarViewProps) {
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <SidebarMenuButton>
-                            <div className="flex items-center gap-2">
-                              <item.icon />
-                              <span>{item.title}</span>
-                            </div>
+                            <item.icon />
+                            <span>{item.title}</span>
                           </SidebarMenuButton>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent side="right" align="start">

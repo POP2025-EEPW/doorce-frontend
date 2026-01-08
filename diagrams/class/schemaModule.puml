@@ -24,6 +24,7 @@ package "Presenters" {
   class DataSchemaListPresenter {
     +onAddSuccess(schema)
     +showAddSchemaForm()
+    +showEditSchemaForm()
     +formatSchemaList(schemas)
   }
 }
@@ -31,6 +32,7 @@ package "Presenters" {
 package "Controllers" {
   class DataSchemaController {
     +addDataSchema(input)
+    +editDataSchema(input)
     +listDataSchemas()
   }
 }
@@ -38,6 +40,7 @@ package "Controllers" {
 package "Use-case Layer" {
   interface DataSchemaUseCases {
       +addDataSchema(input)
+      +editDataSchema(input)
       +listDataSchemas()
   }
 }
@@ -50,8 +53,9 @@ package "DI Container" {
 
 package "API" {
   class DataSchemaAPI {
-    +POST /data-schemas
-    +GET /data-schemas
+    +POST /schemas
+    +GET /schemas
+    +PUT /schemas
   }
 }
 

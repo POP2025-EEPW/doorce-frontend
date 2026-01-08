@@ -682,10 +682,10 @@ export interface components {
       number?: number;
       sort?: components["schemas"]["SortObject"];
       pageable?: components["schemas"]["PageableObject"];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
+      first?: boolean;
+      last?: boolean;
       empty?: boolean;
     };
     PageableObject: {
