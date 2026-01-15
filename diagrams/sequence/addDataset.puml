@@ -4,24 +4,30 @@ autonumber
 
 actor User
 
-participant "AddDatasetFormView" as View
-participant "CatalogDetailPresenter" as Presenter
-participant "datasets.controller.ts" as Controller
+participant "CatalogDetailPage" as View
+participant "AddDatasetForm" as FormView
+participant "DatasetPresenter" as Presenter
+participant "dataset.controller.ts" as Controller
 participant "uc.dataset" as UseCase
 participant "CombinedClient" as Client
 participant "Dataset API\nPOST /datasets" as Http
 
-User -> View : Fill + submit dataset form
-View -> Presenter : onSubmit(input)
-Presenter -> Controller : addDataset(input)
-Controller -> UseCase : addDataset(input)
-UseCase -> Client : addDataset(input)
+User ->> View : click "Add Dataset"
+View ->> Controller : showAddDatasetForm()
+Controller ->> UseCase : showAddDatasetForm()
+UseCase ->> Presenter : showAddDatasetForm()
+Presenter ->> FormView : showAddDatasetForm()
+FormView ->> User : show form
+
+User ->> FormView : click "Add"
+FormView ->> Controller : addDataset(input)
+Controller ->> UseCase : addDataset(input)
+UseCase ->> Client : addDataset(input)
 Client -> Http : POST /datasets
 Http --> Client : 201 Created + {id}
 Client --> UseCase : {id}
-UseCase --> Controller : {id}
-Controller --> Presenter : {id}
-Presenter -> View : handle success (invalidate + navigate)
-View --> User : Show dataset detail
+UseCase ->> Presenter : present{success}
+Presenter ->> View : handle success
+View ->> User : Show result message
 
 @enduml
